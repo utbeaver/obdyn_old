@@ -13,32 +13,7 @@ class OdJointForce;
 class OdJointSPDP;
 class OdExpression;
 class OdSubSystem;
-
-class LINKSYSTEMDLL vector_int {
- private:
-  int *vals;
-  int size1;
- public:
-  vector_int() {vals=0; size1=0;}
-  ~vector_int() { 
-	  DELARY(vals)
-  }
-  inline void resize(int s) { 
-    if (s > size1) {
-      DELARY(vals)
-      vals = new int[s];
-    }
-    size1 = s;
-  }
-  inline int& operator[](int index) { 
-	  return vals[index];
-  }
-  inline int size() {
-	  return size1;
-  }
-};
-
-
+class vector_int;
 
 class LINKSYSTEMDLL OdSystem {
  private:
@@ -58,22 +33,11 @@ class LINKSYSTEMDLL OdSystem {
   void add_force(OdForce *pF);
   void add_joint_force(OdJointForce *pJF);
   void add_joint_spdp(OdJointSPDP *pJF);
-  //void add_subsystem(OdSubSystem*);
-  //void create_incidence(vector_int& inci); 
-  //void create_incidence(); 
-  //void create_relevence(vector_int& inci); 
-  //void connnect_floating_subsystems(); 
-  //void break_loops();
-  //void topology_analysis(vector_int& perm, vector_int& inci, vector_int& rele ); 
-  //void topology_analysis(); 
-  //void sort_branch(vector_int& rele, vector_int& b_perm, vector_int& j_perm); 
-  //void free_joints(vector_int& f_j); 
+  
   char* info(char* msg); 
   int get_num_constraint(); 
   int get_num_body(); 
-  //void find_element_on_branches(vector_int& rele, vector_int& b_perm, 
-				//vector_int& j_perm, vector_int& top);
-  //void broken_bodies(vector_int& body_broken); 
+ 
   int displacement_ic();
   int velocity_ic();
   int acceleration_and_force_ic();

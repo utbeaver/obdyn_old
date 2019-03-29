@@ -109,8 +109,6 @@ public:
 	inline double operator*(Vec3& vec) { return DOT_X(v, vec.v); }
 	inline double operator*(double* vec) { return  DOT_X(v, vec); }
 };
-
-
 class Mat33/* : public od_object*/ {
 public:
 	double x[3], y[3], z[3];
@@ -258,5 +256,30 @@ public:
 	void update(double *q);
 	Mat33& TMTt(Mat33 &T);
 };
+
+class  vector_int {
+private:
+	int *vals;
+	int size1;
+public:
+	vector_int() { vals = 0; size1 = 0; }
+	~vector_int() {
+		DELARY(vals)
+	}
+	inline void resize(int s) {
+		if (s > size1) {
+			DELARY(vals)
+				vals = new int[s];
+		}
+		size1 = s;
+	}
+	inline int& operator[](int index) {
+		return vals[index];
+	}
+	inline int size() {
+		return size1;
+	}
+};
+
 
 #endif
