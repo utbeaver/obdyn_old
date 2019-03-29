@@ -28,7 +28,6 @@ class LINKSYSTEMDLL OdSystem {
   void setGravity(double*);
   void setName(char*);
   void add_body(OdBody* pB); 
-  //void add_expression(OdExpression* pE); 
   void add_constraint(OdJoint* pJ); 
   void add_force(OdForce *pF);
   void add_joint_force(OdJointForce *pJF);
