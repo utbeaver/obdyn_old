@@ -1,0 +1,35 @@
+# The project file for the SIP module.
+#
+# Copyright (c) 2004
+# 	Riverbank Computing Limited <info@riverbankcomputing.co.uk>
+# 
+# This file is part of SIP.
+# 
+# This copy of SIP is licensed for use under the terms of the SIP License
+# Agreement.  See the file LICENSE for more details.
+# 
+# SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+unix:VERSION = 11.0.1
+
+
+TEMPLATE = lib
+TARGET = @BLX_TARGET_LIB@
+DESTDIR = @SIP_MODDIR@
+CONFIG += @BLX_CONFIG_LIB@ warn_off
+INCLUDEPATH = @BLX_INCLUDEPATH@
+DEFINES = @BLX_DEFINES@
+LIBS += @BLX_LIBS@
+
+SOURCES = \
+	objmap.c \
+	sipQt.cpp \
+	threads.c \
+	siplib.c
+
+HEADERS = \
+	sip.h \
+	sipQt.h \
+	sipint.h

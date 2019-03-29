@@ -1,0 +1,150 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tocrank</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_swing</Name>
+   <Position>[2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>crank</Name>
+  <Position>[0.0, 1.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>1.0</Length>
+   <Width>0.5</Width>
+   <Height>2.0</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link</Name>
+  <Position>[1.0, 3.0, 0.0]</Position>
+  <Orientation>[45.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[1.0, 3.0, 0.0]</Position>
+   <Orientation>[45.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toCrank</Name>
+   <Position>[-1.4142135623700001, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toswing</Name>
+   <Position>[1.4142135623700001, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>1.0</Length>
+   <Width>0.5</Width>
+   <Height>2.82842712475</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>swing_link</Name>
+  <Position>[2.0, 2.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2.0, 2.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink</Name>
+   <Position>[0.0, 2.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, -2.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.8</Length>
+   <Width>0.25</Width>
+   <Height>4.0</Height>
+  </od_link>
+ </od_body>
+ <od_revolute_joint>
+  <Name>joint_1</Name>
+  <I_marker>crank.toground</I_marker>
+  <J_marker>ground.tocrank</J_marker>
+  <Expression>pi*2*time</Expression>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>joint_2</Name>
+  <I_marker>link.toCrank</I_marker>
+  <J_marker>crank.tolink</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>joint_3</Name>
+  <I_marker>swing_link.tolink</I_marker>
+  <J_marker>link.toswing</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>joint_4</Name>
+  <I_marker>swing_link.toground</I_marker>
+  <J_marker>ground.to_swing</J_marker>
+ </od_revolute_joint>
+</Od_model>

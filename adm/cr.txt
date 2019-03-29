@@ -1,0 +1,3 @@
+1. "0*pi/180.0 +(time+.1)*pi" can not be correctly evaled;
+2. sparse relevence matrix
+3. Create od_jacobian for par_J/par_q

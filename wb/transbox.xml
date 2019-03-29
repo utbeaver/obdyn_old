@@ -1,0 +1,78 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>body_5189</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0, 0, 1]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>1</Length>
+   <Width>1</Width>
+   <Height>1</Height>
+  </od_box>
+ </od_body>
+ <od_translational_joint>
+  <Name>Translational Joint</Name>
+  <I_marker>body_5189.cm_marker</I_marker>
+  <J_marker>ground.cm_marker</J_marker>
+ </od_translational_joint>
+ <od_spdpt>
+  <Name>Translational Spring Damper</Name>
+  <I_marker>body_5189.cm_marker</I_marker>
+  <J_marker>ground.cm_marker</J_marker>
+  <Stiffness>10.0</Stiffness>
+  <Damping>1.0</Damping>
+  <Distance>0.5</Distance>
+  <Force>0.0</Force>
+ </od_spdpt>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.01</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.001</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <Gravity>[0.0, -9.8000000000000007, 0]</Gravity>
+</Od_model>

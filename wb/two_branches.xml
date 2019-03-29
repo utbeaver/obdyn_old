@@ -1,0 +1,249 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink1revolute</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink4revolute</Name>
+   <Position>[2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>link1</Name>
+  <Position>[0.0, -1.0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, -1.0, 0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>togroundrevolute</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink2revolute</Name>
+   <Position>[0.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link2</Name>
+  <Position>[0.0, -3.0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, -3.0, 0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink1revolute</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink3revolute</Name>
+   <Position>[0.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link3</Name>
+  <Position>[0.49999999999999994, -4.8660254037844384, 0.0]</Position>
+  <Orientation>[30.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.49999999999999994, -4.8660254037844384, 0.0]</Position>
+   <Orientation>[30.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink2revolute</Name>
+   <Position>[-1.6653345369377348e-016, 0.99999999999999978, 0.0]</Position>
+   <Orientation>[-29.999999999999996, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link4</Name>
+  <Position>[2.0, -1.0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2.0, -1.0, 0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>togroundrevolute</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink5revolute</Name>
+   <Position>[0.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link5</Name>
+  <Position>[2.0, -3.0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2.0, -3.0, 0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink4revolute</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink6revolute</Name>
+   <Position>[0.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>link6</Name>
+  <Position>[1.5, -4.8660254037844384, 0.0]</Position>
+  <Orientation>[-30.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[1.5, -4.8660254037844384, 0.0]</Position>
+   <Orientation>[-30.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink5revolute</Name>
+   <Position>[2.2204460492503131e-016, 0.99999999999999978, 0.0]</Position>
+   <Orientation>[29.999999999999996, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>2</Height>
+  </od_link>
+ </od_body>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link1.togroundrevolute</I_marker>
+  <J_marker>ground.tolink1revolute</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link2.tolink1revolute</I_marker>
+  <J_marker>link1.tolink2revolute</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link3.tolink2revolute</I_marker>
+  <J_marker>link2.tolink3revolute</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link4.togroundrevolute</I_marker>
+  <J_marker>ground.tolink4revolute</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link5.tolink4revolute</I_marker>
+  <J_marker>link4.tolink5revolute</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link6.tolink5revolute</I_marker>
+  <J_marker>link5.tolink6revolute</J_marker>
+ </od_revolute_joint>
+ <Gravity>[0.0, -9.8000000000000007, 0.0]</Gravity>
+</Od_model>

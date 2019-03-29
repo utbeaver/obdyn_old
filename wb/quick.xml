@@ -1,0 +1,151 @@
+<Od_model>
+ <Name>quick_return</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tocrank</Name>
+   <Position>[0.0, 3.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toBC</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>BC</Name>
+  <Position>[0.0, 2.5, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 2.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, -2.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toslider1</Name>
+   <Position>[0.0, 1.5, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.05</Radius>
+   <Height>5.0</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_body>
+  <Name>crank</Name>
+  <Position>[0.0, 3.5, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 3.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, -0.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toslider1</Name>
+   <Position>[0.0, 0.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.2</Length>
+   <Width>0.1</Width>
+   <Height>1.0</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>slider1</Name>
+  <Position>[0.0, 4.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 4.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tocrank</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toBC</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>0.25</Length>
+   <Width>0.25</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_revolute_joint>
+  <Name>O_R</Name>
+  <I_marker>crank.toground</I_marker>
+  <J_marker>ground.tocrank</J_marker>
+  <Expression>2*pi*(time+.0)</Expression>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>C_R</Name>
+  <I_marker>BC.toground</I_marker>
+  <J_marker>ground.toBC</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>A_R</Name>
+  <I_marker>slider1.tocrank</I_marker>
+  <J_marker>crank.toslider1</J_marker>
+ </od_revolute_joint>
+ <od_translational_joint>
+  <Name>A_T</Name>
+  <I_marker>slider1.toBC</I_marker>
+  <J_marker>BC.toslider1</J_marker>
+ </od_translational_joint>
+</Od_model>

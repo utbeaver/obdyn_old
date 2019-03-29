@@ -1,0 +1,63 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>body_3105</Name>
+  <Position>[1, 1, 1]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[1, 1, 1]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>togrd</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[-1, -1, -1]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>2</Width>
+   <Height>2</Height>
+  </od_box>
+ </od_body>
+ <od_spherical_joint>
+  <Name>Spherical Joint</Name>
+  <I_marker>body_3105.togrd</I_marker>
+  <J_marker>ground.ref</J_marker>
+ </od_spherical_joint>
+ <Gravity>[0.0, -9.8000000000000007, 0.0]</Gravity>
+</Od_model>

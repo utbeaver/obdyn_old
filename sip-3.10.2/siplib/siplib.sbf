@@ -1,0 +1,17 @@
+# This is the build file for the extension module.
+#
+# Copyright (c) 2004
+# 	Riverbank Computing Limited <info@riverbankcomputing.co.uk>
+# 
+# This file is part of SIP.
+# 
+# This copy of SIP is licensed for use under the terms of the SIP License
+# Agreement.  See the file LICENSE for more details.
+# 
+# SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+target = sip
+sources = siplib.c sipQt.cpp threads.c objmap.c
+headers = sip.h sipint.h
+moc_headers = sipQt.h

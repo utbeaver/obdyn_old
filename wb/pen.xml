@@ -1,0 +1,80 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>1.0</Length>
+   <Width>1.0</Width>
+   <Height>1.0</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>body1</Name>
+  <Position>[2.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <Omega>[None, None, 1.0]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>marker_name</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[-2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.4</Radius>
+   <Height>4.0</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>body1.marker_name</I_marker>
+  <J_marker>ground.cm_marker</J_marker>
+ </od_revolute_joint>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.01</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <Gravity>[0.0, -9.8000000000000007, 0.0]</Gravity>
+</Od_model>

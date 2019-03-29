@@ -1,0 +1,13 @@
+Simon Cusack
+	For the Borland stuff.
+
+Wilken Boie
+	For porting the SIP code generator to Windows.
+
+Toby J Sargeant
+	For the hash table code (and finding out why it's needed).
+	For deep bug hunting and fixing.
+	For the Python interpeter lock stuff.
+
+Matthias H"olzer-Kl"upfel
+	For the original automake/autoconf magic.

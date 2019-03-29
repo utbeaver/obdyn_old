@@ -1,0 +1,57 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <WrtBCS>0</WrtBCS>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <WrtBCS>1</WrtBCS>
+  </od_marker>
+  <od_marker>
+   <Name>Origin</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <WrtBCS>1</WrtBCS>
+  </od_marker>
+  <od_marker>
+   <Name>marker_4791</Name>
+   <Position>[5.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <WrtBCS>1</WrtBCS>
+  </od_marker>
+ </od_body>
+ <od_beams>
+  <Name>Beams</Name>
+  <Start_marker>ground.Origin</Start_marker>
+  <End_marker>ground.marker_4791</End_marker>
+  <Emodulus>1.0</Emodulus>
+  <Gmodulus>1.0</Gmodulus>
+  <Area>1.0</Area>
+  <Length>1.0</Length>
+  <Ixx>1.0</Ixx>
+  <Iyy>1.0</Iyy>
+  <Izz>1.0</Izz>
+  <Asy>0.0</Asy>
+  <Asz>0.0</Asz>
+  <Ratio>0.0</Ratio>
+  <FreeStart>1</FreeStart>
+  <FreeEnd>1</FreeEnd>
+  <Segments>2</Segments>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+ </od_beams>
+ <Gravity>[0.0, -9.8000000000000007, 0.0]</Gravity>
+</Od_model>

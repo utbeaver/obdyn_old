@@ -1,0 +1,284 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to2nd</Name>
+   <Position>[5.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>link1</Name>
+  <Position>[1, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[1, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>togrd</Name>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink2</Name>
+   <Position>[1, 0.0, 0.0]</Position>
+   <Orientation>[90, 90, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link1_2nd</Name>
+  <Position>[6, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[6, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>togrd_2nd</Name>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tolink2_2nd</Name>
+   <Position>[1, 0.0, 0.0]</Position>
+   <Orientation>[90, 90, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link2</Name>
+  <Position>[2, 0, 1]</Position>
+  <Orientation>[90, 90, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2, 0, 1]</Position>
+   <Orientation>[90, 90, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toLink1</Name>
+   <Position>[0, -1, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toLink3</Name>
+   <Position>[0, 1, 0.0]</Position>
+   <Orientation>[0.0, -90.0, -90.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link2_2nd</Name>
+  <Position>[7, 0, 1]</Position>
+  <Orientation>[90, 90, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[7, 0, 1]</Position>
+   <Orientation>[90, 90, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+	  <Name>toLink1_2nd</Name>
+   <Position>[0, -1, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toLink3_2nd</Name>
+   <Position>[0, 1, 0.0]</Position>
+   <Orientation>[0.0, -90.0, -90.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link3</Name>
+  <Position>[3, 0, 2]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[3, 0, 2]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link2</Name>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link3_2nd</Name>
+  <Position>[8, 0, 2]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[8, 0, 2]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link2_2nd</Name>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>0.5</Width>
+   <Height>0.5</Height>
+  </od_box>
+ </od_body>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>link1.togrd</I_marker>
+  <J_marker>ground.ref</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint_2nd</Name>
+  <I_marker>link1_2nd.togrd_2nd</I_marker>
+  <J_marker>ground.to2nd</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint1</Name>
+  <I_marker>link2.toLink1</I_marker>
+  <J_marker>link1.tolink2</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint1_2nd</Name>
+  <I_marker>link2_2nd.toLink1_2nd</I_marker>
+  <J_marker>link1_2nd.tolink2_2nd</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint3</Name>
+  <I_marker>link3.to_link2</I_marker>
+  <J_marker>link2.toLink3</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint3_2nd</Name>
+  <I_marker>link3_2nd.to_link2_2nd</I_marker>
+  <J_marker>link2_2nd.toLink3_2nd</J_marker>
+ </od_revolute_joint>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.01</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <od_assembly>
+  <Name>Assembly</Name>
+  <Tolerance>1e-013</Tolerance>
+  <Iterations>6</Iterations>
+ </od_assembly>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.01</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <od_assembly>
+  <Name>Assembly</Name>
+  <Tolerance>1e-013</Tolerance>
+  <Iterations>6</Iterations>
+ </od_assembly>
+ <od_dynamics>
+  <Name>Dynamics</Name>
+  <End_Time>1.0</End_Time>
+  <Output_Interval>0.01</Output_Interval>
+  <Iterations>6</Iterations>
+  <Tolerance>0.001</Tolerance>
+  <Max_Stepsize>0.1</Max_Stepsize>
+  <Min_Stepsize>1e-006</Min_Stepsize>
+  <Init_Stepsize>0.0001</Init_Stepsize>
+ </od_dynamics>
+ <Gravity>[0.0, -98.000000000000007, 0.0]</Gravity>
+</Od_model>

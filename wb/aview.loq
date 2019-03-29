@@ -1,0 +1,15 @@
+! ADAMS/View 2005.0.0 (built Jul 22 2004)
+! Graphics:  OpenGL
+! Using software OpenGL overlay plane emulation
+! Enter a command, '?', or 'help'.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !  New Session - Set units, Create a model, and set gravity
+default units len=mm mass=kg force=newton
+model create model="model_1" fit_to_view=no
+part attrib part_name=ground name_vis=off
+part modify rigid_body mass_properties part_name=ground material=.materials.steel
+force create body gravitational gravity=gravity &
+          x_comp=0 y_comp=-9806.65 z_comp=0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+int dia disp dia=.gui.about_adams
+quit conf=no

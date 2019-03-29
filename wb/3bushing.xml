@@ -1,0 +1,175 @@
+<Od_model>
+ <Name>onebushing</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>origin</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>part</Name>
+  <Position>[1, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[1, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toPart2</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[1.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>1</Width>
+   <Height>1</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>part2</Name>
+  <Position>[3, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[3, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toPart1</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[-1.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>top3</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>1</Width>
+   <Height>1</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>part3</Name>
+  <Position>[5, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[5, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>top2</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[-1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>2</Length>
+   <Width>1</Width>
+   <Height>1</Height>
+  </od_box>
+ </od_body>
+ <od_bushing>
+  <Name>Bushing</Name>
+  <I_marker>part.toground</I_marker>
+  <J_marker>ground.origin</J_marker>
+  <Kt>[10000.0, 1000000.0, 10000.0]</Kt>
+  <Kr>[1000.0, 100000.0, 100000.0]</Kr>
+  <Ct>[10, 10, 10]</Ct>
+  <Cr>[1, 1, 1]</Cr>
+  <F>[0.0, 0.0, 0.0]</F>
+  <T>[0.0, 0.0, 0.0]</T>
+ </od_bushing>
+ <od_bushing>
+  <Name>Bushing1</Name>
+  <I_marker>part2.toPart1</I_marker>
+  <J_marker>part.toPart2</J_marker>
+  <Kt>[10000.0, 1000000.0, 10000.0]</Kt>
+  <Kr>[1000.0, 100000.0, 100000.0]</Kr>
+  <Ct>[10, 10, 10]</Ct>
+  <Cr>[1, 1, 1]</Cr>
+  <F>[0.0, 0.0, 0.0]</F>
+  <T>[0.0, 0.0, 0.0]</T>
+ </od_bushing>
+ <od_bushing>
+  <Name>Bushing</Name>
+  <I_marker>part3.top2</I_marker>
+  <J_marker>part2.top3</J_marker>
+  <Kt>[1000000.0, 1000000.0, 1000000.0]</Kt>
+  <Kr>[1000.0, 10000.0, 10000.0]</Kr>
+  <Ct>[1.0, 1.0, 1.0]</Ct>
+  <Cr>[1.0, 1.0, 1.0]</Cr>
+  <F>[0.0, 0.0, 0.0]</F>
+  <T>[0.0, 0.0, 0.0]</T>
+ </od_bushing>
+ <Gravity>[0.0, -9800.0, 0.0]</Gravity>
+</Od_model>

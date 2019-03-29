@@ -1,0 +1,383 @@
+# Copyright (c) 2004
+# 	Riverbank Computing Limited <info@riverbankcomputing.co.uk>
+# 
+# This file is part of SIP.
+# 
+# This copy of SIP is licensed for use under the terms of the SIP License
+# Agreement.  See the file LICENSE for more details.
+# 
+# SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# This module is intended to be used by the build/installation scripts of
+# extension modules created with SIP.  It provides information about file
+# locations, version numbers etc., and provides some utility functions.
+
+
+import os
+import string
+import re
+
+
+class SIPConfigBase:
+    def __init__(self):
+        """Initialise an instance of the SIPConfigBase class.  This is the base
+        class for all classes that export a configuration.  It is also
+        instanciated by SIP's own build script.
+
+        The following attributes are made available by SIPConfigBase:
+            patches             a dictionary of patches that are applied to
+                                qmake project files
+
+        The following patches are exported by SIPConfigBase:
+            @BLX_CONFIG_APP@    the qmake CONFIG values of qt, thread, debug
+                                and release when using the app template
+            @BLX_CONFIG_LIB@    the qmake CONFIG values of qt, thread,
+                                staticlib, dll, plugin, debug and release when
+                                using the app template
+            @BLX_DEFINES@       the required values of qmake's DEFINES
+            @BLX_INCLUDEPATH@   the required values of qmake's INCLUDEPATH
+                                to locate the Python and Qt include files
+            @BLX_LIBS@          the required values of qmake's LIBS to link
+                                the Python and Qt libraries
+        """
+        # Initialise the patch dictionary with those that we are exporting to
+        # the SIP build itself.
+        self.patches = {
+            '@BLX_CONFIG_APP@':   '@BLI_CONFIG_APP@',
+            '@BLX_CONFIG_LIB@':   '@BLI_CONFIG_LIB@',
+            '@BLX_DEFINES@':      '@BLI_DEFINES@',
+            '@BLX_INCLUDEPATH@':  '@BLI_INCLUDEPATH@',
+            '@BLX_LIBS@':         '@BLI_LIBS@'
+        }
+
+    def create_makefile(self, proname, mod=None):
+        """Create a Makefile (and an intermediary project file) based on a
+        project file template and the current patches.
+
+        proname is the name of the project file. The template file has the
+        same name but with ".in" appended.
+        mod is the optional basename of the Python extension module being built
+        which will have its name changed to conform to Python standards.
+        """
+        if mod:
+            # Python names binary modules differently on different platforms.
+            # We don't use the plain module name with SIP v4, even though that
+            # is the name of the module we want to generate, because qmake
+            # treats targets called "qt" differently.
+            target = mod
+
+            if mod != "sip":
+                target = target + "c"
+
+            if @BLI_SIP_VERSION@ < 0x040000:
+                if sys.platform == "win32":
+                    target = "lib" + target
+                    mfpatch = [target + '.dll', target + '.pyd']
+                else:
+                    if mod != "sip":
+                        target = target + "module"
+
+                    mfpatch = None
+            elif sys.platform == "win32":
+                mfpatch = [target + '.dll', mod + '.pyd']
+            elif sys.platform == "darwin":
+                mfpatch = ['lib' + target + '.dylib', mod + '.so']
+            else:
+                mfpatch = ['lib' + target, mod]
+
+            self.patches['@BLX_TARGET_LIB@'] = target
+
+            if mfpatch:
+                _makefile_patches['MOD'] = mfpatch
+
+        _patch_file(proname, self.patches)
+
+        # Make sure that the Makefile has a later timestamp than the project
+        # file.
+        time.sleep(1)
+
+        run_program('@BLI_MFG_BIN@', ['-o', 'Makefile.in', proname])
+
+        _patch_file('Makefile', _makefile_patches)
+
+        # Remove any temporary patches.
+        try:
+            del _makefile_patches['MOD']
+        except KeyError:
+            pass
+
+        try:
+            del self.patches['@BLX_TARGET_LIB@']
+        except KeyError:
+            pass
+
+
+    def add_install_target(self, icmds):
+        """Add an install target to the Makefile in the current directory.
+
+        icmds is a sequence of commands.  Each command is a three element tuple
+        of the operation (either "copy", "move" or "mkdir") and the source and
+        (optional) destination.
+        """
+        f = open('Makefile','a')
+        f.write('\ninstall:\n')
+
+        for op, src, dst in icmds:
+            if sys.platform == "win32":
+                if op == "copy":
+                    cmd = "copy /y %s %s" % (src, dst)
+                elif op == "move":
+                    cmd = "move %s %s" % (src, dst)
+                elif op == "mkdir":
+                    cmd = "mkdir %s" % src
+            else:
+                if op == "copy":
+                    cmd = "cp %s %s" % (src, dst)
+                elif op == "move":
+                    cmd = "mv %s %s" % (src, dst)
+                elif op == "mkdir":
+                    cmd = "mkdir -p %s" % src
+
+            f.write('\t-%s\n' % cmd)
+
+        f.close()
+
+
+class SIPConfig(SIPConfigBase):
+    def __init__(self, pkg, qt=1, ltype=None, lname=None):
+        """Initialise an instance of the SIPConfig class.
+
+        pkg is the short name of the package.
+        qt is true if Qt support is required.
+        ltype is the default software license of the package and must be
+        compatible with the SIP license.  Defined values are "GPL",
+        "commercial", "educational", "non-commercial".  The license is defined
+        by the optional file license.py.  This file should define LicenseType
+        (and have one of the above values) and LicenseName (which is a
+        descriptive name of the license).  If the license.py file isn't present
+        then the license defaults to ltype.  The default default is "GPL".
+        lname is the descriptive name of the default default license.
+
+        The following attributes are made available by SIPConfig:
+            py_version          the Python version as a 3 byte hexadecimal
+                                value, eg. v1.5.2 is 0x010502
+
+            qt_version          the Qt version as a 3 byte hexadecimal
+                                value, eg. v2.3.1 is 0x020301, or 0 if Qt
+                                support is disabled
+            qt_edition          the Qt edition as a string, eg. "professional",
+                                "enterprise", "free"
+            qt_inc_dir          the Qt include directory
+            qt_lib_dir          the Qt library directory
+            qt_lib              the Qt library, eg. "qt", "qt-mt", "qpe"
+
+            sip_version         the SIP version as a 3 byte hexadecimal
+                                value, eg. v3.6 is 0x030600
+            sip_bin             the full path name of the sip binary
+
+            make_bin            the name of the make program
+
+            default_bin_dir     the default directory for binaries
+            default_mod_dir     the default directory for modules
+            default_sip_dir     the default directory for .sip files
+
+            license             the package's license
+            license_file        the package's license file, if any
+
+        The following patches exported by SIPConfigBase are modified:
+            @BLX_DEFINES@       the required values of qmake's DEFINES
+            @BLX_INCLUDEPATH@   the required values of qmake's INCLUDEPATH
+                                to locate the SIP, Python and Qt include
+                                files
+            @BLX_LIBS@          the required values of qmake's LIBS to link
+                                the SIP, Python and Qt libraries
+
+        The following patches are exported by SIPConfig:
+            @BLX_TARGET_LIB@    the required value of qmake's TARGET when using
+                                the lib template to build an extension module
+        """
+        SIPConfigBase.__init__(self)
+
+        self.package = pkg
+
+        self.patches['@BLX_DEFINES@'] = '@BLI_DEFINES_SIP@'
+        self.patches['@BLX_INCLUDEPATH@'] = '@BLI_INCLUDEPATH_SIP@'
+        self.patches['@BLX_LIBS@'] = '@BLI_LIBS_SIP@'
+
+        self.default_bin_dir = '@BLI_DEF_BINDIR@'
+        self.default_mod_dir = '@BLI_DEF_MODDIR@'
+        self.default_sip_dir = '@BLI_DEF_SIPDIR@'
+
+        self.python_version = @BLI_PY_VERSION@
+
+        self.qt_version = @BLI_QT_VERSION@
+        self.qt_edition = '@BLI_QT_EDITION@'
+        self.qt_inc_dir = '@BLI_QT_INC_DIR@'
+        self.qt_lib_dir = '@BLI_QT_LIB_DIR@'
+        self.qt_lib = '@BLI_QT_LIB@'
+
+        self.sip_version = @BLI_SIP_VERSION@
+        self.sip_bin = '@BLI_SIP_BIN@'
+
+        self.make_bin = '@BLI_MAKE_BIN@'
+
+        _set_script()
+
+        self.license, self.license_file = _get_license(self.package, ltype, lname)
+
+        if qt and self.qt_version == 0:
+            error('%s requires Qt support but the installed copy of SIP does not have Qt support.' % self.package)
+
+    def create_config(self, cfgname):
+        """Create a configuration module based on a template file, the current
+        patches, and any bootstrap code marked as such in the
+        build/installation script.  Bootstrap code is delimited by the
+        comments "#<BootstrapCode>" and "</BootstrapCode>".
+
+        cfgname is the name of the file to create. The template file has
+        the same name but with ".in" appended.
+        """
+        _create_config(cfgname, self.patches)
+
+
+def run_program(prog, argv=[], fatal=1):
+    """Execute a program.
+
+    prog is the name of the program.
+    argv is the optional list of program arguments.
+    fatal is non-zero if an error is considered fatal.
+
+    Returns the error code.
+    """
+    try:
+        spawn = os.spawnv
+    except AttributeError:
+        # Keep any quotes around the name.
+        argv.insert(0, prog)
+        rc = os.system(string.join(argv))
+    else:
+        # Remove any quotes around the name.
+        if prog[0] == '"':
+            unq_prog = prog[1:-1]
+        else:
+            unq_prog = prog
+
+        # Windows needs the quotes around the first argument (probably because
+        # it re-builds the complete command line as a string).
+        if sys.platform == "win32":
+            argv.insert(0, prog)
+        else:
+            argv.insert(0, unq_prog)
+
+        rc = spawn(os.P_WAIT, unq_prog, argv)
+
+    if rc != 0 and fatal:
+        error('%s failed with an exit code of %d.' % (prog, rc))
+
+    return rc
+
+
+def run_make(target=None, fatal=1):
+    """Run make.
+
+    target is the optional make target.
+    fatal is non-zero if an error is considered fatal.
+
+    Returns the error code.
+    """
+    if target is None:
+        argv = []
+    else:
+        argv = [target]
+
+    # As the tests are quite quick, make sure that we don't get timestamp
+    # problems.
+    time.sleep(1)
+
+    return run_program('@BLI_MAKE_BIN_PATH@', argv, fatal)
+
+
+def push_dir(newdir):
+    """Change to a new directory and return the old one.
+
+    newdir is the new directory.
+    """
+    olddir = os.getcwd()
+    os.chdir(newdir)
+
+    return olddir
+
+
+def pop_dir(olddir):
+    """Change back to a previous directory.
+
+    olddir is the old directory.
+    """
+    os.chdir(olddir)
+
+
+def copy_to_file(name, text):
+    """Copy a string to a file.
+
+    name is the name of the file.
+    text is the contents to copy to the file.
+    """
+    f = open(name,'w')
+    f.write(text)
+    f.close()
+
+
+def cat_source_files(mname, pieces=1):
+    """Concatenate a module's C++ source files.  The files must be in the
+    current directory.
+
+    mname is the name of the module.
+    pieces is the number of concatenated files to create.
+    """
+    inform('Concatenating the C++ files for the %s module.' % mname)
+
+    pro = mname + '.pro.in'
+
+    f = open(pro,'r')
+    buf = f.read()
+    f.close()
+
+    pat = re.compile(r'^SOURCES =.*.cpp\n',re.M | re.S)
+    match = pat.search(buf)
+    srclist = buf[match.start(0):match.end(0)]
+    srclist = srclist[13:-1]
+    srclist = string.replace(srclist, '\\\n\t', '')
+    srclist = string.split(srclist, ' ')
+
+    # Concatenate the files.
+    p = 0
+    plist = []
+    nrinpiece = (len(srclist) + pieces - 1) / pieces
+
+    # Do each piece.
+    while srclist:
+        pname = '%spart%d.cpp' % (mname, p)
+        plist.append(pname)
+
+        d = open(pname,'w')
+
+        for cppfile in srclist[:nrinpiece]:
+            f = open(cppfile,'r')
+            d.write(f.read())
+            f.close()
+
+        d.close()
+
+        srclist = srclist[nrinpiece:]
+        p = p + 1
+
+    # Replace the C++ file names in the project file.
+    buf = re.sub(pat,'SOURCES = ' + string.join(plist,' ') + '\n', buf)
+
+    f = open(pro + '.new', 'w')
+    f.write(buf)
+    f.close()
+
+    os.remove(pro)
+    os.rename(pro + '.new', pro)

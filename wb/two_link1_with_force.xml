@@ -1,0 +1,117 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_lnk1</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, -30.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>force</Name>
+   <Position>[3.8660000000000001, 4, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>lnk1</Name>
+  <Position>[0.86599999999999999, -0.5, 0.0]</Position>
+  <Orientation>[0.0, 0.0, -30.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.86599999999999999, -0.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, -30.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_grd</Name>
+   <Position>[-1.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_lnk2</Name>
+   <Position>[1.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.3</Radius>
+   <Height>2.0</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_body>
+  <Name>lnk2</Name>
+  <Position>[2.8660000000000001, -1.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2.8660000000000001, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link1</Name>
+   <Position>[-1.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>force_i</Name>
+   <Position>[1, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.2</Radius>
+   <Height>2.0</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_revolute_joint>
+  <Name>rot1</Name>
+  <I_marker>lnk1.to_grd</I_marker>
+  <J_marker>ground.to_lnk1</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>lnk2.to_link1</I_marker>
+  <J_marker>lnk1.to_lnk2</J_marker>
+ </od_revolute_joint>
+ <od_spdpt>
+  <Name>Translational Spring Damper</Name>
+  <I_marker>lnk2.force_i</I_marker>
+  <J_marker>ground.force</J_marker>
+  <Stiffness>10</Stiffness>
+  <Damping>1.0</Damping>
+  <Distance>4</Distance>
+  <Force>0.0</Force>
+ </od_spdpt>
+</Od_model>

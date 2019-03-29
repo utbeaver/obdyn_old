@@ -1,0 +1,14 @@
+                          Building SIP with MinGW
+
+
+The SIP (configure.py based) build system supports MinGW, the Windows port of
+GCC.  If you have Qt installed (and built with MinGW) then configure.py will
+automatically select the correct configuration.  If you do not have Qt
+installed (or you are disabling support for it) then you must use the -p flag
+to configure.py.  For example:
+
+	c:\python23\python configure.py -p win32-g++
+
+You must also make sure you have a MinGW-compatible version of the Python
+library.  See http://sebsauvage.net/python/mingw.html for instructions to do
+this.

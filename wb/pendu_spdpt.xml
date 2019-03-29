@@ -1,0 +1,79 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>fixedpnt_force</Name>
+   <Position>[4, 4, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>1.0</Length>
+   <Width>1.0</Width>
+   <Height>1.0</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>body1</Name>
+  <Position>[2.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>marker_name</Name>
+   <Position>[-2.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tip</Name>
+   <Position>[2, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.4</Radius>
+   <Height>4.0</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_revolute_joint>
+  <Name>Revolute Joint</Name>
+  <I_marker>body1.marker_name</I_marker>
+  <J_marker>ground.cm_marker</J_marker>
+ </od_revolute_joint>
+ <od_spdpt>
+  <Name>Spring</Name>
+  <I_marker>body1.tip</I_marker>
+  <J_marker>ground.fixedpnt_force</J_marker>
+  <Stiffness>10.0</Stiffness>
+  <Damping>1.0</Damping>
+  <Distance>4.0</Distance>
+  <Force>0.0</Force>
+ </od_spdpt>
+</Od_model>

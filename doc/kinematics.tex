@@ -1,0 +1,428 @@
+\documentclass{article}
+\author{Peilin Song}
+\title{Recursiveness in Multi-Body Kinematics}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+This article deals with the kinematics of complicated mechanical systems containing multiple bodies. The bodies cited in this article are rigid in nature. the toipic of this article is to explore the recursiveness in the multi-body kinematics.
+
+Two kinds of systems are discussed in this article: the tree-like systems and the systems with closed loop. Since, from the topological point of view, the 
+tree-system is a sub-set of closed-loop system, the tree-system is discussed first and the conclusion is extended to the closed-loop systems.
+
+  
+\section{Notations and Terminology}
+
+\begin{itemize}
+
+\item ${\mathbf X}_i$: the global position vector of the center of the body $i$;
+
+\item ${\mathbf A}_i$: the global orientation matrix of body $i$; 
+
+\item ${\mathbf \omega}_i$: the angular velocity of body $i$ wrt BCS;
+
+\item ${\mathbf J}_i$: the $i$th joint connecting body $i-1$ and body $i$ (ground is always body $0$);
+
+\item ${\mathbf L}_i$: the vector from the center of body $i$ to the ${\mathbf J}_i$, expressed in BCS;
+
+\item ${\mathbf A}_{iL}$: the orientation matrix of marker on body $i$ for ${\mathbf J}_i$;
+
+\item ${\mathbf H}_i$: the vector from the center of body $i$ to the ${\mathbf J}_{i+1}$,j expressed in BCS;
+
+\item ${\mathbf A}_{iH}$: the orientation matrix of marker on body $i$ for ${\mathbf J}_{i+1}$;
+
+\item ${\mathbf A}^{i-1}_i$: the transformation matrix from the body $i$ to body $i-1$: ${\mathbf A}_i = {\mathbf A}_{i-1}{\mathbf A}^{i-1}_i$;
+
+\item ${\mathbf A}^{LH}_i$: the transformation matrix from $L$ marker to $H$ marker on bofy $i$. Following relatioon holds:
+
+\begin{displaymath}
+     \mathbf{A}^{LH}_i = \mathbf{A}^T_{iL}\mathbf{A}_{iH}
+\end{displaymath}
+\end{itemize}
+
+In the following context, the cm marker of body $i$ is aligned with the $L$ marker, so it is true that
+
+\begin{displaymath}
+\mathbf{A}_{iL} = \mathbf{I}  \qquad \mathbf{A}^{LH}_i = \mathbf{A}_{iH}
+\end{displaymath}
+
+\section{Chain Kinematics}
+
+The chain system is the simplest of the tree-system. Since the tree-system can be functionally viewed as the combination of multiple chains. 
+
+\subsection{Relative Displacement Analysis}
+
+The displacement relationship between two adjacent bodies can be represented as following:
+
+\begin{equation}
+	\mathbf{X}_i = \mathbf{X}_{i-1} + \mathbf{A}_{i-1}({\mathbf H}_{i-1}+{\mathbf A}_{(i-1)H}{\mathbf R}_i)+\mathbf{A}_i{\mathbf L}_i 
+\end{equation}
+
+where ${\mathbf R}_i$ is the vector between the origins of the two markers of Joint ${\mathbf J}_i$, expressed in BCS.
+ 
+Since the following relation holds:
+
+\begin{displaymath}
+	\mathbf{A}_i = \mathbf{A}_{i-1}\mathbf{A}^{i-1}_i
+\end{displaymath}
+
+We have
+
+\begin{equation}
+	\mathbf{X}_i - \mathbf{X}_{i-1} = \mathbf{A}_{i-1}({\mathbf H}_{i-1}+\mathbf{A}_{(i-1)H}{\mathbf R}_i+\mathbf{A}^{i-1}_i{\mathbf L}_i)
+\end{equation}
+
+In the above equations, ${\mathbf R}_i=\mathbf{z}_iq_i$ represents the displacement of joint $\mathbf{J}_i$. The angular displayment can be represented by $\mathbf{A}_{J_i}$. 
+
+\begin{displaymath}
+	\mathbf{A}_i^{i-1} = \mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}\mathbf{A}^T_{iL}
+\end{displaymath}
+
+where the $\mathbf{A}_{J_i}$ represents the rotational effects of the joint $\mathbf{J}_i$ between the bodies $i-1$ and $i$. If the cm marker of body $i$ is aligned with the $L$ marker, $\mathbf{A}_{iL}$ is an identity matrix. 
+
+\begin{displaymath}
+	\mathbf{A}_i^{i-1} = \mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}
+\end{displaymath}
+
+Recursive relation between the orientations of adjacent bodies:
+
+\begin{equation}
+	\mathbf{A}_i = \mathbf{A}_{i-1}
+\mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}
+\end{equation}
+
+Recursive relation between the displacements of adjacent bodies:
+
+\begin{equation}
+	\mathbf{X}_i = \mathbf{X}_{i-1} + \mathbf{A}_{i-1}({\mathbf H}_{i-1}+\mathbf{A}_{(i-1)H}{\mathbf R}_i+\mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}{\mathbf L}_i)
+\end{equation}
+
+Recursive relation in the derivation of partial derivatives of orientation:
+
+\begin{equation}
+	\frac{\partial \mathbf{A}_i}{\partial \mathbf{\theta}_j} =
+	\frac{\partial \mathbf{A}_{i-1}}{\partial \mathbf{\theta}_j} \mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}
+	\qquad \textrm{if} j < i
+\end{equation}
+
+\begin{equation}
+	\frac{\partial \mathbf{A}_i}{\partial \mathbf{\theta}_i} 
+=\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H} \frac{\partial \mathbf{A}_{J_i}}{\partial \mathbf{\theta}_i}
+=\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H} \mathbf{A}_{J_i}\tilde{\mathbf{z}}_i
+\end{equation}
+
+
+Recursive relation of partial derivative of position of adjacent bodies:
+
+\begin{equation}
+\frac{\partial \mathbf{X}_i}{\partial \mathbf{\theta}_j} =
+\frac{\partial \mathbf{X}_{i-1}}{\partial \mathbf{\theta}_{j}}+\frac{\partial \mathbf{A}_{i-1}}{\partial \mathbf{\theta}_{j}}(\mathbf{H}_{i}+\mathbf{A}_{(i-1)H}\mathbf{R}_i+
+\mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}\mathbf{L}_i) 
+	\qquad \textrm{if} j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{X}_i}{\partial \mathbf{\theta}_i} =
+\mathbf{A}_{i-1}(\mathbf{A}_{(i-1)H}\frac{\partial \mathbf{R}_i}{\partial \mathbf{\theta}_i}+\mathbf{A}_{(i-1)H}\mathbf{A}_{J_i}\tilde{\mathbf z}_i\mathbf{L}_i)
+\end{equation}
+
+\subsection{Relative Velocity Analysis}
+
+In order to reduce the computational intensity, the cm marker will be aligned with the $L$ marker in orientation. 
+
+\begin{equation}
+	\mathbf{\omega}_i = \mathbf{A}^{T}_{J_i}(\mathbf{A}^{LH}_{i-1}\mathbf{\omega}_{i-1}+\mathbf{z}_i\dot{\theta}_i) 
+\end{equation}
+
+
+\begin{equation}
+	\dot{\mathbf X}_i=\dot{\mathbf X}_{i-1} + 
+	\mathbf{\dot A}_{i-1}(\mathbf{H}_{i-1}+\mathbf{A}_{(i-1)H}\mathbf{z}_iq_i+\mathbf{A}^{i-1}_i\mathbf{L}_i) +  \\
+        \mathbf{A}_{i-1}(\mathbf{A}_{(i-1)H}\mathbf{z}\dot{q}_i+\mathbf{A}^{i-1}_i\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta})
+\end{equation}
+
+Recursive  relationship of partial derivative of angular velocities wrt to joint displacement between adjacent bodies:
+\begin{equation}
+\frac{\partial \omega_i}{\partial \theta_j}= 
+\mathbf{A}^T_{J_i}\mathbf{A}^{LH}_{i-1}\frac{\partial \omega_{i-1}}{\partial \theta_j}
+	\qquad \textrm{if} j < i
+\end{equation}
+\begin{equation}
+\frac{\partial \omega_i}{\partial \theta_i} 
+= \frac{\partial \mathbf{A}^T_{J_i}}{\partial \theta_i}
+\mathbf{A}_{i-1}^{LH}\omega_{i-1}
+\end{equation}
+Recursive  relationship of partial derivative of angular velocities between adjacent bodies:
+
+\begin{equation}
+\frac{\partial \mathbf{\omega}_i}{\partial {\mathbf{\dot \theta}_j}} = 
+{\mathbf A}^T_{J_i}\mathbf{A}^{LH}_{i-1}\frac{\partial \mathbf{\omega}_{i-1}}{\partial {\mathbf{\dot \theta}_j}}  
+	\qquad \textrm{if} j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{\omega}_i}{\partial {\mathbf{\dot \theta}_i}} = 
+{\mathbf z}_i  
+\end{equation}
+
+
+Recursive  relationship of partial derivative of translational velocities between adjacent bodies:
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \dot{\mathbf \theta}_j}=\frac{\partial \dot{\mathbf X}_{i-1}}{\partial \dot{\mathbf \theta}_j} + \\
+	\frac{\partial \mathbf{\dot A}_{i-1}}{\partial \mathbf{\dot \theta}_j }(\mathbf{H}_{i-1}+\mathbf{A}_{(i-1)H}\mathbf{z}_iq_i+\mathbf{A}^{i-1}_i\mathbf{L}_i) 
+	\qquad \textrm{if} j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \dot{\mathbf \theta}_i}={\mathbf A}_{i}{\mathbf z}_i{\times}{\mathbf L}_i
+\end{equation}
+
+It should be noted that following relation holds:
+
+\begin{equation}
+\frac{\partial \mathbf{\dot A}_{i-1}}{\partial \mathbf{\dot \theta}_j } =
+\frac{\partial \mathbf{A}_{i-1}}{\partial \mathbf{\theta}_j } 
+\end{equation}
+
+\begin{equation}
+\mathbf{\dot A}_i = \mathbf{A}_i\omega_i\times
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{\dot A}_i}{\partial \theta_j}=
+\frac{\partial \mathbf{A}_i}{\partial \theta_j}\omega_i\times +
+\mathbf{A}_i\frac{\partial \omega_i}{\partial \theta_j}\times
+	\qquad \textrm{if} j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{\dot A}_i}{\partial \theta_i}=
+\mathbf{A}_i\frac{\partial \omega_i}{\partial \theta_i}\times
+\end{equation}
+
+\begin{displaymath}
+\frac{\partial \mathbf{\dot A}_{j_i}}{\partial \theta_i}=
+\frac{\partial \mathbf{A}_{j_i}}{\partial \theta_i}
+\dot{\theta}_i\mathbf{z}_i\times
+\end{displaymath}
+
+\subsection{Relative Accleration Analysis}
+
+\begin{eqnarray}
+\mathbf{\ddot A}_i 
+= \mathbf{\ddot A}_{i-1}\mathbf{A}^{LH}_{i-1}\mathbf{A}_{J_i}+2\mathbf{\dot A}_{i-1}\mathbf{A}^{LH}_{i-1}\mathbf{\dot A}_{J_i}
++ \mathbf{A}_{i-1}\mathbf{A}^{LH}_{i-1}\mathbf{\ddot A}_{J_i}
+\end{eqnarray}
+
+\begin{equation}
+	\mathbf{\dot \omega}_i = 
+	\mathbf{\dot A}^{T}_{J_i}(\mathbf{A}^{LH}_{i-1}\mathbf{\dot \omega}_{i-1}+\mathbf{z}_i\dot{\theta}_i) 
+	+A^T_{J_i}\mathbf{z}_i\mathbf{\ddot \theta}_{i}
+\end{equation}
+
+\begin{eqnarray}
+\ddot{\mathbf X}_i=\ddot{\mathbf X}_{i-1} + \mathbf{\ddot A}_{i-1}
+(\mathbf{H}_{i-1}+\mathbf{A}_{(i-1)H}\mathbf{z}q_i+\mathbf{A}^{i-1}_i\mathbf{L}_i) +  \nonumber\\
+2\mathbf{\dot A}_{i-1}
+(\mathbf{A}_{(i-1)H}\mathbf{z}_i\dot{q}_i+\mathbf{A}^{i-1}_i{\mathbf z}_i{\times}\mathbf{L}_i\dot{\theta}_i) + \nonumber\\
+\mathbf{A}_{i-1}
+({\mathbf A}_{(i-1)H}\mathbf{z}_i\ddot{q}+{\mathbf A}^{i-1}_i\mathbf{z}_i{\times}(\mathbf{z}_i{\times}{\mathbf L}_i)\mathbf{\dot \theta}_i+{\mathbf A}^{i-1}_i\mathbf{z}_i{\times}{\mathbf L}_i\mathbf{\ddot \theta}_i
+\end{eqnarray}
+
+\subsection{A Summary of Recursive Algorithm}
+
+We denote the distance between the centers of mass of bodies $i-1$ and $i$ as as $\mathbf{HL}_{i-1}$ expressed in BCS of body $i-1$:
+
+\begin{displaymath}
+\mathbf{HL}_{i-1} = \mathbf{H}_{i-1}+\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\mathbf{L}_i
+\end{displaymath}
+
+Relative position relation:
+
+\begin{equation}
+\mathbf{X}_i = \mathbf{X}_{i-1}+\mathbf{A}_{i-1}\mathbf{HL}_{i-1}
+\end{equation}
+
+Relative orientation relation:
+
+\begin{equation}
+\mathbf{A}_i = \mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{A}_i}{\partial \theta_j} =	
+\frac{\partial \mathbf{A}_{i-1}}{\partial \theta_j} \mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{A}_i}{\partial \theta_{i}} =	
+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i
+\end{equation}
+
+Relative relation of angular velocity
+
+\begin{equation}
+\omega_i = \mathbf{A}^T_{Ji}\mathbf{A}^T_{(i-1)H}\omega_{i-1}+\mathbf{z}_i\dot{\theta}_i
+\end{equation}
+
+Relative relation of translational velocity
+
+\begin{equation}
+\mathbf{\dot X}_i=\mathbf{\dot X}_{i-1}+\mathbf{\dot A}_{i-1}\mathbf{HL}_{i-1}+\mathbf{A}_{i-1}
+\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta}_i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \omega_i}{\partial \theta_j}
+=\mathbf{A}^T_{Ji}\mathbf{A}^T_{(i-1)H}
+\frac{\partial \omega_{i-1}}{\partial \theta_j}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \omega_i}{\partial \theta_i} =
+(\mathbf{A}_{Ji}\tilde{\mathbf z}_i)^T\mathbf{A}^T_{(i-1)H}\omega_{i-1}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \omega_i}{\partial \dot{\mathbf \theta}_j} = \mathbf{A}^T_{Ji}\mathbf{A}^T_{(i-1)H}
+\frac{\partial \omega_{i-1}}{\partial \dot{\mathbf \theta}_j}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \omega_i}{\partial \dot{\mathbf \theta}_i} = \mathbf{z}_i
+\end{equation}
+
+\begin{displaymath}
+\dot{\mathbf A}_i = \mathbf{A}\times\omega_i
+\end{displaymath}
+
+\begin{equation}
+\frac{\partial \mathbf{\dot A}_i}{\partial \theta_j}=\frac{\partial \mathbf{A}_i}{\partial \theta_j}\times\omega_i
++\mathbf{A}_i\times\frac{\partial \omega_i}{\partial \theta_j}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \mathbf{\dot A}_i}{\partial \dot{\theta}_j}
+=\frac{\partial \mathbf{A}_i}{\partial \theta_j}
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \theta_j}=
+\frac{\partial \dot{\mathbf X}_{i-1}}{\partial \theta_j}+\frac{\partial \dot{\mathbf A}_{i-1}}{\partial \theta_j}\mathbf{HL}_{i-1}+\frac{\partial \mathbf{A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta}_j
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \theta_i}=\dot{\mathbf A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i{\mathbf L}_i+\mathbf{A}_{i-1}{\mathbf A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\tilde{\mathbf z}_i{\mathbf L}_i\dot{\theta}_i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \dot{\theta}_j}= 
+\frac{\partial \dot{\mathbf X}_{i-1}}{\partial \dot{\theta}_j}+\frac{\partial \mathbf{A}_{i-1}}{\partial \theta_j}\mathbf{HL}_{i-1} 
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\mathbf X}_i}{\partial \dot{\theta}_i}= 
+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i
+\end{equation}
+\begin{equation}
+\frac{\partial \mathbf{\ddot A}_i}{\partial \theta_j}=
+\frac{\partial \mathbf{\ddot A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}+
+2\frac{\partial \mathbf{\dot A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{\dot A}_{Ji}+
+\frac{\partial \mathbf{A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{\ddot A}_{Ji}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+\begin{equation}
+\frac{\partial \mathbf{\ddot A}_i}{\partial \theta_i}=
+\mathbf{\ddot A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i+
+2\mathbf{\dot A}_{i-1}\mathbf{A}_{(i-1)H}\frac{\partial \mathbf{\dot A}_{Ji}}{\partial \theta_i}+
+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\frac{\partial \mathbf{\ddot A}_{Ji}}{\partial \theta_i}
+\end{equation}
+\begin{equation}
+\frac{\partial \mathbf{\ddot A}_i}{\partial \dot{\theta}_j}=
+\frac{\partial \mathbf{\ddot A}_{i-1}}{\partial \dot{\theta}_j}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}+
+2\frac{\partial \mathbf{\dot A}_{i-1}}{\partial \dot{\theta}_j}\mathbf{A}_{(i-1)H}\mathbf{\dot A}_{Ji}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+\begin{equation}
+\frac{\partial \mathbf{\ddot A}_i}{\partial \dot{\theta}_i}=
+2\mathbf{\dot A}_{i-1}\mathbf{A}_{(i-1)H}\frac{\partial \mathbf{\dot A}_{Ji}}{\partial \dot{\theta}_i}+
+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\frac{\partial \mathbf{\ddot A}_{Ji}}{\partial \dot{\theta}_i}
+\end{equation}
+
+Relative relation of angular accleration:
+
+
+\begin{equation}
+	\mathbf{\dot \omega}_i = 
+	\mathbf{\dot A}^{T}_{J_i}
+(\mathbf{A}^{LH}_{i-1}\mathbf{\dot \omega}_{i-1}+\mathbf{z}_i\dot{\theta}_i) 
+	+\mathbf{A}^T_{J_i}\mathbf{z}_i\mathbf{\ddot \theta}_{i}
+\end{equation}
+
+\begin{eqnarray}
+\ddot{\mathbf X}_i=\ddot{\mathbf X}_{i-1} + \mathbf{\ddot A}_{i-1}
+(\mathbf{H}_{i-1}+\mathbf{A}^{i-1}_i\mathbf{L}_i) +  \nonumber\\
+2\mathbf{\dot A}_{i-1}
+(\mathbf{A}^{i-1}_i{\mathbf z}_i{\times}\mathbf{L}_i\dot{\theta}_i) + \nonumber\\
+\mathbf{A}_{i-1}
+({\mathbf A}^{i-1}_i\mathbf{z}_i{\times}(\mathbf{z}_i{\times}{\mathbf L}_i)\mathbf{\dot \theta}_i+{\mathbf A}^{i-1}_i\mathbf{z}_i{\times}{\mathbf L}_i\mathbf{\ddot \theta}_i)
+\end{eqnarray}
+
+\begin{equation}
+\frac{\partial \dot{\omega}_i}{\partial \theta_j}=\dot{\mathbf A}^T_{Ji}
+\frac{\partial \dot{\omega}_{i-1}}{\partial \theta_j}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\omega}_i}{\partial \theta_i}=\frac{\partial \dot{\mathbf A}^T_{Ji}}{\partial \theta_j}
+(\mathbf{A}^{LH}_{i-1}\mathbf{\dot \omega}_{i-1}+\mathbf{z}_i\dot{\theta}_i)+\frac{\partial \mathbf{A}^T_{Ji}}{\partial \theta_i}\mathbf{z}_i\ddot{\theta}_i 
+\end{equation}
+
+
+\begin{equation}
+\frac{\partial \dot{\omega}_i}{\partial \dot{\theta}_j}=\dot{\mathbf A}^T_{Ji}\mathbf{A}_{(i-1)H}
+\frac{\partial \dot{\omega}_{i-1}}{\partial \dot{\theta}_j}
+	\qquad \textrm{  if  } j < i
+\end{equation}
+
+\begin{equation}
+\frac{\partial \dot{\omega}_i}{\partial \dot{\theta}_i}=\frac{\partial {\mathbf A}^T_{Ji}}{\partial \theta_i}
+(\mathbf{A}_{(i-1)H}\dot{\omega}_{i-1}+\mathbf{z}_i\dot{\theta}_i)+\mathbf{\dot A}^T_{Ji}\mathbf{z}_i
+\end{equation}
+
+\begin{eqnarray}
+\frac{\mathbf{\partial \ddot X}_i}{\partial \theta_j}=
+\frac{\mathbf{\partial \ddot X}_{i-1}}{\partial \theta_j}+\frac{\partial \mathbf{\ddot A}_{i-1}}{\partial \theta_j}\mathbf{HL}_{i-1}
++2\frac{\partial \mathbf{\dot A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta}_i 
+\nonumber\\
++ \frac{\partial \mathbf{A}_{i-1}}{\partial \theta_j}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i(\mathbf{z}_i\times\mathbf{L}_i\dot{\theta}_i+\mathbf{L}_i\ddot{\theta}_i)
+	\qquad \textrm{  if  } j < i
+\end{eqnarray}
+
+\begin{eqnarray}
+\frac{\mathbf{\partial \ddot X}_i}{\partial \theta_i}=
+\ddot{\mathbf A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i +
+2\dot{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta}_i+
+\nonumber\\
+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\tilde{\mathbf z}_i(\mathbf{z}_i\times\mathbf{L}_i\dot{\theta}_i+\mathbf{L}_i\ddot{\theta}_i)
+d\end{eqnarray}
+
+\begin{eqnarray}
+\frac{\partial \ddot{\mathbf X}_i}{\partial \dot{\theta}_j}=
+\frac{\partial \ddot{\mathbf X}_{i-1}}{\partial \dot{\theta}_j}+\frac{\partial \ddot{\mathbf A}_{i-1}}{\partial \dot{\theta}_j}
+\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i\dot{\theta}_i
+	\qquad \textrm{  if  } j < i
+\end{eqnarray}
+\begin{eqnarray}
+\frac{\partial \ddot{\mathbf X}_i}{\partial \dot{\theta}_i}=
+2\dot{\mathbf A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\mathbf{L}_i+\mathbf{A}_{i-1}\mathbf{A}_{(i-1)H}\mathbf{A}_{Ji}\tilde{\mathbf z}_i\tilde{\mathbf z}_i\mathbf{L}_i
+\end{eqnarray}
+\end{document}

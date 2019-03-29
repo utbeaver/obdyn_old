@@ -1,0 +1,21 @@
+# The project file for the SIP code generator.
+#
+# Copyright (c) 2004
+# 	Riverbank Computing Limited <info@riverbankcomputing.co.uk>
+# 
+# This file is part of SIP.
+# 
+# This copy of SIP is licensed for use under the terms of the SIP License
+# Agreement.  See the file LICENSE for more details.
+# 
+# SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+TEMPLATE = app
+TARGET = sip
+DESTDIR = @SIP_BINDIR@
+CONFIG = warn_off release console
+
+SOURCES = main.c transform.c gencode.c heap.c parser.c lexer.c
+
+HEADERS = sip.h parser.h

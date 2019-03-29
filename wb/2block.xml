@@ -1,0 +1,246 @@
+<Od_model>
+ <Name>2block</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tocrank</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tohbloch</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tovblock</Name>
+   <Position>[0.0, -2.0, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toswing</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>hblock</Name>
+  <Position>[0.0, 1.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toswing</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>0.2</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>vblock</Name>
+  <Position>[0.0, -2.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, -2.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toswing</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>0.4</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>swing</Name>
+  <Position>[0.0, -0.5, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, -0.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tohblock</Name>
+   <Position>[0.0, 1.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tovblock</Name>
+   <Position>[0.0, -1.5, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toblock</Name>
+   <Position>[0.0, 1.3, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.5</Length>
+   <Width>0.2</Width>
+   <Height>3.0</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>crank</Name>
+  <Position>[0.0, 0.40000000000000002, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.40000000000000002, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toground</Name>
+   <Position>[0.0, -0.40000000000000002, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toblock</Name>
+   <Position>[0.0, 0.40000000000000002, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_link>
+   <Name>link</Name>
+   <Length>0.3</Length>
+   <Width>0.2</Width>
+   <Height>0.8</Height>
+  </od_link>
+ </od_body>
+ <od_body>
+  <Name>block</Name>
+  <Position>[0.0, 0.80000000000000004, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.80000000000000004, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>tocrank</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>toswing</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, -90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>0.2</Length>
+   <Width>0.2</Width>
+   <Height>0.2</Height>
+  </od_box>
+ </od_body>
+ <od_translational_joint>
+  <Name>gr_vb</Name>
+  <I_marker>vblock.toground</I_marker>
+  <J_marker>ground.tovblock</J_marker>
+ </od_translational_joint>
+ <od_translational_joint>
+  <Name>gr_hb</Name>
+  <I_marker>hblock.toground</I_marker>
+  <J_marker>ground.tohbloch</J_marker>
+ </od_translational_joint>
+ <od_revolute_joint>
+  <Name>swing_hb</Name>
+  <I_marker>swing.tohblock</I_marker>
+  <J_marker>hblock.toswing</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>swing_vb</Name>
+  <I_marker>swing.tovblock</I_marker>
+  <J_marker>vblock.toswing</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>gr_crank</Name>
+  <I_marker>crank.toground</I_marker>
+  <J_marker>ground.tocrank</J_marker>
+  <Expression>2*pi*time</Expression>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>cr_block</Name>
+  <I_marker>block.tocrank</I_marker>
+  <J_marker>crank.toblock</J_marker>
+ </od_revolute_joint>
+ <od_translational_joint>
+  <Name>sw_block</Name>
+  <I_marker>block.toswing</I_marker>
+  <J_marker>swing.toblock</J_marker>
+ </od_translational_joint>
+</Od_model>

@@ -1,0 +1,67 @@
+<Od_model>
+ <Name>1beam</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+ </od_body>
+ <od_body>
+  <Name>part1</Name>
+  <Position>[1, 0, 0]</Position>
+  <Orientation>[0, 0, 0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <WrtBCS>0</WrtBCS>
+   <Position>[1, 0, 0]</Position>
+   <Orientation>[0, 0, 0]</Orientation>
+   <Omega>[None, None, None]</Omega>
+   <Velocity>[None, None, None]</Velocity>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <WrtBCS>1</WrtBCS>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>1</Length>
+   <Width>1</Width>
+   <Height>1</Height>
+  </od_box>
+ </od_body>
+ <od_beam>
+  <Name>Beam</Name>
+  <I_marker>part1.ref</I_marker>
+  <J_marker>ground.ref</J_marker>
+  <Emodulus>207000000000.0</Emodulus>
+  <Gmodulus>80200000000.0</Gmodulus>
+  <Area>0.0176</Area>
+  <Length>1.0</Length>
+  <Ixx>4.97e-005</Ixx>
+  <Iyy>2.48e-005</Iyy>
+  <Izz>2.48e-005</Izz>
+  <Asy>1</Asy>
+  <Asz>1</Asz>
+  <Ratio>1e-005</Ratio>
+ </od_beam>
+ <Gravity>[0.0, -9.8000000000000007, 0.0]</Gravity>
+</Od_model>

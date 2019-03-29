@@ -1,0 +1,104 @@
+<Od_model>
+ <Name>model</Name>
+ <od_body>
+  <Name>ground</Name>
+  <Position>[0.0, 0.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link1</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, -45.0]</Orientation>
+  </od_marker>
+  <od_box>
+   <Name>box</Name>
+   <Length>1.0</Length>
+   <Width>1.0</Width>
+   <Height>1.0</Height>
+  </od_box>
+ </od_body>
+ <od_body>
+  <Name>link1</Name>
+  <Position>[1.0, -1.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, -45.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[1.0, -1.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, -45.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[90.0, 90.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_ground</Name>
+   <Position>[-1.4139999999999999, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link2</Name>
+   <Position>[1.4139999999999999, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.4</Radius>
+   <Height>2.82842712</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_body>
+  <Name>link2</Name>
+  <Position>[1.0, -3.0, 0.0]</Position>
+  <Orientation>[0.0, 0.0, -45.0]</Orientation>
+  <Mass>1.0</Mass>
+  <Inertia>[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</Inertia>
+  <od_marker>
+   <Name>cm_marker</Name>
+   <Position>[1.0, -3.0, 0.0]</Position>
+   <Orientation>[0.0, 0.0, -45.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>ref</Name>
+   <Position>[0.0, 0.0, 0.0]</Position>
+   <Orientation>[0.0, 90.0, 90.0]</Orientation>
+  </od_marker>
+  <od_marker>
+   <Name>to_link1</Name>
+   <Position>[0.0, 1.4139999999999999, 0.0]</Position>
+   <Orientation>[0.0, 0.0, 0.0]</Orientation>
+  </od_marker>
+  <od_cylinder>
+   <Name>cylinder</Name>
+   <Radius>0.2</Radius>
+   <Height>2.828427</Height>
+   <Slices>10</Slices>
+   <Stacks>2</Stacks>
+  </od_cylinder>
+ </od_body>
+ <od_revolute_joint>
+  <Name>j01</Name>
+  <I_marker>link1.to_ground</I_marker>
+  <J_marker>ground.to_link1</J_marker>
+ </od_revolute_joint>
+ <od_revolute_joint>
+  <Name>j2</Name>
+  <I_marker>link2.to_link1</I_marker>
+  <J_marker>link1.to_link2</J_marker>
+ </od_revolute_joint>
+</Od_model>
