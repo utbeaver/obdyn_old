@@ -2446,7 +2446,7 @@ double od_system::cputime() {
 	memcpy(&ftUser, &uTime, sizeof(FILETIME));
 	return (double)(ftKernel.val + ftUser.val);
 #else
-	return 0.0
+	return 0.0;
 #endif
 
 }

@@ -480,8 +480,8 @@ public:
 		double xyz[3], xyz1[3];
 		Mat33 mat3;
 
-		od_marker* tx = new od_marker(-1, "tx");
-		od_marker* ty = new od_marker(-1, "ty");
+		od_marker* tx = new od_marker(-1, (char*)"tx");
+		od_marker* ty = new od_marker(-1, (char*)"ty");
 		tx->equal(get_jmarker());
 		ty->equal(get_jmarker());
 		betweenij.push_back(tx);
@@ -552,9 +552,9 @@ public:
 		jprim_tra* t2 = tra_joints[1];
 		jprim_tra* t3 = tra_joints[2];*/
 
-		od_marker* tx = new od_marker(-1, "tx");
-		od_marker* ty = new od_marker(-1, "ty");
-		od_marker* tz = new od_marker(-1, "tz");
+		od_marker* tx = new od_marker(-1, (char*)"tx");
+		od_marker* ty = new od_marker(-1, (char*)"ty");
+		od_marker* tz = new od_marker(-1, (char*)"tz");
 		betweenij.push_back(tx);
 		betweenij.push_back(ty);
 		betweenij.push_back(tz);
@@ -574,8 +574,8 @@ public:
 		ty->set_position(xyz1);
 		fill(xyz1, xyz1 + 3, 0.0); xyz1[2] = xyz[2];
 		tz->set_position(xyz1);
-		od_marker* pm1 = new od_marker(-1, "r1");
-		od_marker* pm2 = new od_marker(-1, "r2");
+		od_marker* pm1 = new od_marker(-1, (char*)"r1");
+		od_marker* pm2 = new od_marker(-1, (char*)"r2");
 		betweenij.push_back(pm1);
 		betweenij.push_back(pm2);
 		rot_joints[0]->set_from_marker(tz);
@@ -722,8 +722,8 @@ public:
 		if (initialized) return 1;
 
 
-		od_marker* pm1 = new od_marker(-1, "r1");
-		od_marker* pm2 = new od_marker(-1, "r2");
+		od_marker* pm1 = new od_marker(-1, (char*)"r1");
+		od_marker* pm2 = new od_marker(-1, (char*)"r2");
 		betweenij.push_back(pm1);
 		betweenij.push_back(pm2);
 		rot_joints[0]->set_from_marker(get_jmarker());
@@ -760,7 +760,7 @@ public:
 		double phi1, phi2;
 		double rel_mat[9], vec[2];
 		double *p = rel_mat;
-		od_marker* pm1 = new od_marker(-1, "r1");
+		od_marker* pm1 = new od_marker(-1, (char*)"r1");
 		betweenij.push_back(pm1);
 		rot_joints[0]->set_from_marker(get_jmarker());
 		rot_joints[0]->set_to_marker(pm1);

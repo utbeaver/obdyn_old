@@ -139,7 +139,8 @@ int od_equation_kin_and_static::evaluate(int eval_jac) {
 	od_loop* pl;
 	od_object::Analysis_Type _type = pSys->get_analysis_type();
 	skew = 1.0;
-	if (_type == od_object::Analysis_Type::ACC_FORCE) skew = -1.0;
+	//if (_type == od_object::Analysis_Type::ACC_FORCE) skew = -1.0;
+	if (_type == ACC_FORCE) skew = -1.0;
 	pSys->update(eval_jac);
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	if (eval_jac) {
@@ -167,7 +168,8 @@ int od_equation_kin_and_static::evaluate(int eval_jac) {
 				}
 			}
 		}
-		if (_type == od_object::Analysis_Type::ACC_FORCE) {
+		if (_type == ACC_FORCE) {
+		//if (_type == od_object::Analysis_Type::ACC_FORCE) {
 			for (i = 0; i < tree_ndofs; i++) {
 				if (dofmap[i] == 0) dofmap[i] = -1.0; // motioned freedom
 			}
@@ -178,8 +180,8 @@ int od_equation_kin_and_static::evaluate(int eval_jac) {
 		pSys->evaluate_rhs(pRhs);
 		pSys->evaluate_Jac(pJac);
 		//for (i = 0; i < dim_rows; i++) pRhs[i] = -pRhs[i];
-		if (_type == od_object::Analysis_Type::ACC_FORCE ||
-			_type == od_object::Analysis_Type::STATIC) {
+		if (_type == ACC_FORCE || _type == STATIC) {
+		//if (_type == od_object::Analysis_Type::ACC_FORCE || _type == od_object::Analysis_Type::STATIC) {
 			for (i = 0; i < tree_ndofs; i++) {
 				if (dofmap[i] == -1) {
 					for (j = 0; j < dim_rows; j++) { pJac[j][i] = 0.0; }
