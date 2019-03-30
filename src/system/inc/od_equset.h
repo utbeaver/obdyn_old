@@ -46,7 +46,7 @@ public:
 	}
 };
 
-class od_equation {
+class od_equation : public od_object {
 protected:
 	od_system *pSys;
 	int tree_ndofs;
@@ -80,7 +80,7 @@ protected:
 	od_object::JAC_TYPE _jac_type;
 	od_object::Analysis_Type Ana_Type;
 public:
-	od_equation(od_system *psys) {
+	od_equation(od_system *psys) : od_object() {
 		pSys = psys; pRhs = 0; //numMotions=0;
 		ddstates = 0; dstates = 0; states = 0; initialized = 0; pJac = 0; permuV = 0;
 		error = 0; SysJac = 0; removed_entries.resize(0);
