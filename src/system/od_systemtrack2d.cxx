@@ -145,8 +145,8 @@ void od_systemTrack2D::calculate_JR(int no_dot) {
 	}
 }
 void od_systemTrack2D::calculate_JT(int no_dot) {
-	int i, j,nb;
-	double *pvi, *z, *zi, *p, *r, *wxz, *wxzi, *v, temp[3], *pvb, pv[3];
+	int i,nb;
+	double *pvi, *z, *zi, *p, *r, *wxz, *wxzi,  temp[3], *pvb, pv[3];
 	od_joint *pC, *pCi;
 	double *prb, *pri, pr[3];
 	od_body* pB;
@@ -203,9 +203,9 @@ void od_systemTrack2D::calculate_JT(int no_dot) {
 	}
 }
 void od_systemTrack2D::updatePartials(int pos_only) {
-	int i, j, tail, head, temp_int;
+//	int     temp_int;
 	int nb = num_body();
-	od_joint *pCj, *pCi;
+	//od_joint *pCj, *pCi;
 
 	this->calculate_JR();
 	this->calculate_JRdot();
@@ -215,7 +215,7 @@ void od_systemTrack2D::updatePartials(int pos_only) {
 void od_systemTrack2D::ParOmegaParq(int dot) {
 	int i, nb;
 	Vec3* vecs;
-	double *z, *pz, *pQ, *z9, *pQ9, *wxz, *pwxz;
+	double *z, *pz, *pQ,  *pQ9, *wxz;
 	double  vecTemp[3], temp[3];
 	od_joint *pC, *pCi;
 	nb = num_body();
@@ -241,7 +241,7 @@ void od_systemTrack2D::ParOmegaParq(int dot) {
 void od_systemTrack2D::parOmegaDotParq() {
 	int i, nb;
 	Vec3* vecs;
-	double *z, *pz, *pQ, *z9, *pQ9, *wxz, *pwxz;
+	double *z, *pz, *pQ,  *pQ9, *wxz, *pwxz;
 	double  vecTemp[3], temp[3];
 	od_joint *pC, *pCi;
 	nb = num_body();
@@ -304,7 +304,7 @@ void od_systemTrack2D::parOmegaDotParqDot() {
 void od_systemTrack2D::parVelParq() {
 	int i, j, nb;
 	Vec3* vecs;
-	double *z, *pz, *pQ, *z9, *pQc, *wxz, *pwxz, *prb, *r, *pri;
+	double *z, *pz, *pQ, *pQc,  *pwxz, *prb, *r, *pri;
 	double  vecTemp[3], temp[3];
 	od_body* pB;
 	od_joint *pC, *pCi;
@@ -362,9 +362,9 @@ void od_systemTrack2D::parVelParq() {
 	}
 }
 void od_systemTrack2D::parVelDotParq() {
-	int i, j, nb;
+	int i,  nb;
 	Vec3* vecs;
-	double *z, *pz, *pQ, *z9, *pQc, *wxz, *pwxz, *prb, *r, *pri, *pvb, *v, *pvi;
+	double *z, *pz, *pQ,   *wxz, *pwxz, *prb, *r, *pri, *pvb, *v, *pvi;
 	double  vecTemp[3], temp[3];
 	od_body* pB;
 	od_joint *pC, *pCi;

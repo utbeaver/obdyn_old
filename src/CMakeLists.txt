@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.5)
-project (OD_SYSTEM)
+project (OD_SYSTEMD)
 
 include_directories(
   element/inc

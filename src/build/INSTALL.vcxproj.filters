@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\peili\OneDrive\Desktop\obdyn\obdyn\src\build\CMakeFiles\fff2b5b320300d65cdcd41180b77c6ee\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{AE4BD2FE-8B6B-3992-A1EC-DDC09EFB9509}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

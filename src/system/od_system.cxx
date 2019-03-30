@@ -1801,8 +1801,8 @@ int od_systemMechanism::graphW() {
 }
 int od_systemGeneric::initialize(int start_idx, int start_bidx) {
 	size_t i;
-	size_t _size;
-	int temp;
+	//size_t _size;
+	//int temp;
 
 	if (initialized) return  tree_ndofs + lambda_dof;
 	start_index = start_idx;

@@ -477,7 +477,7 @@ public:
 	virtual int initialize() {
 		if (initialized) return 1;
 		int i;
-		double xyz[3], xyz1[3];
+		double xyz[3];// , xyz1[3];
 		Mat33 mat3;
 
 		od_marker* tx = new od_marker(-1, (char*)"tx");

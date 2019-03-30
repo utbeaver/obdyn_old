@@ -2,7 +2,7 @@
 #include "od_equset.h"
 #include "od_gstiff.h"
 od_equation::~od_equation() {
-	int i;
+	//int i;
 	if (info_str.size())
 		cout << info_str << " is done!" << endl;
 	DELARY(pRhs);
@@ -26,9 +26,9 @@ od_equation::createPermuV(int len_){// vector<int>& dofmap) {
 		if (dofmap[i] != 0) tempV.push_back(i);
 		else tempV_.push_back(i);
 	}
-	effDim = tempV.size();
+	effDim = (int)tempV.size();
 	for (i = 0; i < effDim; i++) permuV[i] = tempV[i];
-	for (i = 0; i < tempV_.size(); i++) permuV[effDim + i] = tempV_[i];
+	for (i = 0; i < (int)tempV_.size(); i++) permuV[effDim + i] = tempV_[i];
 }
 void
 od_equation::
@@ -103,7 +103,7 @@ int
 od_equation_kin_and_static::
 initialize() {
 	if (initialized) return 0;
-	int i, j;
+	int i;// , j;
 	od_equation::initialize();
 	//allocate space for pJac
 	//dim_rows = numLoops * 6 + tree_ndofs;//+numMotions;
@@ -862,7 +862,7 @@ void od_equation_bdf_I::simulate(double end_time, int debug_) {
 }
 
 void od_equation_hhti3::simulate(double end_time, int debug_) {
-	int i, j;
+	int i;// , j;
 	double expectedTime = 0.0;
 	double _delta;
 	_end = end_time;
@@ -1096,7 +1096,7 @@ void od_equation_dynamic::numDif() {
 			if (fabs(_Mv[i][j]) < SMALL_VALUE_T) _Mv[i][j] = 0.0;
 		}
 	}
-	ofstream f_, *pf;
+	ofstream f_;// , *pf;
 	f_.open("M.txt");
 	f_ << scientific << setprecision(6);
 	f_ << "M_num" << "=[" << endl;

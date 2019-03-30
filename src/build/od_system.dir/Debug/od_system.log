@@ -1,0 +1,41 @@
+﻿  od_systemtrack2d.cxx
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\element\inc\od_element.h(32): warning C4996: '_controlfp': This function or variable may be unsafe. Consider using _controlfp_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\float.h(233): note: see declaration of '_controlfp'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\element\inc\od_element.h(125): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\inc\od_system.h(582): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\element\inc\od_constraint_api.h(21): warning C4251: 'OdJoint::funs': class 'std::map<int,std::string,std::less<int>,std::allocator<std::pair<const _Kty,_Ty>>>' needs to have dll-interface to be used by clients of class 'OdJoint'
+          with
+          [
+              _Kty=int,
+              _Ty=std::string
+          ]
+  c:\users\peili\onedrive\desktop\obdyn\obdyn\src\element\inc\od_constraint_api.h(21): note: see declaration of 'std::map<int,std::string,std::less<int>,std::allocator<std::pair<const _Kty,_Ty>>>'
+          with
+          [
+              _Kty=int,
+              _Ty=std::string
+          ]
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\inc\od_equset.h(209): warning C4150: deletion of pointer to incomplete type 'od_gstiff'; no destructor called
+  c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\inc\od_equset.h(13): note: see declaration of 'od_gstiff'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\inc\od_equset.h(235): warning C4150: deletion of pointer to incomplete type 'od_hhti3'; no destructor called
+  c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\inc\od_equset.h(14): note: see declaration of 'od_hhti3'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(24): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(25): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: see declaration of 'strcat'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(27): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(28): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: see declaration of 'strcat'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(39): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: see declaration of 'strcpy'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(40): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: see declaration of 'strcat'
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(102): warning C4018: '<': signed/unsigned mismatch
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(321): warning C4700: uninitialized local variable 'r' used
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(361): warning C4700: uninitialized local variable 'pwxz' used
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(381): warning C4700: uninitialized local variable 'r' used
+c:\users\peili\onedrive\desktop\obdyn\obdyn\src\system\od_systemtrack2d.cxx(382): warning C4700: uninitialized local variable 'v' used
+  od_system.vcxproj -> C:\Users\peili\OneDrive\Desktop\obdyn\obdyn\src\build\Debug\od_system.dll
