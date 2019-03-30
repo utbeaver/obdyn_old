@@ -93,7 +93,8 @@ od_equation_disp_ic::
 od_equation_disp_ic(od_system *psys) :od_equation_kin_and_static(psys) {
 	info_str = "Displacement Reconcilation";
 	cout << info_str << " begins..." << endl;
-	_dva_type = od_object::DISP;
+	_dva_type = DISP;
+	//_dva_type = od_object::DISP;
 	_jac_type = od_object::JAC_INIT_DISP;
 	Ana_Type = od_object::INIT_DISP;
 }

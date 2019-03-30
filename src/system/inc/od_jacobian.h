@@ -24,7 +24,7 @@ public:
 		//M00 = t00; M11 = t11; M10 = t10; M01 = t01;
 		T11 = t00; T00 = t11; T10 = t01; T01 = t10;
 		m = T11.rows(); n = T00.rows();
-		tempd=new double[m>n?m:n]
+		tempd=new double[m>n?m:n];
 	}
 	BlockLU() {
 		DELARY(tempd);
@@ -49,7 +49,7 @@ public:
 		T11.solve(v1);
 		//L3
 		copy(v1, v1 + m, tempd);
-		temp = T10 * temp;
+		tempd = T10 * tempd;
 		for (i = 0; i < m; i++) v1[0] -= tempd[i];
 		return vals + m + n;
 	}

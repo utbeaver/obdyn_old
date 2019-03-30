@@ -4,11 +4,14 @@
 #define DELARY(Y) {if(Y) delete[] Y; Y=0;}
 #define DEL(Y) {if(Y) delete Y; Y=0;}
 
+#ifdef _WIN32
 //disable warnings on 255 char debug symbols
 #pragma warning (disable : 4786)
 //disable warnings on extern before template instantiation
 #pragma warning (disable : 4231)
 #include <string>
+#endif
+#include <string.h>
 #include <sstream>
 #include <vector>
 using namespace std;
@@ -25,9 +28,11 @@ static int virtual_marker_id=0;
 static double pi = 3.1415926535897931; 
 //unsigned int fps = 0;
 
+#ifdef _WIN32
 static  unsigned int fp_control_state = _controlfp(_EM_INEXACT, _MCW_EM);
 //static  unsigned int fp_control_state = _controlfp(_DN_FLUSH, _MCW_DN);
 //static  unsigned int fp_control_state = _controlfp(_EM_INVALID, _MCW_EM);
+#endif
 class od_object {
  public:
   enum System_Type {SINGLE_CHIAN, BEAMS, CLOSE_CHAIN};       

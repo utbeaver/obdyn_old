@@ -44,7 +44,7 @@ public:
 	void D_diagLF(od_matrix *L, od_matrix *F, int = 0, int = 0);
 	double* CX(double* = 0, double* =0, double = 1.0);
 	double* BX(double*, double* = 0, double = 1.0);
-	void od_matrix::BX(od_matrix* pA, int basei = 0, int basej = 0);
+	void BX(od_matrix* pA, int basei = 0, int basej = 0);
 	double element(int i, int j) const { return  (rowwise == 1) ? mat[i][j] : mat[j][i]; }
 	void  element(int i, int j, double val) {
 		if (rowwise) mat[i][j] = val; else mat[j][i] = val;
