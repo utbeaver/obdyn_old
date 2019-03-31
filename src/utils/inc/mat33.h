@@ -23,16 +23,14 @@
 class Vec3;
 class Mat33;
 
-extern "C" inline void cross_product_with_doubles(const double* const f, const double* const s, Vec3& vec);
-extern "C" inline void cross_product(Vec3& f, Vec3& s, Vec3& product);
-extern "C" inline void cross_product_with_double(Vec3& f, const double* const pd, Vec3& product);
-//extern "C" void cross_product_all_doubles(const double* const v1, const double* const v2,  double*  v3);
+extern "C" void cross_product_with_doubles(const double* const f, const double* const s, Vec3& vec);
+extern "C" void cross_product(Vec3& f, Vec3& s, Vec3& product);
+extern "C" void cross_product_with_double(Vec3& f, const double* const pd, Vec3& product);
 
-extern "C" inline void mat_vec(Mat33&  m, Vec3&  v, Vec3& out);
-extern "C" inline void mat_mat3(Mat33& f, Mat33& s, Mat33& out);
-extern "C" inline void mat_double(Mat33&  m, double*  const pd, Vec3& out);
-extern "C" inline void mat_doubles(Mat33&  m, double*  const pd, double*);
-//extern "C" void matT_double(Mat33&  m, double* const pd, Vec3& out) ;
+extern "C" void mat_vec(Mat33&  m, Vec3&  v, Vec3& out);
+extern "C" void mat_mat3(Mat33& f, Mat33& s, Mat33& out);
+extern "C" void mat_double(Mat33&  m, double*  const pd, Vec3& out);
+extern "C" void mat_doubles(Mat33&  m, double*  const pd, double*);
 extern "C" void matXvec(double **I1, double *I2, double *Out, int m, int n);
 extern "C" void matTXvec(double **I1, double *I2, double *Out, int m, int n);
 extern "C" void matXmatT(double **I1, double **I2, double **Out, int m, int n, int k);

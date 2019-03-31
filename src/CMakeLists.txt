@@ -28,6 +28,14 @@ set(OD_SRC
 )
 add_library(od_system SHARED ${OD_SRC} )
 #install(TARGETS od_system DESTINATION /home/psong/obdyn/lib)
+#target_link_libraries(od_system -lstdc++)
+if (UNIX)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++")
+endif (UNIX)
+
+
+
+
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 #SET(CMAKE_SWIG_FLAGS "")
