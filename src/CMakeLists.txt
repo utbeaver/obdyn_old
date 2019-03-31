@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 3.5)
-project (OD_SYSTEMD)
+project (od_system)
+set(CMAKE BUILD TYPE Debug)
 
 include_directories(
   element/inc
@@ -25,5 +26,18 @@ set(OD_SRC
   utils/od_linsolv.cxx
   utils/od_topo.cxx
 )
-add_library(od_system SHARED ${OD_SRC})
-install(TARGETS od_system DESTINATION /home/psong/obdyn/lib)
+add_library(od_system SHARED ${OD_SRC} )
+#install(TARGETS od_system DESTINATION /home/psong/obdyn/lib)
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+#SET(CMAKE_SWIG_FLAGS "")
+
+if (UNIX)
+include_directories("/usr/include/python3.5m/")
+endif (UNIX)
+SET_SOURCE_FILES_PROPERTIES(python/od_system.i PROPERTIES CPLUSPLUS ON)
+SWIG_ADD_MODULE(odsystem python python/od_system.i)
+SWIG_LINK_LIBRARIES(odsystem od_system)
+if (UNIX)
+SWIG_LINK_LIBRARIES(odsystem /usr/lib/python3.5/config-3.5m-x86_64-linux-gnu/libpython3.5m.so)
+endif (UNIX)
