@@ -26,7 +26,7 @@ int od_loopr::initialize(int keep) {
 	int b_index[2], i, j, k;
 	int *ij_idx[2];
 	int entry2ij;
-	od_joint *pC;
+//	od_joint *pC;
 	Vec3 *pTempV3;
 	b_index[1] = Fixed->j_body_index();
 	b_index[0] = Fixed->i_body_index();
@@ -133,7 +133,7 @@ int od_loopv::initialize(int keep) {
 	int b_index[2], i, j, k;
 
 	int entry2ij;
-	od_joint *pC;
+//	od_joint *pC;
 	Vec3 *pTempV3;
 	b_index[1] = Fixed->j_body_index();
 	b_index[0] = Fixed->i_body_index();
@@ -275,7 +275,7 @@ void od_loop::init() {
 }
 
 double od_loop::element(int i, int j, int ij, int si2) {
-	Vec3 *pV;
+	Vec3 *pV=0;
 	od_object::JAC_TYPE __type = pSys->get_jac_type();
 	double fltTemp = 0.0;
 	if (i < 3) {
@@ -664,7 +664,7 @@ void od_loop::evaluate(int rhs_only) {
 	evaluate_position();
 	if (rhs_only) return;
 
-	double temp_d[3];
+	//double temp_d[3];
 
 	fltTemp = values;
 	fltTempV = valuesV;

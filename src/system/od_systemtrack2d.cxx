@@ -28,7 +28,7 @@ od_systemTrack2D::od_systemTrack2D(char* Name, od_marker* ref, int from_py) : od
 	strcat(p, "_basej");
 	refM = ref;
 	base = new od_body(--virtual_body_id, dup_name, 0);
-	cm = new od_marker(--virtual_marker_id, "dup_cm", 0);
+	cm = new od_marker(--virtual_marker_id, (char*)"dup_cm", 0);
 	cm->equal(ref);
 	base->add_cm_marker(cm);
 	this->add_body(base);
@@ -308,6 +308,7 @@ void od_systemTrack2D::parVelParq() {
 	double  vecTemp[3], temp[3];
 	od_body* pB;
 	od_joint *pC, *pCi;
+	r = pwxz = 0;
 	nb = num_body();
 	pC = (od_joint*)(*(constraint_list_));
 	prb = base->getPosition();
@@ -368,6 +369,7 @@ void od_systemTrack2D::parVelDotParq() {
 	double  vecTemp[3], temp[3];
 	od_body* pB;
 	od_joint *pC, *pCi;
+	r = v = 0;
 	nb = num_body();
 	pC = (od_joint*)(*(constraint_list_));
 	prb = base->getPosition();
@@ -456,7 +458,7 @@ void od_systemTrack2D::CreateRotM(double **pM, int base) {
 	double *pd, *pdt, val;
 	int i, j, k, offset; 
 	od_matrix *pD;
-	
+	pd = 0;
 	for (i = 1; i < num_body(); i++) {
 		//calculate the first 6x6 matrix
 		for (j = 3; j < 6; j++) {

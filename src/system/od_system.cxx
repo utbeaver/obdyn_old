@@ -264,7 +264,7 @@ void od_systemMechanism::updateQ() {
 	}
 }
 void od_systemMechanism::updatePartials(int pos_only) {
-	int i, j, k, startindex, num_dof, idx, _len;
+	int i,  k, startindex, num_dof, idx, _len;
 	//for (i = 0; i < nsystem; i++) _subSys[i]->updatePartials(pos_only);
 	
 	Vec3 **tgt;
@@ -817,7 +817,7 @@ void od_systemMechanism::parF_parq(double **pM, int base)
 	DELARY(par_col);  DELARY(vecTemp1);  DELARY(parFparq);
 }
 double** od_systemMechanism::evaluateJac(double **pM, int base) {
-	int i;
+//	int i;
 	//for (i = 0; i < nsystem; i++) {
 	//	_subSys[i]->evaluate_Jac(pM, base);
 	//	base += _subSys[i]->tree_dofs();
@@ -944,7 +944,7 @@ double** od_systemMechanism::evaluateJac(double **pM, int base) {
 }
 double* od_systemMechanism::evaluateRhs(double *pRhs) {
 	int i, index, i_index, j_index;
-	double _m;
+//	double _m;
 	od_loop* pl;
 	//for (i = 0; i < nsystem; i++) pRhs = _subSys[i]->evaluateRhs(pRhs, _alphaonly);
 	od_body *pBi, *pBj;
@@ -1283,11 +1283,11 @@ void od_systemMechanism::create_incidence(vector<int>& incid, int num_joint)
 	for (unsigned ii = 0; ii < body_list.size(); ii++) {
 		if (body_list[ii]->is_tagged() == 0) {
 			pC = new od_free_joint(--virtual_joint_id, 0);
-			od_marker* im = new od_marker(--virtual_marker_id, "im_freejoint", 0);
+			od_marker* im = new od_marker(--virtual_marker_id, (char*)"im_freejoint", 0);
 			im->init();
 			body_list[ii]->add_marker(im);
 			pC->set_imarker(im);
-			od_marker* jm = new od_marker(--virtual_marker_id, "jm_freejoint", 0);
+			od_marker* jm = new od_marker(--virtual_marker_id, (char*)"jm_freejoint", 0);
 			//      jm->equal(pGround->cm_marker());
 			jm->init();
 			pGround->add_marker(jm);
@@ -1455,7 +1455,7 @@ void od_systemMechanism::break_body(int bidx, int cidx1) {
 	pBdup->set_mass(0.5*m);
 	Ia = pBdup->get_J();
 	(*Ia) = _Ia;
-	cm = new od_marker(--virtual_marker_id, "dup_cm", 0);
+	cm = new od_marker(--virtual_marker_id, (char*)"dup_cm", 0);
 	cm->equal(pB->cm_marker());
 	pBdup->add_cm_marker(cm);
 	this->add_body(pBdup);
@@ -2014,8 +2014,8 @@ int od_systemMechanism::Update(int evaJ) {
 }
 int od_systemTrack2D::Update(int evaJ) {
 	int i, nb;
-	double *pv, *z, *zi, *p, *r, *wxz, *wxzi, *v, temp[3];// , temp1[3];
-	od_joint *pC, *pCi;
+	//double   // , temp[3];// , temp1[3];
+	od_joint *pC;
 	od_body *pB;
 	nb = num_body();
 	for (i = 0; i < nb; i++) {
@@ -2564,6 +2564,9 @@ OdSystem::~OdSystem() {
 	pS = 0;
 }
 void OdSystem::setGravity(double *val) { pS->setGravity(val); }
+void OdSystem::setGravity(V3* t) {
+	 setGravity(t->ptr());
+ }
 void OdSystem::setName(char *val) { pS->setName(val); }
 void OdSystem::add_body(OdBody* pB) {
 	od_body *pb = pB->core();
@@ -3053,6 +3056,7 @@ void multiplyParMatTraVec_q_I(int const num_rows, od_constraint** C, /*od_constr
 	Vec3 *vecRef;
 	od_joint *pCi = 0;
 	temp_int = 3 * num_rows;
+	zk_dot = pzk_dot = pQQ_dot = 0;
 	od_joint *pCk = (od_joint*)(*(C + ith)); //(od_joint*)pCk_;
 	start = pCk->get_index();
 	tail = pCk->get_tail(); num_tra = pCk->num_tra(); num_rot = pCk->num_rot();
@@ -3174,10 +3178,11 @@ void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
 	//This function is for ej x par_Ri/par_qk
 	//pCk only affects the joints starting from k
 	int i, /*j,*/ k, num_rot, num_tra, numTra, numRot, start, head, tail, temp_int, prev_id;
-	double *zk, *zk_dot;
+	double *zk, *zk_dot=0;
 	double *pzk, *pzk_dot, *pout, *pQQ, *pd, *pd_dot, *pQQ_dot, *pTemp;
 	double vecTemp[3], vecTemp1[3], vecTemp2[3];
 	Vec3 *vecRef;
+	pQQ_dot = zk_dot = pzk_dot = pd_dot = 0;
 	//Vec3* Q=0; //(num_rows); //Q is for Sigma ej
 	//Vec3* Q_dot=0; //(num_rows); //Q_dot is for Sigma dot_ej
 	temp_int = 3 * num_rows;
@@ -3326,6 +3331,7 @@ void multiplyParMatRotVec_q(int const num_rows, od_constraint** C,
 	double  vecTemp[3];
 	double vecTemp1[3];
 	Vec3  *vecRef;
+	pQQ_dot = zk_dot =  pd_dot = pdk_dot= 0;
 	//Vec3* Q=0;//(num_rows); //Q is for Sigma ej
 	//Vec3* Q_dot=0;//(num_rows); //Q_dot is for Sigma dot_ej
 	//od_joint* pCj = (od_joint*)pCj_;

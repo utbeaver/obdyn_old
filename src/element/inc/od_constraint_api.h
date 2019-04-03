@@ -9,6 +9,7 @@
 #endif
 #include "od_constraint.h"
 class OdMarker;
+class V6;
 class LINKELEMENTSDLL OdJoint {
 protected:
 	od_joint * pJ;
@@ -37,6 +38,9 @@ public:
 	double* disp(double*);
 	double* vel(double*);
 	double* acc(double*);
+	V6 disp();
+	V6 vel();
+	V6 acc();
 	int dofs();
 	void explicitFixed(int);
 	int explicitFixed();

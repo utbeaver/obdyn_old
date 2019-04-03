@@ -94,7 +94,7 @@ int Expression::init() {
 		if (ids.size() > 1) {
 			id2 = ids[1];
 		}
-		jointMeasure = new od_joint_measure(id1, "", pSys, (int)(e_type - JOINTD), id2);
+		jointMeasure = new od_joint_measure(id1, (char*)"", pSys, (int)(e_type - JOINTD), id2);
 		jointMeasure->init();
 		//    sumColumn.resize(0);
 		for (int jj = 0; jj < 3; jj++) {

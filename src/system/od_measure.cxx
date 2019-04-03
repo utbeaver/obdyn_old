@@ -35,7 +35,7 @@ void od_joint_measure::eval() {
 //////////////////////////////////////////////////////////////////////
 
 od_measure::od_measure(od_systemGeneric* psys, od_measure::Measure_Type type, int i, int j, int k)
-	: od_element(0, "")
+	: od_element(0, (char*)"")
 {
 	I = i; J = j; K = k; partialp = 0; partialv = 0;
 	pSys = psys;
@@ -54,7 +54,7 @@ od_measure::od_measure(od_systemGeneric* psys, od_measure::Measure_Type type, in
 }
 
 od_measure::od_measure(od_systemGeneric* psys, Measure_Type type, od_marker* i, od_marker* j, od_marker* k)
-	: od_element(0, "")
+	: od_element(0, (char*)"")
 {
 	pM[0] = i;  pM[1] = j; pM[2] = k; partialp = 0; partialv = 0;
 	if (pM[0]) I = pM[0]->get_id();

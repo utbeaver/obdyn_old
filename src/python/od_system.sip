@@ -271,6 +271,7 @@ class OdMarker
       Py_END_ALLOW_THREADS
      }
 %End
+/*
      void set_velocity(double*);
 %MemberCode
      int i;
@@ -372,17 +373,17 @@ class OdMarker
       }
       return  Py_BuildValue("s", msg.c_str());
 %End
+*/
      void position(double*);
 %MemberCode
        int pva;
-       double pos[3];
-       double *p;
+       double* pos=0;
+       //double pos[3];
        OdMarker *pB;
        PyObject *XList=PyList_New(0);
-       p = pos;
        if (sipParseArgs(&sipArgsParsed,sipArgs,  "mi", sipThisObj, sipClass_OdMarker, &pB, &pva))  
        {
-	         p = pB->position(p, pva);
+	         pos=pB->position(pva);
 	         for(int i=0; i<3; i++) {
 	           PyList_Append(XList, PyFloat_FromDouble(pos[i]));
 	         }
@@ -391,29 +392,28 @@ class OdMarker
 %End
     void orientation(double*);
 %MemberCode
-    double ori[9];
-    double *p;
+    //double ori[9];
+    double* ori=0;
     OdMarker *pB;
     PyObject *XList=PyList_New(0);
     int pva=0;
     int size = 9;
-    p = ori;
     if (sipParseArgs(&sipArgsParsed,sipArgs,  "mi", sipThisObj, sipClass_OdMarker, &pB, &pva))  
     {
-       size = (pva == 0) ? 9 : 3;
-	     p = pB->orientation(p, pva);
+         size = (pva == 0) ? 9 : 3;
+	     ori=pB->orientation(pva);
 	     for(int i=0; i<size; i++) {
 	           PyList_Append(XList, PyFloat_FromDouble(ori[i]));
        }
     }
      return XList;
 %End
+/*
     void position_orientation(double*);
 %MemberCode
     double pos[3];
     double ori[9];
     double sum[16];
-    double *p;
     OdMarker *pB;
     int i;
     PyObject *XList=PyList_New(16);
@@ -423,10 +423,8 @@ class OdMarker
     sum[15]=1.0;
     if (sipParseArgs(&sipArgsParsed,sipArgs,  "m", sipThisObj, sipClass_OdMarker, &pB))  
     {
-      p = pos;
-      p = pB->position(p);
-      p = ori;
-      p = pB->orientation(p);
+      pB->position(pos);
+      pB->orientation(ori);
       for(i=12; i<15; i++) {
 	      sum[i] = pos[i-12];
       }
@@ -441,6 +439,7 @@ class OdMarker
     }
     return XList;
 %End
+*/
     char* info();
 %MemberCode
      //std::string msg;

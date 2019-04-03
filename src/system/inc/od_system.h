@@ -579,7 +579,7 @@ public:
 	string info();
 	char* info(char* msg) {
 		std::string _msg = info();
-		strcpy(msg, _msg.c_str());
+		strcpy(msg, (char*)_msg.c_str());
 		return msg;
 	}
 

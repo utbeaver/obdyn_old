@@ -170,7 +170,7 @@ void od_matrix_dense::lbksb(double **a, int n, int *indx, double* b) {
 	}
 }
 void od_matrix_dense::ubksb(double **a, int n, int *indx, double* b) {
-	int i, ip, j;
+	int i, j;
 	int ii = -1;
 	double sum;
 	for (i = n - 1; i >= 0; i--) {    //  Now we do the backsubstitution, equation (2.3.7).
@@ -353,7 +353,7 @@ void od_matrix::D_diagLF(od_matrix* L, od_matrix* F, int basei, int basej) {
 }
 void od_matrix::D_LF(od_matrix* L, od_matrix* F, int basei, int basej) {
 	assert(L->cols() == F->rows());
-	int i, j, k;
+//	int i, j, k;
 	D_diagLF(L, F, basei, basej);
 }
 double* od_matrix_dense::solveT(double* X, int repar, int effn, int* pvec) {
@@ -402,7 +402,7 @@ void od_matrix_dense::print_out(int* pVec) {
 	cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 }
 od_blockTriDiagonal::od_blockTriDiagonal(int _n) {
-	int i;
+	//int i;
 	n = _n;
 	_varNum = 3 * n;
 	E_ = F_ = 0;
@@ -414,7 +414,7 @@ od_blockTriDiagonal::od_blockTriDiagonal(int _n) {
 	}
 }
 int od_blockTriDiagonal::LU() {
-	int i, j;
+	int i;// , j;
 	for (i = 0; i < n - 1; i++) {
 		D_[i].LU();
 		D_[i].solveT(E_ + i);
@@ -443,7 +443,8 @@ int od_blockTriDiagonal::ludcmp() {
 }
 double* od_blockTriDiagonal::lubksb(double* b) {
 	int i;
-	double *pb, *pbn;
+	double *pb = 0;
+	double *pbn=0;
 	for (i = 1; i < n; i++) {
 		pb = b + 3 * (i - 1);
 		pbn = pb + 3;
@@ -462,7 +463,7 @@ double* od_blockTriDiagonal::lubksb(double* b) {
 }
 double* od_blockTriDiagonal::lubksbT(double* b) {
 	int i;
-	double *pb, *pbn;
+	double *pb, *pbn=0;
 
 	for (i = 0; i < n - 1; i++) {
 		pb = b + 3 * i;
@@ -543,7 +544,7 @@ void od_matrix_bdf::update(double tinu, int* pvec, int effn) {
 			J        Jv       0      0
 			0        J        0      0
 	//*/
-	int i, tempint;
+	int i;// , tempint;
 	setPvecN(pvec, effn);
 	pD->zeros(); pC->zeros(); pB->zeros(); pA->zeros();
 	mu = 1.0 / tinu;
@@ -589,7 +590,7 @@ void od_matrix_bdf::LU() {
 }
 double* od_matrix_bdf::solve(double *b, int repar, int effn, int *pvec) {
 	double* tempd = new double[max(m, aux_m)]; 
-	double temp;
+	//double temp;
 	int i;
 	//for (i = 0; i < h_m; i++) { temp = b[i]; b[i] = b[i + h_m]; b[h_m + i] = temp; }
 	if (repar || _repar) {
@@ -634,7 +635,7 @@ od_matrix_hht::od_matrix_hht(int m_, int a_m, int *pvec) : od_matrix_composite( 
 
 void od_matrix_hht::update(double tinu, int* pvec, int effn) {
 	
-	int i, tempint;
+	int i;// , tempint;
 	setPvecN(pvec, effn);
 	pD->zeros(); pC->zeros(); pB->zeros(); pA->zeros();
 	pA->equal((od_matrix*)pM);
@@ -659,7 +660,7 @@ void od_matrix_hht::LU(){
 }
 double* od_matrix_hht::solve(double *b, int repar, int effn, int *pvec) {
 	double* tempd = new double[max(m, aux_m)];
-	double temp;
+//	double temp;
 	int i;
 	if (repar || _repar) {
 		LU();

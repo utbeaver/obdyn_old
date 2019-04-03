@@ -29,6 +29,7 @@ public:
 	double vel[3];
 	double omega_dot_global[3];
 	double acc[3];
+	double pmat[9];
 	od_marker(int ID, char* name_, int Real = 1);
 	od_marker(int ID, od_body *pBody = 0, char* name_ = 0, int Real = 1);
 	od_marker(int ID, double pos[3], double ang[3], char* name_, int Real = 1);
@@ -63,7 +64,6 @@ public:
 		omega_global[2] = ome[2];
 		//if (ic) for (int i = 0; i < 3; i++) ifric[i] = ic[i];
 	}
-
 	inline double* get_omega() const { return (double*)omega_global; }
 	double* get_omega(double *ome, od_marker* pJ = 0, od_marker* pK = 0) {
 		EQ3(ome, omega_global);
@@ -74,7 +74,6 @@ public:
 		if (pK) ome = pK->vec_wrt_this(ome);
 		return ome;
 	}
-
 	Vec3& get_omega(Vec3& vec, od_marker* pJ = 0, od_marker* pK = 0) {
 		get_omega(vec.v, pJ, pK);// vec.test_zero();
 		return vec;
@@ -105,21 +104,17 @@ public:
 		if (pK) pK->vec_wrt_this(vec);
 		return vec;
 	}
-
 	inline double* get_velocity() const { return (double*)vel; }
-
 	void set_velocity(double *vec, int *ic = 0) {
 		EQ3(vel, vec);
 		//	if (ic) { EQ3(iftic, ic) }
 	}
-
 	double* get_acceleration(double *vec, od_marker *pJ = 0, od_marker *pK = 0) {
 		EQ3(vec, acc);
 		if (pJ) { U_SUB3(vec, pJ->acc); }
 		if (pK) pK->vec_wrt_this(vec);
 		return vec;
 	}
-
 	inline double* get_acceleration() { return acc; }
 	void set_acceleration(double *Acc) {
 		EQ3(acc, Acc);
@@ -127,7 +122,6 @@ public:
 
 
 	inline  double* const absolute_rel_pos() { return a_r_pos; }
-
 	double* get_position(double* vec, od_marker *pJ = 0, od_marker *pK = 0) {
 		EQ3(vec, a_pos);
 		if (pJ) { U_SUB3(vec, pJ->a_pos); }
@@ -137,7 +131,11 @@ public:
 
 	inline double*  get_position() const { return (double*)a_pos; }
 
-
+	double* get_orientation_matrix() {
+		double* p = pmat;
+		p = temp_mat.to_double(p);
+		return p;
+	}
 	double* get_orientation_matrix(double* mat, od_marker* pJ = 0) {
 		if (pJ) {
 			Mat33 temp_mat = a_mat;

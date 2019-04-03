@@ -122,7 +122,7 @@ class  od_element : public od_object {
   inline string  info() { re_eval_info(); return info_str;}
   inline char* info(char* msg) {
 	  std::string _msg = info();
-	  strcpy(msg, _msg.c_str());
+	  strncpy(msg, _msg.c_str(), 80);
 	  return msg;
   }
   virtual void re_eval_info() = 0;

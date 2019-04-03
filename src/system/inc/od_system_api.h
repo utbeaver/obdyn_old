@@ -14,6 +14,7 @@ class OdJointSPDP;
 class OdExpression;
 class OdSubSystem;
 class vector_int;
+class V3;
 
 class LINKSYSTEMDLL OdSystem {
  private:
@@ -26,6 +27,9 @@ class LINKSYSTEMDLL OdSystem {
   double rhsTime();
   double solTime();
   void setGravity(double*);
+  void setGravity(V3* t);/* {
+	  setGravity(t->ptr());
+  }*/
   void setName(char*);
   void add_body(OdBody* pB); 
   void add_constraint(OdJoint* pJ); 

@@ -896,6 +896,12 @@ od_equation_bdf_I::od_equation_bdf_I(od_system *psys, double end, int steps, dou
 	pIntegrator = 0;
 }
 
+od_equation_bdf_I::~od_equation_bdf_I(){
+	delete pIntegrator;
+	delete SysJacBDF;
+	delete[] pprhs;
+}
+
 od_equation_hhti3::od_equation_hhti3(od_system *psys, double end, int steps, double tol, double al)
 	: od_equation_dynamic(psys, end, steps, tol) {
 	alpha = al;
@@ -904,6 +910,12 @@ od_equation_hhti3::od_equation_hhti3(od_system *psys, double end, int steps, dou
 	pQ = 0;
 	Q = 0;
 }
+
+od_equation_hhti3::~od_equation_hhti3(){
+	   delete pIntegrator; DELARY(pQ); DELARY(Q); pIntegrator = 0;
+	   delete SysJacHHT;
+	   delete[] pprhs;
+   }
 
 int od_equation_hhti3::initialize() {
 	int  j, base;

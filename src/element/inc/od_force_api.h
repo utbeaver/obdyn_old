@@ -81,7 +81,9 @@ public:
 	od_joint_force* core();
 	void setJoint(OdJoint *pJ);
 	void set_expr(char* pexpr);
-	char* info(char* msg);
+	char* info(char* msg) {
+		return msg;
+	}
 
 };
 
@@ -102,7 +104,9 @@ public:
 	void set_damping(double val) { C = val; }
 	void set_distance(double val) { L = val; }
 	void set_force(double val) { F = val; }
-	char* info(char* msg);
+	char* info(char* msg) {
+		return msg;
+	}
 
 };
 #endif

@@ -905,11 +905,32 @@ od_joint* OdJoint::core()
 	}
 	return pJ;
 }
-
 double* OdJoint::disp(double *vals) {
 	return (pJ)->pva(vals, 0);
 }
+V6 OdJoint::disp() {
+	double vals[6]; fill(vals, vals + 6, 0.0);
+	(pJ)->pva(vals, 0);
+	V6 v;
+	v.set(vals);
+	return v;
+}
 
+V6 OdJoint::vel() {
+	double vals[6]; fill(vals, vals + 6, 0.0);
+	(pJ)->pva(vals, 1);
+	V6 v;
+	v.set(vals);
+	return v;
+}
+
+V6 OdJoint::acc() {
+	double vals[6]; fill(vals, vals + 6, 0.0);
+	(pJ)->pva(vals, 2);
+	V6 v;
+	v.set(vals);
+	return v;
+}
 double* OdJoint::vel(double *vals) {
 	return (pJ)->pva(vals, 1);
 }

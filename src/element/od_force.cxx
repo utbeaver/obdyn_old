@@ -736,8 +736,9 @@ void od_spdpt::evaluate(int _partial) {
 	double *pV;
 	double xyz[3], tempd3[3], tempd, *dt, *dv, e_sth, de_dv, e_dv;
 	double* pd = xyz;
-	double* pe;
+	double* pe=0;
 	Vec3 *pV3;
+	dv = 0;
 	if (!is_evaluated() || _partial) {
         //F = -K(DT-distance*e)-e*CDV*e + force*e
 		eval_force(_partial);

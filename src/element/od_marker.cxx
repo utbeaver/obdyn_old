@@ -355,11 +355,16 @@ OdMarker::OdMarker(int id, OdBody *pB, char* name_) {
 OdMarker::OdMarker(int id, double *pos, double *ang, char* name_) {
 	pM = new od_marker(id, pos, ang, name_);
 }
+OdMarker::OdMarker(int id, V3* P, V3* Q, char* name_) {
+	pM = new od_marker(id, P->ptr(), Q->ptr(), name_);
+}
 
 OdMarker::OdMarker(int id, double *mat, char* name_) {
 	pM = new od_marker(id, mat, name_);
 }
-
+OdMarker::OdMarker(int id, V16* P, char* name_) {
+	pM = new od_marker(id, P->ptr(), name_);
+}
 OdMarker::~OdMarker() {/*if (pM) delete pM;*/ }
 
 char* OdMarker::info(char* msg) {
@@ -370,7 +375,7 @@ char* OdMarker::info(char* msg) {
 
 
 od_marker* OdMarker::core() { return pM; }
-
+/*
 void OdMarker::set_position(double *pos) {
 	core()->set_position(pos);
 }
@@ -386,18 +391,20 @@ void OdMarker::set_velocity(double* vel, int *idx) {
 void OdMarker::set_angles(double *ang) {
 	core()->set_angles(ang);
 }
-
-double* OdMarker::position(double *pos, int pva) {
-	if (pva == 0) pos = core()->get_position(pos);
-	else if (pva == 1) pos = core()->get_velocity(pos);
-	else pos = core()->get_acceleration(pos);
+*/
+double* OdMarker::position(int pva) {
+	double *pos;
+	if (pva == 0) pos = core()->get_position();
+	else if (pva == 1) pos = core()->get_velocity();
+	else pos = core()->get_acceleration();
 	return pos;
 }
 
-double* OdMarker::orientation(double *pos, int pva) {
-	if (pva == 0) pos = core()->get_orientation_matrix(pos);
-	else if (pva == 1) pos = core()->get_omega(pos);
-	else pos = core()->get_omega_dot(pos);
+double* OdMarker::orientation(int pva) {
+	double *pos;
+	if (pva == 0) pos = core()->get_orientation_matrix();
+	else if (pva == 1) pos = core()->get_omega();
+	else pos = core()->get_omega_dot();
 	return pos;
 }
 

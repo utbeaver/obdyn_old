@@ -315,7 +315,7 @@ int od_hhti3::correct() {
 
 int od_gstiff::correct() {
 	int j, errorCode = 0;
-	double dblTemp;
+	//double dblTemp;
 	invH = 1.0 / h;
 	int maxRhsIdx, maxDeltaIdx;
 	double maxRhs = 0.0;
