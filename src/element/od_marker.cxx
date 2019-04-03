@@ -17,7 +17,7 @@ od_marker::od_marker(int id, char* name_, int Real) : od_element(id, name_, Real
 
 od_marker::~od_marker()
 {
-	int i = 0;
+	//int i = 0;
 }
 
 od_marker::od_marker(int id, od_body *pBody, char* name_, int Real) : od_element(id, name_, Real) {
@@ -182,9 +182,9 @@ void od_marker::update_cm_marker(od_marker* from, od_systemGeneric *psys)
 
 
 
-void od_marker::update_marker(od_marker* cm_marker, od_systemGeneric *psys)
+void od_marker::update_marker(od_marker* cm_marker_, od_systemGeneric *psys)
 {
-	if (cm_marker == 0) return;
+	if (cm_marker_ == 0) return;
 	if (is_cm_marker()) return;
 	double *pd = 0;
 	double vec[3], vec1[3];
@@ -197,27 +197,27 @@ void od_marker::update_marker(od_marker* cm_marker, od_systemGeneric *psys)
 	}
 	//update global orientation matrix
 	if (_type == od_object::DISP || _type == od_object::DISP_VEL_ACC) {
- 		mat_mat3(cm_marker->a_mat, r_mat, a_mat);
+ 		mat_mat3(cm_marker_->a_mat, r_mat, a_mat);
 		//update global vector
-		mat_doubles(cm_marker->a_mat, r_pos, a_r_pos);
-		ADD3(cm_marker->a_pos, a_r_pos, a_pos);
+		mat_doubles(cm_marker_->a_mat, r_pos, a_r_pos);
+		ADD3(cm_marker_->a_pos, a_r_pos, a_pos);
 	}
 	if (_type == od_object::VEL || _type == od_object::DISP_VEL_ACC) {
 		//update omega_global
 		//p=cm_marker->omega_global;
-		EQ3(omega_global, cm_marker->omega_global);
+		EQ3(omega_global, cm_marker_->omega_global);
 		//update velocity
 		//omega_global * r
 		//cross_product_with_doubles(omega_global, a_r_pos, vec);
 		CROSS_X(omega_global, a_r_pos, vec);
 		//V= Vc + omega_global*r
 		//p=cm_marker->vel;
-		ADD3(cm_marker->vel, vec, vel);
+		ADD3(cm_marker_->vel, vec, vel);
 		//vel[0] = cm_marker->vel[0] + vec.v[0];vel[1] = cm_marker->vel[1] + vec.v[1];vel[2] = cm_marker->vel[2] + vec.v[2];
 	}
 	if (_type == od_object::ACC || _type == od_object::DISP_VEL_ACC) {
 		//update omega_dot
-		EQ3(omega_dot_global, cm_marker->omega_dot_global);
+		EQ3(omega_dot_global, cm_marker_->omega_dot_global);
 		//EQ3(omega_dot_global_, cm_marker->omega_dot_global_);
 		//get from acc
 
@@ -225,8 +225,8 @@ void od_marker::update_marker(od_marker* cm_marker, od_systemGeneric *psys)
 		//cross_product_with_doubles(pd, a_r_pos, vec);
 		CROSS_X(omega_dot_global, a_r_pos, vec);
 		//CROSS_X(omega_dot_global_, a_r_pos, vec1);
-		ADD3(cm_marker->acc, vec, acc);
-		pd = cm_marker->get_omega();
+		ADD3(cm_marker_->acc, vec, acc);
+		pd = cm_marker_->get_omega();
 		//add normal acc     omega x (omega x r)
 		CROSS_X(pd, a_r_pos, vec);
 		CROSS_X(pd, vec, vec1);
@@ -284,8 +284,22 @@ void od_marker::translation(od_marker *wrt, Vec3& vec) {
 	a_pos[1] = pd[1] + vec.v[1];
 	a_pos[2] = pd[2] + vec.v[2];
 }
-
-
+double* od_marker::get_orientation_matrix() {
+		double* p = pmat;
+		p = temp_mat.to_double(p);
+		return p;
+	}
+double* od_marker::get_orientation_matrix(double* mat, od_marker* pJ){
+		if (pJ) {
+			 temp_mat = a_mat;
+			temp_mat = (pJ->a_mat) ^ temp_mat;
+			mat = temp_mat.to_double(mat);
+		}
+		else {
+			mat = a_mat.to_double(mat);
+		}
+		return mat;
+	}
 void od_marker::translation(od_marker *wrt, double* vec) {
 	a_mat = wrt->a_mat;
 	vec = a_mat * vec;

@@ -117,6 +117,15 @@ class V3(_object):
 
     def ptr(self):
         return _odsystem.V3_ptr(self)
+
+    def x(self):
+        return _odsystem.V3_x(self)
+
+    def y(self):
+        return _odsystem.V3_y(self)
+
+    def z(self):
+        return _odsystem.V3_z(self)
     __swig_destroy__ = _odsystem.delete_V3
     __del__ = lambda self: None
 V3_swigregister = _odsystem.V3_swigregister
@@ -289,8 +298,8 @@ class OdSystem(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, OdSystem, name)
     __repr__ = _swig_repr
 
-    def __init__(self, pn, r):
-        this = _odsystem.new_OdSystem(pn, r)
+    def __init__(self, pn):
+        this = _odsystem.new_OdSystem(pn)
         try:
             self.this.append(this)
         except __builtin__.Exception:

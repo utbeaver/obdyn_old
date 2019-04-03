@@ -69,7 +69,7 @@ int Expression::unevaluate() {
 
 int Expression::init() {
 	int not_matched, operand, index;
-	string::size_type e_index, i, j;
+	int e_index, i, j;
 	int k;
 	struct token_property {
 		Expr_Type type;
@@ -82,7 +82,7 @@ int Expression::init() {
 		int last_idx = 0;
 		for (i = 0; i < _expr.size(); i++) {
 			if (_expr[i] == ',' || i == _expr.size() - 1) {
-				int ii = (i == _expr.size() - 1) ? i + 1 : i;
+				int ii = (i == (int)_expr.size() - 1) ? i + 1 : i;
 				string val_str(_expr, last_idx, ii - last_idx);
 				ids.push_back(atoi(val_str.c_str()));
 				last_idx = i + 1;
@@ -138,9 +138,9 @@ int Expression::init() {
 		//    sumColumn.resize(0);
 		Measure->init();
 		for (int jj = 0; jj < 3; jj++) {
-			unsigned _size = Measure->get_partial_size(jj);
+			int _size = (int)Measure->get_partial_size(jj);
 			for (j = 0; j < _size; j++) {
-				int temp_col = Measure->get_partial_col(jj, j);
+				//int temp_col = (int)Measure->get_partial_col(jj, j);
 				partial[jj].push_back(0.0);
 			}
 		}
@@ -205,7 +205,7 @@ int Expression::init() {
 			if (_expr.substr(i, 7) == "JOINTD(") property.type = JOINTD;
 			if (_expr.substr(i, 7) == "JOINTV(") property.type = JOINTV;
 			if (_expr.substr(i, 7) == "JOINTA(") property.type = JOINTA;
-			e_index = fmp(i + 7);
+			e_index = (int)fmp(i + 7);
 			for (j = i + 7; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
 			i = e_index + 1;
@@ -213,7 +213,7 @@ int Expression::init() {
 
 		//sin fucntion
 		if (_expr.substr(i, 4) == "SIN(") {
-			e_index = fmp(i + 4);
+			e_index = (int)fmp(i + 4);
 			property.type = SIN;
 			for (j = i + 4; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -221,7 +221,7 @@ int Expression::init() {
 		}
 		//cos function
 		if (_expr.substr(i, 4) == "COS(") {
-			e_index = fmp(i + 4);
+			e_index = (int)fmp(i + 4);
 			property.type = COS;
 			for (j = i + 4; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -229,7 +229,7 @@ int Expression::init() {
 		}
 		//tan function
 		if (_expr.substr(i, 4) == "TAN(") {
-			e_index = fmp(i + 4);
+			e_index = (int)fmp(i + 4);
 			property.type = TAN;
 			for (j = i + 4; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -237,7 +237,7 @@ int Expression::init() {
 		}
 		//exp function
 		if (_expr.substr(i, 4) == "EXP(") {
-			e_index = fmp(i + 4);
+			e_index = (int)fmp(i + 4);
 			property.type = EXP;
 			for (j = i + 4; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -245,7 +245,7 @@ int Expression::init() {
 		}
 		//log function
 		if (_expr.substr(i, 4) == "LOG(") {
-			e_index = fmp(i + 4);
+			e_index = (int)fmp(i + 4);
 			property.type = LOG;
 			for (j = i + 4; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -254,7 +254,7 @@ int Expression::init() {
 		//sqrt function
 
 		if (_expr.substr(i, 5) == "SQRT(") {
-			e_index = fmp(i + 5);
+			e_index = (int)fmp(i + 5);
 			property.type = SQRT;
 			for (j = i + 5; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -263,7 +263,7 @@ int Expression::init() {
 		//DX, DY, DZ
 
 		if (_expr.substr(i, 3) == "DX(" || _expr.substr(i, 3) == "DY(" || _expr.substr(i, 3) == "DZ(") {
-			e_index = fmp(i + 3);
+			e_index = (int)(i + 3);
 			if (_expr[i + 1] == 'X') property.type = DX;
 			if (_expr[i + 1] == 'Y') property.type = DY;
 			if (_expr[i + 1] == 'Z') property.type = DZ;
@@ -280,7 +280,7 @@ int Expression::init() {
 			_expr.substr(i, 3) == "RY(" ||
 			_expr.substr(i, 3) == "RZ(") {
 
-			e_index = fmp(i + 3);
+			e_index = (int)fmp(i + 3);
 			if (_expr[i + 1] == 'X') property.type = RX;
 			if (_expr[i + 1] == 'Y') property.type = RY;
 			if (_expr[i + 1] == 'Z') property.type = RZ;
@@ -292,7 +292,7 @@ int Expression::init() {
 		}
 		// LP
 		if (_expr[i] == '(') {
-			e_index = fmp(i + 1);
+			e_index = (int)fmp(i + 1);
 			property.type = PAREN;
 			for (j = i + 1; j < e_index; j++) property.str += _expr[j];
 			operand = 1;
@@ -302,7 +302,7 @@ int Expression::init() {
 		if (operand) {
 			Expression* temp_obj =
 				new Expression(property.str, pSys, property.type);
-			index = sub_expr.size();
+			index = (int)sub_expr.size();
 			sub_expr.push_back(temp_obj);
 			op_stack.push_back(index);
 			temp_obj->set_parent(this);
@@ -340,9 +340,9 @@ int Expression::init() {
 	for (i = 0; i < config_expr.size(); i++) {
 		Expression* pExpr = config_expr[i];
 		for (j = 0; j < 3; j++) {
-			_size = pExpr->get_partial_size(j);
+			_size = (int)pExpr->get_partial_size(j);
 			for (k = 0; k < _size; k++) {
-				columns[j].push_back(pExpr->get_partial_col(j, k));
+				columns[j].push_back((int)pExpr->get_partial_col(j, k));
 				partial[j].push_back(0.0);
 			}
 		}
@@ -354,11 +354,11 @@ int Expression::init() {
 		}
 	}
 	for (i = 0; i < 3; i++) {
-		_size = columns[i].size();
+		_size = (int)columns[i].size();
 		if (_size) {
 			columns_[i] = new int[_size];
 			partial_[i] = new double[_size];
-			for (j = 0; j < (unsigned)_size; j++) {
+			for (j = 0; j < (int)_size; j++) {
 				columns_[i][j] = columns[i][j];
 				partial_[i][j] = partial[i][j];
 			}
@@ -366,15 +366,15 @@ int Expression::init() {
 	}
 
 	// for_each(sub_expr.begin(), sub_expr.end(), mem_fun(&Expression::init));
-	_size = sub_expr.size();
+	_size = (int)sub_expr.size();
 	sub_expr_ = new Expression*[_size];
-	for (i = 0; i < (unsigned)_size; i++) {
+	for (i = 0; i < (int)_size; i++) {
 		sub_expr_[i] = sub_expr[i];
 	}
 
-	_size = config_expr.size();
+	_size = (int)config_expr.size();
 	config_expr_ = new Expression*[_size];
-	for (i = 0; i < (unsigned)_size; i++) {
+	for (i = 0; i < (int)_size; i++) {
 		config_expr_[i] = config_expr[i];
 	}
 	initialized = 1;
@@ -394,7 +394,7 @@ string::size_type Expression::fmp(string::size_type index)
 
 
 int Expression::eval_partial() {
-	int i, j, ret_code;
+	int i, j, ret_code=0;
 	Vec3 *pV = 0;
 
 	if (e_type == DX || e_type == DY || e_type == DZ || e_type == DM ||
@@ -457,7 +457,7 @@ int Expression::eval_partial() {
 			Expression* that_expr = config_expr_[ii];
 			double that_value = that_expr->eval();
 			for (jj = 0; jj < 2; jj++) {
-				_size = that_expr->get_partial_size(jj);
+				_size = (int)that_expr->get_partial_size(jj);
 				for (kk = 0; kk < _size; kk++) {
 					stack<double> temp_stack;
 					stack<int> temp_flags;
@@ -679,7 +679,7 @@ double Expression::eval_wrt_time() {
 	stack<double> temp_stack;
 	double dvalue_, op1, op2, dop1, dop2;
 	double value_;
-	double time = pSys->time();
+	//double time = pSys->time();
 	if (initialized == 0)
 		init();
 
@@ -775,7 +775,7 @@ double Expression::eval_wrt_time_2() {
 	double dvalue_, op1, op2, dop1, dop2, ddop1, ddop2;
 	double value_;
 	double ddvalue_;
-	double time = pSys->time();
+	//double time = pSys->time();
 	if (initialized == 0)
 		init();
 

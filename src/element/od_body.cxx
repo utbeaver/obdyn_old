@@ -85,8 +85,8 @@ int od_body::update(od_systemGeneric *psys, int ini) {
 		cm->update_cm_marker(from, psys);
 		evaluated();
 	}
-	int numMars = marker_list.size();
-	for (unsigned i = 0; i < numMars; i++) {
+	int numMars = (int)marker_list.size();
+	for (int i = 0; i < numMars; i++) {
 		mar = marker_list[i];
 		if (mar != from && mar != cm ) {
 			mar->update_marker(cm, psys);
@@ -185,9 +185,9 @@ void od_body::parWxJW_parq(double* vecTemp, double* parWparq) {
 }
 
 void od_body::initialize() {
-	unsigned markers;
-	markers = marker_list.size();
-	for (unsigned i = 0; i < markers; i++) {
+	int markers;
+	markers = (int)marker_list.size();
+	for (int i = 0; i < markers; i++) {
 		marker_list[i]->update_marker(cm);
 	}
 }

@@ -42,7 +42,7 @@ public:
 	inline od_marker* cm_marker(void) { return cm; }
 	void remove_marker(od_marker* pM);
 	inline od_marker* get_ith_marker(int i) const { return marker_list[i]; }
-	int get_marker_number() const { return marker_list.size(); }
+	int get_marker_number() const { return (int)marker_list.size(); }
 	inline int ground_body() const { return is_ground; }
 	virtual void re_eval_info();
 	inline int set_from_marker(od_marker *pM) { from = pM; return 1; }

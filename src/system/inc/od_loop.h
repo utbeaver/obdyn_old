@@ -65,9 +65,9 @@ public:
 	inline int num_nonzero() const { return num_NZ; }
 	inline int get_i_index() const { return Fixed->i_body_index(); }
 	inline int get_j_index() const { return Fixed->j_body_index(); }
-	inline int get_num_entries(int i) const { return entries2[i].size(); }
+	inline int get_num_entries(int i) const { return (int)entries2[i].size(); }
 	virtual int checkRedundancy()=0;
-	inline int num_of_redundant_constraints() const { return redundant_cons.size(); }
+	inline int num_of_redundant_constraints() const { return (int)redundant_cons.size(); }
 	inline double jac(int i) const { return values[i]; }
 	inline double jacV(int i) const { return valuesV[i]; }
 	inline double* force(int i = 0) { return _force[i].v; }

@@ -21,6 +21,9 @@ public:
 	int size() { return 3; }
 	double get(int i) { return v[i];}
 	double* ptr() { return p; }
+	double x() { return v[0]; }
+	double y() { return v[1]; }
+	double z() { return v[2]; }
 };
 
 class V6 {

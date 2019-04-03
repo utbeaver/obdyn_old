@@ -127,31 +127,31 @@ void od_measure::init()
 	for (i = 0; i < num_j; i++) {
 		if (columnp[i]) { _partialp.push_back(new Vec3); _variablep.push_back(i); }
 		if (columnv[i]) { _partialv.push_back(new Vec3); _variablev.push_back(i); }
-		if (rows[0][i]) _variableijkp[0].push_back(_variablep.size() - 1);
-		if (rows[1][i]) _variableijkp[1].push_back(_variablep.size() - 1);
-		if (rows[2][i]) _variableijkp[2].push_back(_variablep.size() - 1);
-		if (rows[0][i]) _variableijkv[0].push_back(_variablev.size() - 1);
-		if (rows[1][i]) _variableijkv[1].push_back(_variablev.size() - 1);
-		if (rows[2][i]) _variableijkv[2].push_back(_variablev.size() - 1);
+		if (rows[0][i]) _variableijkp[0].push_back((int)_variablep.size() - 1);
+		if (rows[1][i]) _variableijkp[1].push_back((int)_variablep.size() - 1);
+		if (rows[2][i]) _variableijkp[2].push_back((int)_variablep.size() - 1);
+		if (rows[0][i]) _variableijkv[0].push_back((int)_variablev.size() - 1);
+		if (rows[1][i]) _variableijkv[1].push_back((int)_variablev.size() - 1);
+		if (rows[2][i]) _variableijkv[2].push_back((int)_variablev.size() - 1);
 	}
-	_size = _partialp.size();
+	_size = (int)_partialp.size();
 	if (_size) { partialp = new Vec3*[_size]; variablep = new int[_size]; }
 	else { partialp = 0; variablep = 0; }
 	for (i = 0; i < _size; i++) { partialp[i] = _partialp[i]; variablep[i] = _variablep[i]; }
 	lenP = _size;
-	_size = _partialv.size();
+	_size = (int)_partialv.size();
 	if (_size) { partialv = new Vec3*[_size]; variablev = new int[_size]; }
 	else { partialv = 0; variablev = 0; }
 	for (i = 0; i < _size; i++) { partialv[i] = _partialv[i]; variablev[i] = _variablev[i]; }
 	lenV = _size;
 
 	for (i = 0; i < 3; i++) {
-		_size = _variableijkp[i].size();
+		_size = (int)_variableijkp[i].size();
 		if (_size) { variableijkp[i] = new int[_size]; }
 		else { variableijkp[i] = 0; }
 		for (j = 0; j < _size; j++) variableijkp[i][j] = _variableijkp[i][j];
 		lijkp[i] = _size;
-		_size = _variableijkv[i].size(); if (_size) { variableijkv[i] = new int[_size]; }
+		_size = (int)_variableijkv[i].size(); if (_size) { variableijkv[i] = new int[_size]; }
 		else { variableijkv[i] = 0; }
 		for (j = 0; j < _size; j++) variableijkv[i][j] = _variableijkv[i][j];
 		lijkv[i] = _size;

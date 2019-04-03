@@ -58,7 +58,7 @@ public:
 	double* get_axis_global(double* zi, int xyz = 2);
 	inline double* get_global_axis(int i) const { return a_mat.v[i]; }
 	inline Mat33* const  mat() { return &a_mat; }
-	void set_omega(double *ome, int *ic = 0) {
+	void set_omega(double *ome) {
 		omega_global[0] = ome[0];
 		omega_global[1] = ome[1];
 		omega_global[2] = ome[2];
@@ -105,7 +105,7 @@ public:
 		return vec;
 	}
 	inline double* get_velocity() const { return (double*)vel; }
-	void set_velocity(double *vec, int *ic = 0) {
+	void set_velocity(double *vec) {
 		EQ3(vel, vec);
 		//	if (ic) { EQ3(iftic, ic) }
 	}
@@ -131,22 +131,12 @@ public:
 
 	inline double*  get_position() const { return (double*)a_pos; }
 
-	double* get_orientation_matrix() {
+	double* get_orientation_matrix();/* {
 		double* p = pmat;
 		p = temp_mat.to_double(p);
 		return p;
-	}
-	double* get_orientation_matrix(double* mat, od_marker* pJ = 0) {
-		if (pJ) {
-			Mat33 temp_mat = a_mat;
-			temp_mat = (pJ->a_mat) ^ temp_mat;
-			mat = temp_mat.to_double(mat);
-		}
-		else {
-			mat = a_mat.to_double(mat);
-		}
-		return mat;
-	}
+	}*/
+	double* get_orientation_matrix(double* mat, od_marker* pJ = 0); 
 	void for_ground_marker_only() {
 		for (int i = 0; i < 3; i++) {
 			a_r_pos[i] = 0.0;

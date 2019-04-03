@@ -17,6 +17,7 @@
 %ignore OdJoint::explicitFixed(int im);
 %ignore OdJoint::explicitFixed();
 %ignore OdSystem::setGravity(double*);
+%ignore OdSystem::OdSystem(char*,int);
 %ignore V3::set(double*, int);
 %ignore V6::set(double*, int);
 %ignore V9::set(double*, int);
