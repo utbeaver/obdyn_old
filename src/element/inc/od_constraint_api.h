@@ -42,6 +42,7 @@ public:
 	V6 vel();
 	V6 acc();
 	int dofs();
+	int rotation(int i);
 	void explicitFixed(int);
 	int explicitFixed();
 };

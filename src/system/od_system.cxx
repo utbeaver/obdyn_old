@@ -2576,10 +2576,7 @@ void OdSystem::add_body(OdBody* pB) {
 		pS->add_marker(pb->get_ith_marker(i));
 	}
 }
-void OdSystem::add_force(OdForce *pF) {
-	od_force *pf = pF->core();
-	pS->add_force(pf);
-}
+
 void OdSystem::add_joint_spdp(OdJointSPDP *pF) {
 	od_joint_spdp* pf = pF->core();
 	pS->add_joint_spdp(pf);
@@ -2593,43 +2590,32 @@ void OdSystem::add_joint_force(OdJointForce *pF) {
   od_systemGeneric *ps = pSub->core();
   pS->add_subsystem(ps);
 }*/
-
-void OdSystem::add_constraint(OdJoint* pJ) {
+char* OdSystem::add_force(OdForce *pF) {
+	od_force *pf = pF->core();
+	int code = pf->check();
+	if (code == 1) { strcpy(tmpstr, (char*)"iMarker is missing: Action Fails!"); }
+	if (code == 2) { strcpy(tmpstr, (char*)"jMarker is missing: Action Fails!"); }
+	if (code == 0) {
+		pS->add_force(pf);
+		strcpy(tmpstr, (char*)"Success!");
+	}
+	return &tmpstr[0];
+}
+char* OdSystem::add_constraint(OdJoint* pJ) {
 	od_joint *pj = pJ->core();
-	int expl = pJ->explicitFixed();
-	if (!expl) pS->add_constraint((od_constraint*)pj);
-	else pS->add_explicit_constraint((od_constraint*)pj);
+	int code = pj->check();
+	if (code == 1) { strcpy(tmpstr, (char*)"iMarker is missing: Action Fails!"); }
+	if (code == 2) { strcpy(tmpstr, (char*)"jMarker is missing: Action Fails!");}
+	if (code == 0) {
+		int expl = pJ->explicitFixed();
+		if (!expl) pS->add_constraint((od_constraint*)pj);
+		else pS->add_explicit_constraint((od_constraint*)pj);
+		strcpy(tmpstr, (char*)"Success!");
+	}
+	return &tmpstr[0];
 }
 
-//void OdSystem::create_incidence(vector_int& inci) {
-	//pS->create_incidence(inci);
-//}
-//void OdSystem::create_incidence() {
-	//vector<int> inci;
-	//pS->create_incidence(inci);
-//}
-//void OdSystem::create_relevence(vector_int& inci) {
-	//pS->create_relevence(inci);
-//}
-/*void OdSystem::connnect_floating_subsystems() {
-	//pS->connnect_floating_subsystems_or_reorder();
-}
-void OdSystem::break_loops() {
-	//pS->break_loops();
-}
-void OdSystem::topology_analysis(vector_int& perm, vector_int& inci, vector_int& rele) {
-	pS->topology_analysis(perm, inci, rele);
-}
-void OdSystem::topology_analysis() {
-	vector<int> perm, inci, rele;
-	pS->topology_analysis(perm, inci, rele);
-}
-void OdSystem::sort_branch(vector_int& rele, vector_int& b_perm, vector_int& j_perm) {
-	//pS->sort_branch(rele, b_perm, j_perm);
-}
-void OdSystem::free_joints(vector_int& f_j) {
-	//pS->free_joints(f_j);
-}*/
+
 char* OdSystem::info(char* msg) {
 	msg = pS->info(msg);
 	return msg;

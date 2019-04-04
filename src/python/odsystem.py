@@ -438,6 +438,9 @@ class OdJoint(_object):
 
     def dofs(self):
         return _odsystem.OdJoint_dofs(self)
+
+    def rotation(self, i):
+        return _odsystem.OdJoint_rotation(self, i)
 OdJoint_swigregister = _odsystem.OdJoint_swigregister
 OdJoint_swigregister(OdJoint)
 

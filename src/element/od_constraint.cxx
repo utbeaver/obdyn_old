@@ -943,6 +943,10 @@ int OdJoint::dofs() {
 	return pJ->dofs();
 }
 
+int OdJoint::rotation(int i) {
+	return pJ->if_rotation(i);
+}
+
 void OdJoint::explicitFixed(int im) {
 	_impl = im;
 }

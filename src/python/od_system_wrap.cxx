@@ -5521,6 +5521,7 @@ SWIGINTERN PyObject *_wrap_OdSystem_add_constraint(PyObject *SWIGUNUSEDPARM(self
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:OdSystem_add_constraint",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OdSystem, 0 |  0 );
@@ -5533,8 +5534,8 @@ SWIGINTERN PyObject *_wrap_OdSystem_add_constraint(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OdSystem_add_constraint" "', argument " "2"" of type '" "OdJoint *""'"); 
   }
   arg2 = reinterpret_cast< OdJoint * >(argp2);
-  (arg1)->add_constraint(arg2);
-  resultobj = SWIG_Py_Void();
+  result = (char *)(arg1)->add_constraint(arg2);
+  resultobj = SWIG_FromCharPtr((const char *)result);
   return resultobj;
 fail:
   return NULL;
@@ -5551,6 +5552,7 @@ SWIGINTERN PyObject *_wrap_OdSystem_add_force(PyObject *SWIGUNUSEDPARM(self), Py
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:OdSystem_add_force",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OdSystem, 0 |  0 );
@@ -5563,8 +5565,8 @@ SWIGINTERN PyObject *_wrap_OdSystem_add_force(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OdSystem_add_force" "', argument " "2"" of type '" "OdForce *""'"); 
   }
   arg2 = reinterpret_cast< OdForce * >(argp2);
-  (arg1)->add_force(arg2);
-  resultobj = SWIG_Py_Void();
+  result = (char *)(arg1)->add_force(arg2);
+  resultobj = SWIG_FromCharPtr((const char *)result);
   return resultobj;
 fail:
   return NULL;
@@ -8453,6 +8455,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_OdJoint_rotation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OdJoint *arg1 = (OdJoint *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:OdJoint_rotation",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OdJoint, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OdJoint_rotation" "', argument " "1"" of type '" "OdJoint *""'"); 
+  }
+  arg1 = reinterpret_cast< OdJoint * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "OdJoint_rotation" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (int)(arg1)->rotation(arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *OdJoint_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
@@ -10187,6 +10220,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"OdJoint_vel", _wrap_OdJoint_vel, METH_VARARGS, NULL},
 	 { (char *)"OdJoint_acc", _wrap_OdJoint_acc, METH_VARARGS, NULL},
 	 { (char *)"OdJoint_dofs", _wrap_OdJoint_dofs, METH_VARARGS, NULL},
+	 { (char *)"OdJoint_rotation", _wrap_OdJoint_rotation, METH_VARARGS, NULL},
 	 { (char *)"OdJoint_swigregister", OdJoint_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_OdForce", _wrap_new_OdForce, METH_VARARGS, NULL},
 	 { (char *)"delete_OdForce", _wrap_delete_OdForce, METH_VARARGS, NULL},

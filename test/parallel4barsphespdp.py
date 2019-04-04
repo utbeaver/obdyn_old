@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from odsystem import *
 import time, sys
+import numpy as np
 py3=0
 if sys.hexversion == 50660592: 
     py3=1
@@ -68,7 +69,7 @@ spdp=OdForce(13, "spdp")
 spdp.spdpt()
 spdp.set_imarker(omar3)
 spdp.set_jmarker(omar9)
-spdp.set_stiffness(1000)
+spdp.set_stiffness(10000)
 spdp.set_damping(1)
 spdp.set_distance(ll*ll)
 fs.append(spdp)
@@ -86,41 +87,30 @@ for i in range(4):
     sys_.add_constraint(c[i])
 for i in fs[:]:
     sys_.add_force(i)
-#sys_.displacement_ic()
-#sys_.velocity_ic()
-#sys_.acceleration_and_force_ic()
-#sys_.static_analysis(15, 1.0e-10)
-#sys_.kinematic_analysis(0.1, 10, 1.0e-10, 20)
-#sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
-x1=[]
-y1=[]
-x2=[]
-y2=[]
-x3=[]
-y3=[]
-t=[]
+hht=1    
+datas=[]
 start=time.time()
-for i in range(2000):
-    t_=i*0.001
-    hht=0
+for i in range(20):
+    t_=i*0.01
+    data=[t_]
     if hht==1:
         sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)
     else:    
         sys_.dynamic_analysis_bdf(t_, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)
-    t.append(t_)
-    pcm1=cm1.P()
-    pcm2=cm2.P()
-    #xyz=cm1.position(0)
-    #xyz2=omar6.position(1)
-    #xyz3=cm3.position(1)
-    x1.append(pcm1.x())
-    y1.append(pcm1.y())
-    x2.append(pcm2.x())
-    y2.append(pcm2.y())
+    for c_ in c:
+        P=c_.disp()
+        for i in range(c_.dofs()):
+            if c_.rotation(i)==1:
+                data.append(P.get(i)*180.0/pi)
+            else:    
+                data.append(P.get(i))
+    datas.append(data)        
+datas=np.array(datas)    
 end=time.time()
 dt=end-start
-plt.plot(t, x2, t, y2)#, t, x3)
+plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3], datas[:,0], datas[:,4], )#, t, x3)
 plt.title("hht %d, time %f"%(hht, dt))
 plt.grid()
 plt.show()
 #sys_.numdif()
+sys.exit(0)

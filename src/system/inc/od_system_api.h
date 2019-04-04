@@ -19,6 +19,7 @@ class V3;
 class LINKSYSTEMDLL OdSystem {
  private:
   od_system *pS;
+  char tmpstr[266];
  public:
   OdSystem(char *pn, int r); 
   OdSystem(char *pn);
@@ -33,8 +34,8 @@ class LINKSYSTEMDLL OdSystem {
   }*/
   void setName(char*);
   void add_body(OdBody* pB); 
-  void add_constraint(OdJoint* pJ); 
-  void add_force(OdForce *pF);
+  char* add_constraint(OdJoint* pJ); 
+  char* add_force(OdForce *pF);
   void add_joint_force(OdJointForce *pJF);
   void add_joint_spdp(OdJointSPDP *pJF);
   

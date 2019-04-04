@@ -150,6 +150,11 @@ public:
 	  j_marker = temp_mar;
 	  reversesign = -1.0;
   }
+  int check() {
+	  if (!i_marker) return 1;
+	  if (!j_marker) return 2;
+	  return 0;
+  }
  
 };
 
