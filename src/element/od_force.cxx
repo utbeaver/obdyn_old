@@ -28,7 +28,7 @@ od_joint_spdp::od_joint_spdp(int Id, char* name_, od_joint* pJ, double k, double
 }
 
 int od_joint_spdp::evaluate_rhs() {
-	double d, v, a;
+	double d, v;// , a;
 	od_object::Analysis_Type _type = pSys->get_analysis_type();
 	d = pJoint->get_P(ith);
 	v = pJoint->get_V(ith);// , od_object::VEL);
@@ -61,7 +61,7 @@ void od_joint_force::init() {
 	//reversed = ((od_joint*)pJoint)->ifReversed(ith);
 }
 
-int od_joint_force::get_partial_size(int i) const { return pExpr->get_partial_size(i); }
+int od_joint_force::get_partial_size(int i) const { return (int)pExpr->get_partial_size(i); }
 
 int od_joint_force::get_partial_col(int i, int j)const { return pExpr->get_partial_col(i, j); }
 
@@ -220,7 +220,7 @@ od_force::~od_force()
 void od_force::init_force() {
 	//initialization involves allocation of the space for partial derivative for dcosx_dq 
 	//if necessary
-	int i, j, col;
+	int i, j;// , col;
 	Vec3 *pV = 0;
 	od_body *pB;
 	int b_index;
@@ -252,7 +252,7 @@ void od_force::init_force() {
 				}
 			}
 		}
-		columns_parRi_size = columns_parRi.size();
+		columns_parRi_size = (int)columns_parRi.size();
 		parRiparq = new od_colVec[columns_parRi_size];
 		for (i = 0; i < columns_parRi_size; i++) {
 			parRiparq[i].setCol(columns_parRi[i]);
@@ -272,7 +272,7 @@ void od_force::init_force() {
 				}
 			}
 		}
-		columns_parRj_size = columns_parRj.size();
+		columns_parRj_size = (int)columns_parRj.size();
 		if (columns_parRj_size) {
 			parRjparq = new od_colVec[columns_parRj_size];
 			for (i = 0; i < columns_parRj_size; i++) {
@@ -420,8 +420,8 @@ int od_storque::init() {
 	unsigned i;
 	Vec3 *pV;
 	init_force();
-	iCount = columns_itorque[0].size();
-	jCount = columns_jtorque[0].size();
+	iCount = (int)columns_itorque[0].size();
+	jCount = (int)columns_jtorque[0].size();
 	if (pSys) pExpr->set_system(pSys);
 	pExpr->init();
 	for (int j = 0; j < 3; j++) {
@@ -529,13 +529,13 @@ int od_sforce::init() {
 			partial_jtorque[jj].push_back(pV);
 		}
 	}
-	_size = columns_parRi.size();
+	_size = (int)columns_parRi.size();
 	for (i = 0; i < _size; i++) {
 		pV = new Vec3();
 		columns_itorque[0].push_back(columns_parRi[i]);
 		partial_itorque[0].push_back(pV);
 	}
-	_size = columns_parRj.size();
+	_size = (int)columns_parRj.size();
 	for (i = 0; i < _size; i++) {
 		pV = new Vec3();
 		columns_jtorque[0].push_back(columns_parRj[i]);
@@ -581,7 +581,7 @@ void od_sforce::evaluate(int _partial) {
 			}
 		}
 		counter = tempInt;
-		tempInt = pExpr->get_partial_size();
+		tempInt = (int)pExpr->get_partial_size();
 		for (i = 0; i < tempInt; i++) {
 			temp_d = pExpr->get_partial(i);
 			pd = cos_q.VxD(pd, temp_d);
@@ -599,13 +599,13 @@ void od_sforce::evaluate(int _partial) {
 			}
 		}
 		counter += tempInt;
-		tempInt = columns_parRi.size();
+		tempInt = (int)columns_parRi.size();
 		for (i = 0; i < tempInt; i++) {
 			//par_Ti += par_Ri * Fi
 			j = i + counter;
 			cross_product_with_double(*parRi[i], iForce, *partial_itorque[0][j]);
 		}
-		tempInt = columns_parRj.size();
+		tempInt = (int)columns_parRj.size();
 		for (i = 0; i < tempInt; i++) {
 			//par_Tj += par_Rj * Fj
 			j = i + counter;
@@ -691,28 +691,28 @@ int od_spdpt::init() {
 		columns_jtorque[0].push_back(columns_parRj[i]);
 	}
 	for (i = 0; i < 3; i++) {
-		columns_iforce_size[i] = columns_iforce[i].size();
+		columns_iforce_size[i] = (int)columns_iforce[i].size();
 		if (0 != columns_iforce_size[i]) {
 			partialIforce[i] = new od_colVec[columns_iforce_size[i]];
 			for (j = 0; j < columns_iforce_size[i]; j++) {
 				partialIforce[i][j].setCol(columns_iforce[i][j]);
 			}
 		}
-		columns_jforce_size[i] = columns_jforce[i].size();
+		columns_jforce_size[i] = (int)columns_jforce[i].size();
 		if (0 != columns_jforce_size[i]) {
 			partialJforce[i] = new od_colVec[columns_jforce_size[i]];
 			for (j = 0; j < columns_jforce_size[i]; j++) {
 				partialJforce[i][j].setCol(columns_jforce[i][j]);
 			}
 		}
-		columns_itorque_size[i] = columns_itorque[i].size();
+		columns_itorque_size[i] = (int)columns_itorque[i].size();
 		if (0 != columns_itorque_size[i]) {
 			partialItorque[i] = new od_colVec[columns_itorque_size[i]];
 			for (j = 0; j < columns_itorque_size[i]; j++) {
 				partialItorque[i][j].setCol(columns_itorque[i][j]);
 			}
 		}
-		columns_jtorque_size[i] = columns_jtorque[i].size();
+		columns_jtorque_size[i] = (int)columns_jtorque[i].size();
 		if (0 != columns_jtorque_size[i]) {
 			partialJtorque[i] = new od_colVec[columns_jtorque_size[i]];
 			for (j = 0; j < columns_jtorque_size[i]; j++) {
@@ -733,7 +733,7 @@ double od_spdpt::getPE() {
 
 void od_spdpt::evaluate(int _partial) {
 	int i, j, tempInt, _size, counter = 0;
-	double *pV;
+	//double *pV;
 	double xyz[3], tempd3[3], tempd, *dt, *dv, e_sth, de_dv, e_dv;
 	double* pd = xyz;
 	double* pe=0;
@@ -995,7 +995,7 @@ int od_beam::init() {
 		cols.push_back(j);
 	}
 	//parAjparq
-	_size = jIds.size();
+	_size = (int)jIds.size();
 	parFTparq_size += _size;
 	for (i = 0; i < _size; i++) {
 		j = jIds[i];
@@ -1050,36 +1050,36 @@ int od_beam::init() {
 
 	// partial of AjFi
 	//partial of Ri x (AjTi)
-	_size = iIds.size();
+	_size = (int)iIds.size();
 	for (i = 0; i < _size; i++) {
 		columns_itorque[0].push_back(iIds[i]);
 	}
 	//partial of Rj x (AjTi)
-	_size = jIds.size();
+	_size = (int)jIds.size();
 	for (i = 0; i < _size; i++) {
 		columns_jtorque[0].push_back(jIds[i]);
 	}
 	//allocate memory for partialIforce
 	for (ii = 0; ii < 2; ii++) {
-		columns_iforce_size[ii] = columns_iforce[ii].size();
+		columns_iforce_size[ii] = (int)columns_iforce[ii].size();
 		partialIforce[ii] = new od_colVec[columns_iforce_size[ii]];
 		for (i = 0; i < columns_iforce_size[ii]; i++) {
 			j = columns_iforce[ii][i];
 			partialIforce[ii][i].setCol(j);
 		}
-		columns_jforce_size[ii] = columns_jforce[ii].size();
+		columns_jforce_size[ii] = (int)columns_jforce[ii].size();
 		partialJforce[ii] = new od_colVec[columns_jforce_size[ii]];
 		for (i = 0; i < columns_jforce_size[ii]; i++) {
 			j = columns_jforce[ii][i];
 			partialJforce[ii][i].setCol(j);
 		}
-		columns_itorque_size[ii] = columns_itorque[ii].size();
+		columns_itorque_size[ii] = (int)columns_itorque[ii].size();
 		partialItorque[ii] = new od_colVec[columns_itorque_size[ii]];
 		for (i = 0; i < columns_itorque_size[ii]; i++) {
 			j = columns_itorque[ii][i];
 			partialItorque[ii][i].setCol(j);
 		}
-		columns_jtorque_size[ii] = columns_jtorque[ii].size();
+		columns_jtorque_size[ii] = (int)columns_jtorque[ii].size();
 		partialJtorque[ii] = new od_colVec[columns_jtorque_size[ii]];
 		for (i = 0; i < columns_jtorque_size[ii]; i++) {
 			j = columns_jtorque[ii][i];
@@ -1173,7 +1173,7 @@ void od_beam::evaluate(int partial) {
 			parTjparq[i].setVals(tempDj + 3);
 		}
 		lastCount += _size;
-		_size = jIds.size();
+		_size = (int)jIds.size();
 		//parAj_parq
 		for (i = 0; i < (int)_size; i++) {
 			j = lastCount + i;
@@ -1208,14 +1208,14 @@ void od_beam::evaluate(int partial) {
 				ADD3(pV, vecTemp, tempD)
 				partialJtorque[0][i].setVals(tempD);
 		}
-		_size = iIds.size();
+		_size = (int)iIds.size();
 		//parRi x Fi
 		for (i = 0; i < _size; i++) {
 			pd = parRiparq[i].v();
 			CROSS_X(pd, iForce, vecTemp) partialItorque[0][lastCount + i].setVals(vecTemp);
 		}
 		//lastCount +=_size;
-		_size = jIds.size();
+		_size = (int)jIds.size();
 		//parRj x Fi
 		for (i = 0; i < _size; i++) {
 			pd = parRjparq[i].v();
@@ -1329,7 +1329,7 @@ int od_bushing::init() {
 		cols.push_back(j);
 	}
 	//parAjparq
-	_size = jIds.size();
+	_size = (int)jIds.size();
 	parFTparq_size += _size;
 	for (i = 0; i < _size; i++) {
 		j = jIds[i];
@@ -1367,12 +1367,12 @@ int od_bushing::init() {
 	}
 	// partial of AjFi
 	//partial of Ri x (AjFi)
-	_size = iIds.size();
+	_size = (int)iIds.size();
 	for (i = 0; i < _size; i++) {
 		columns_itorque[0].push_back(iIds[i]);
 	}
 	//partial of Rj x (AjFi)
-	_size = jIds.size();
+	_size = (int)jIds.size();
 	for (i = 0; i < _size; i++) {
 		columns_jtorque[0].push_back(jIds[i]);
 	}
@@ -1385,25 +1385,25 @@ int od_bushing::init() {
 	}
 
 	for (ii = 0; ii < 2; ii++) {
-		columns_iforce_size[ii] = columns_iforce[ii].size();
+		columns_iforce_size[ii] = (int)columns_iforce[ii].size();
 		if (columns_iforce_size[ii]) partialIforce[ii] = new od_colVec[columns_iforce_size[ii]];
 		for (i = 0; i < columns_iforce_size[ii]; i++) {
 			j = columns_iforce[ii][i];
 			partialIforce[ii][i].setCol(j);
 		}
-		columns_itorque_size[ii] = columns_itorque[ii].size();
+		columns_itorque_size[ii] = (int)columns_itorque[ii].size();
 		if (columns_itorque_size[ii]) partialItorque[ii] = new od_colVec[columns_itorque_size[ii]];
 		for (i = 0; i < columns_itorque_size[ii]; i++) {
 			j = columns_itorque[ii][i];
 			partialItorque[ii][i].setCol(j);
 		}
-		columns_jforce_size[ii] = columns_jforce[ii].size();
+		columns_jforce_size[ii] = (int)columns_jforce[ii].size();
 		if (columns_jforce_size[ii]) partialJforce[ii] = new od_colVec[columns_jforce_size[ii]];
 		for (i = 0; i < columns_jforce_size[ii]; i++) {
 			j = columns_jforce[ii][i];
 			partialJforce[ii][i].setCol(j);
 		}
-		columns_jtorque_size[ii] = columns_jtorque[ii].size();
+		columns_jtorque_size[ii] = (int)columns_jtorque[ii].size();
 		if (columns_jtorque_size[ii]) partialJtorque[ii] = new od_colVec[columns_jtorque_size[ii]];
 		for (i = 0; i < columns_jtorque_size[ii]; i++) {
 			j = columns_jtorque[ii][i];
@@ -1467,7 +1467,7 @@ void od_bushing::evaluate(int partial) {
 			parTparq[i].setVals(tempT);
 		}
 		lastCount += _size;
-		_size = jIds.size();
+		_size = (int)jIds.size();
 		//parAj_parq
 		for (i = 0; i < (int)_size; i++) {
 			j = lastCount + i;
@@ -1498,13 +1498,13 @@ void od_bushing::evaluate(int partial) {
 			partialJtorque[0][i].setVals(vecTemp);
 		}
 		//parRi x Fi
-		_size = iIds.size();
+		_size = (int)iIds.size();
 		for (i = 0; i < _size; i++) {
 			pd = parRiparq[i].v();
 			CROSS_X(pd, iForce, vecTemp) partialItorque[0][lastCount + i].setVals(vecTemp);
 		}
 		//parRj x Fi
-		_size = jIds.size();
+		_size = (int)jIds.size();
 		for (i = 0; i < _size; i++) {
 			pd = parRjparq[i].v();
 			CROSS_X(pd, jForce, vecTemp) partialJtorque[0][lastCount + i].setVals(vecTemp);
@@ -1603,7 +1603,7 @@ void OdForce::set_jmarker(OdMarker *pM) {
 }
 
 void OdForce::set_expr(char* pexpr) {
-	int len = strlen(pexpr);
+	int len = (int)strlen(pexpr);
 	_expr = new char[len + 1];
 	strcpy(_expr, pexpr);
 }
@@ -1683,7 +1683,7 @@ void OdJointForce::setJoint(OdJoint *_pJ) {
 }
 
 void OdJointForce::set_expr(char* pexpr) {
-	int len = strlen(pexpr);
+	int len = (int)strlen(pexpr);
 	_expr = new char[len + 1];
 	strcpy(_expr, pexpr);
 }

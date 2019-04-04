@@ -82,7 +82,7 @@ public:
 	inline double* get_zi() const { return From->get_global_axis(xyz_); }
 
 	inline double* get_cross_zi() { return w_cross_zi; }
-	inline double* get_zi_global(double* Zi, od_object::DOF_TYPE type = od_object::ROT_DOF) {
+	inline double* get_zi_global(double* Zi/*, od_object::DOF_TYPE type = od_object::ROT_DOF*/) {
 		return From->get_axis_global(Zi, xyz_);
 	}
 
@@ -429,7 +429,7 @@ public:
 	inline void  setPartialVec3(int j, Vec3** vec) {
 		parVec3col[j] = vec;
 	}
-	inline Vec3* getPartialVec3(int i, int j, int len = 0) {
+	inline Vec3* getPartialVec3(int i, int j) {
 		return parVec3col[j][i];
 	}
 	double* get_ith_par_col(int i, int len_) {

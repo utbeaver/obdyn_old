@@ -47,7 +47,7 @@ public:
 	inline int numCols() const { return 1; }
 	int const operator!=(const Vec3& another) const {
 		Vec3 temp;
-		int flag = 1;
+		//int flag = 1;
 		temp = another;
 		temp = (*this) ^ (temp);
 		return 1;

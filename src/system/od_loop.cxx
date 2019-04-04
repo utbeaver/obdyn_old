@@ -75,8 +75,8 @@ int od_loopr::initialize(int keep) {
 	for (i = 0; i < 2; i++) delete[] ij_idx[i];
 	num_NZ = 0;
 	//calculate the number of non-zeros
-	num_NZ += entries2[0].size();
-	num_NZ += entries2[1].size();
+	num_NZ += (int)entries2[0].size();
+	num_NZ += (int)entries2[1].size();
 	num_NZ *= 6;
 	row_index = new int[num_NZ];
 	col_index = new int[num_NZ];
@@ -86,7 +86,7 @@ int od_loopr::initialize(int keep) {
 	//	fltTemp = values;
 	int counter = 0;
 	for (i = 0; i < 2; i++) {
-		int temp_int = entries2[i].size();
+		int temp_int = (int)entries2[i].size();
 		JR_disp[i].resize(temp_int);
 		JR_vel[i].resize(temp_int);
 		JR_veld[i].resize(temp_int);
@@ -166,8 +166,8 @@ int od_loopv::initialize(int keep) {
 
 	num_NZ = 0;
 	//calculate the number of non-zeros
-	num_NZ += entries2[0].size();
-	num_NZ += entries2[1].size();
+	num_NZ += (int)entries2[0].size();
+	num_NZ += (int)entries2[1].size();
 	num_NZ *= 6;
 	row_index = new int[num_NZ];
 	col_index = new int[num_NZ];
@@ -177,7 +177,7 @@ int od_loopv::initialize(int keep) {
 	//	fltTemp = values;
 	int counter = 0;
 	for (i = 1; i < 2; i++) {
-		int temp_int = entries2[i].size();
+		int temp_int = (int)entries2[i].size();
 		JR_disp[i].resize(temp_int);
 		JR_vel[i].resize(temp_int);
 		JR_veld[i].resize(temp_int);
@@ -251,7 +251,7 @@ void od_loop::clean() {
 	//if (delocMem) {
 	//	delocMem = 0;
 	for (i = 0; i < 2; i++) {
-		temp_int = entries2[i].size();
+		temp_int = (int)entries2[i].size();
 		for (j = 0; j < temp_int; j++) {
 			delete JR_disp[i][j];
 			//delete JR_veld[i][j];
@@ -314,8 +314,8 @@ void od_loop::find_redundants() {
 	int i, j, temp_int;
 	int six = 6;
 	double *temp_mat = 0;
-	int total_leni = entries2[0].size();
-	int total_lenj = entries2[1].size();
+	int total_leni = (int)entries2[0].size();
+	int total_lenj = (int)entries2[1].size();
 	int total_len = total_leni + total_lenj;
 	redundant_cons.clear();
 	temp_int = total_len * 6;
@@ -669,7 +669,7 @@ void od_loop::evaluate(int rhs_only) {
 	fltTemp = values;
 	fltTempV = valuesV;
 	for (i = 0; i < 2; i++) {
-		temp_int = entries2[i].size();
+		temp_int = (int)entries2[i].size();
 		for (j = 0; j < temp_int; j++) {
 			if (
 				jtype == od_object::JAC_INIT_DISP ||

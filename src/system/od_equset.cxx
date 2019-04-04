@@ -17,7 +17,7 @@ od_equation::createPermuV(int len_){// vector<int>& dofmap) {
 	vector<int> tempV;
 	vector<int> tempV_;
 	int i, size_;
-	size_ = dofmap.size();
+	size_ = (int)dofmap.size();
 	if (len_) size_ = len_;
 	if (!_dofmap) _dofmap = new int[size_];
 	if (!permuV) permuV = new int[size_];
@@ -171,7 +171,7 @@ int od_equation_kin_and_static::evaluate(int eval_jac) {
 		if (_type == ACC_FORCE) {
 		//if (_type == od_object::Analysis_Type::ACC_FORCE) {
 			for (i = 0; i < tree_ndofs; i++) {
-				if (dofmap[i] == 0) dofmap[i] = -1.0; // motioned freedom
+				if (dofmap[i] == 0) dofmap[i] = -1; // motioned freedom
 			}
 		}
 		createPermuV();// dofmap);

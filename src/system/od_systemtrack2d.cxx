@@ -109,7 +109,7 @@ void od_systemTrack2D::init_tree(double *_p, double *_v, double *_a, int dof_idx
 		pC->set_temp_pva(p, v, a);
 		p += c_dofs; v += c_dofs; a += c_dofs;
 	}
-	int _size = element_list.size();
+	int _size = (int)element_list.size();
 	if (_size)element_list_ = new od_element*[_size];
 	for (i = 0; i < _size; i++) element_list_[i] = element_list[i];
 	od_systemGeneric::get_states();

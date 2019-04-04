@@ -21,6 +21,7 @@ class LINKSYSTEMDLL OdSystem {
   od_system *pS;
  public:
   OdSystem(char *pn, int r); 
+  OdSystem(char *pn);
   ~OdSystem();
   double cpuTime();
   double jacTime();

@@ -3639,6 +3639,72 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_V3_x(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  V3 *arg1 = (V3 *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:V3_x",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_V3, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "V3_x" "', argument " "1"" of type '" "V3 *""'"); 
+  }
+  arg1 = reinterpret_cast< V3 * >(argp1);
+  result = (double)(arg1)->x();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_V3_y(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  V3 *arg1 = (V3 *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:V3_y",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_V3, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "V3_y" "', argument " "1"" of type '" "V3 *""'"); 
+  }
+  arg1 = reinterpret_cast< V3 * >(argp1);
+  result = (double)(arg1)->y();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_V3_z(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  V3 *arg1 = (V3 *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:V3_z",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_V3, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "V3_z" "', argument " "1"" of type '" "V3 *""'"); 
+  }
+  arg1 = reinterpret_cast< V3 * >(argp1);
+  result = (double)(arg1)->z();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_delete_V3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   V3 *arg1 = (V3 *) 0 ;
@@ -5221,28 +5287,19 @@ SWIGINTERN PyObject *OdBody_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObjec
 SWIGINTERN PyObject *_wrap_new_OdSystem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char *arg1 = (char *) 0 ;
-  int arg2 ;
   int res1 ;
   char *buf1 = 0 ;
   int alloc1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
   OdSystem *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_OdSystem",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OdSystem",&obj0)) SWIG_fail;
   res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OdSystem" "', argument " "1"" of type '" "char *""'");
   }
   arg1 = reinterpret_cast< char * >(buf1);
-  ecode2 = SWIG_AsVal_int(obj1, &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_OdSystem" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  result = (OdSystem *)new OdSystem(arg1,arg2);
+  result = (OdSystem *)new OdSystem(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_OdSystem, SWIG_POINTER_NEW |  0 );
   if (alloc1 == SWIG_NEWOBJ) delete[] buf1;
   return resultobj;
@@ -10043,6 +10100,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"V3_size", _wrap_V3_size, METH_VARARGS, NULL},
 	 { (char *)"V3_get", _wrap_V3_get, METH_VARARGS, NULL},
 	 { (char *)"V3_ptr", _wrap_V3_ptr, METH_VARARGS, NULL},
+	 { (char *)"V3_x", _wrap_V3_x, METH_VARARGS, NULL},
+	 { (char *)"V3_y", _wrap_V3_y, METH_VARARGS, NULL},
+	 { (char *)"V3_z", _wrap_V3_z, METH_VARARGS, NULL},
 	 { (char *)"delete_V3", _wrap_delete_V3, METH_VARARGS, NULL},
 	 { (char *)"V3_swigregister", V3_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_V6", _wrap_new_V6, METH_VARARGS, NULL},

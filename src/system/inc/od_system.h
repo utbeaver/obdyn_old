@@ -169,7 +169,7 @@ public:
 
 	void addEntry(int row, int col, Vec3* pV) {
 		numNZ++;
-		int idx = cols.size();
+		int idx = (int)cols.size();
 		pV->idx = idx;
 		cols.push_back(col);
 		rows.push_back(row);
@@ -298,7 +298,7 @@ public:
 	//temp Variables
 	vector<od_element*> element_list;
 	vector<od_element*> aux_element_list;
-	vector<od_body*> body_list;;
+	vector<od_body*> body_list;
 	vector<od_marker*> marker_list;
 	vector<od_force*> force_list;
 	vector<od_constraint*> constraint_list;
@@ -421,7 +421,7 @@ public:
 		DELARY(relevenceLevel2);
 		DELARY(relevenceLevel3);
 	}
-	int get_num_explicit_constraints() const { return explicit_constraint_list.size(); }
+	int get_num_explicit_constraints() const { return (int)explicit_constraint_list.size(); }
 	int initialize();
 	virtual void calculate_JR(int no_dot = 1);
 	virtual void calculate_JRdot();

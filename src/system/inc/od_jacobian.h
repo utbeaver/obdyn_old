@@ -153,7 +153,7 @@ void od_jacobian<T>::create_jacobian(int r, int c, int *topolevel)
 				_objList.push_back(pT);
 			}
 		}
-		size_ = _objList.size();
+		size_ = (int)_objList.size();
 		objList = new T*[size_];
 		for (i = 0; i < size_; i++) objList[i] = _objList[i];
 	}

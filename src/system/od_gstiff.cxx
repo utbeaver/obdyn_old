@@ -259,6 +259,7 @@ int od_hhti3::correct() {
 	}
 	fill(yyErr, yyErr + numVar, 0.0);
 	Dx1 = 1.0;
+	maxRhsIdx = 0;
 	right = c * c * phiN / (h*h*h*h);
 	bhh = this->beta*h*h;
 	for (numCorrect = 0; numCorrect < maxCorrectNum; numCorrect++) {

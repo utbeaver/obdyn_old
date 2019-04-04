@@ -60,12 +60,12 @@ void od_systemGeneric::init() {
 	pGround = 0;// new od_body(id = 0, "ground");
 }
 int od_systemGeneric::get_num_body() {
-	int num = body_list.size();
+	int num = (int)body_list.size();
 	//for (int i = 0; i < nsystem; i++) num += _subSys[i]->get_num_body();
 	return num;
 }
 int od_systemGeneric::get_num_constraint() {
-	int num = constraint_list.size();
+	int num = (int)constraint_list.size();
 	//for (int i = 0; i < nsystem; i++) num += _subSys[i]->get_num_constraint();
 	return num;
 }
@@ -91,14 +91,14 @@ void od_systemGeneric::add_body(od_body *pb) {
 	else {
 		body_list.push_back(pb);
 		element_list.push_back((od_element*)pb);
-		index = body_list.size() - 1;
+		index = (int)body_list.size() - 1;
 	}
 	pb->set_index(index); idBody[pb->get_id()] = pb;
 }
 void od_systemGeneric::add_force(od_force *pf) {
 	force_list.push_back(pf);
 	element_list.push_back((od_element*)pf);
-	int index = force_list.size() - 1;
+	int index = (int)force_list.size() - 1;
 	idForce[pf->get_id()] = pf;
 }
 void od_systemGeneric::add_joint_force(od_joint_force *pf) {
@@ -122,7 +122,7 @@ void od_systemGeneric::add_marker(od_marker *pm) {
 	else {
 		aux_element_list.push_back((od_element*)pm);
 	}
-	index = marker_list.size() - 1;
+	index = (int)marker_list.size() - 1;
 	idMarker[pm->get_id()] = pm;
 	pm->set_index(index);
 }
@@ -137,7 +137,7 @@ void od_systemGeneric::add_constraint(od_constraint *pc) {
 		//add floating joint
 		aux_element_list.push_back((od_element*)pc);
 	}
-	index = constraint_list.size() - 1;
+	index = (int)constraint_list.size() - 1;
 	idJoint[pc->get_id()] = pc;
 
 	pc->set_index(index);
@@ -150,7 +150,7 @@ void od_systemGeneric::add_constraint(od_constraint *pc) {
 void od_systemGeneric::add_explicit_constraint(od_constraint *pc) {
 	explicit_constraint_list.push_back(pc);
 	aux_element_list.push_back((od_element*)pc);
-	int index = explicit_constraint_list.size() - 1;
+	int index = (int)explicit_constraint_list.size() - 1;
 	pc->set_index(index);
 }
 void od_systemGeneric::get_states() {
@@ -633,7 +633,7 @@ void od_systemMechanism::topology_analysis_level2() {
 		//	continue;
 		tree_ndofs += ((od_joint*)(*it))->dofs();
 	}
-	int num_body = body_list.size();
+	int num_body = (int)body_list.size();
 	temp_int = num_body * tree_ndofs;
 	relevence_level2.resize(temp_int);
 	relevence_level3.resize(temp_int);
@@ -1158,8 +1158,8 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 	return pRhs + tree_dof;
 }
 void od_systemGeneric::unset_evaluated() {
-	unsigned i;
-	unsigned _size = element_list.size();
+	int i;
+	int _size = (int)element_list.size();
 	for (i = 0; i < _size; i++) (*(element_list_ + i))->unevaluate();
 	for_each(aux_element_list.begin(), aux_element_list.end(), mem_fun(&od_element::unevaluate));
 	for_each(expr_list.begin(), expr_list.end(), mem_fun(&Expression::unevaluate));
@@ -1237,9 +1237,9 @@ void od_system::_init() {
 }
 
 od_system::~od_system() {
-	unsigned ii;
+	int ii;
 	od_element *pE;
-	unsigned size_ = element_list.size();
+	int size_ = (int)element_list.size();
 	if (pMsgFile) pMsgFile->close();
 	delete pMsgFile;
 	if (pOutFile) { pOutFile->close(); delete pOutFile; }
@@ -1249,12 +1249,12 @@ od_system::~od_system() {
 			if (pE) delete pE;
 		}
 	}
-	size_ = aux_element_list.size();
+	size_ = (int)aux_element_list.size();
 	for (ii = 0; ii < size_; ii++) {
 		pE = aux_element_list[ii];
 		if (pE) delete pE;
 	}
-	size_ = expr_list.size();
+	size_ = (int)expr_list.size();
 	for (ii = 0; ii < size_; ii++) {
 		delete expr_list[ii];
 	}
@@ -1273,7 +1273,7 @@ void od_systemMechanism::create_incidence(vector<int>& incid, int num_joint)
 	int i_index, j_index, i;
 	od_constraint* pC;
 	od_marker *pMi, *pMj;
-	int num_body = body_list.size();
+	int num_body = (int)body_list.size();
 	//tag the connected bodies
 	for_each(constraint_list.begin(), constraint_list.end(),
 		mem_fun(&od_constraint::tag_attached_body));
@@ -1298,7 +1298,7 @@ void od_systemMechanism::create_incidence(vector<int>& incid, int num_joint)
 	for_each(body_list.begin(), body_list.end(), mem_fun(&od_body::untag));
 	//fill in the incidence matrix
 	//if (!num_joint)
-	num_joint = constraint_list.size();
+	num_joint = (int)constraint_list.size();
 	for (i = 0; i < num_joint; i++) {
 		i_index = j_index = 0;
 		for (int j = 0; j < num_body; j++) incid.push_back(0);
@@ -1320,13 +1320,13 @@ void od_systemMechanism::create_incidence(vector<int>& incid, int num_joint)
 		if (i_index >= 0) incid[i*num_body + i_index] = 1;
 		if (j_index >= 0) incid[i*num_body + j_index] = -1;
 	}
-	nbody = body_list.size();
-	njoint = constraint_list.size();
+	nbody = (int)body_list.size();
+	njoint = (int)constraint_list.size();
 }
 
 void od_systemMechanism::create_relevence(vector<int>& relev, int num_joint)
 {
-	if (num_joint == 0) num_joint = constraint_list.size();
+	if (num_joint == 0) num_joint = (int)constraint_list.size();
 	for (int i = 0; i < num_joint; i++) {
 		for (int j = 0; j < num_joint; j++) relev.push_back(0);
 		relev[i*num_joint + i] = 1;
@@ -1336,13 +1336,13 @@ void od_systemMechanism::topology_analysis(vector_int& perm, vector_int& inci, v
 	vector<int> _perm, _inci, _rele;
 	int size, i;
 	topology_analysis(_perm, _inci, _rele);
-	size = _perm.size();
+	size = (int)_perm.size();
 	perm.resize(size);
 	for (i = 0; i < size; i++) perm[i] = _perm[i];
-	size = _inci.size();
+	size = (int)_inci.size();
 	inci.resize(size);
 	for (i = 0; i < size; i++) inci[i] = _inci[i];
-	size = _rele.size();
+	size = (int)_rele.size();
 	rele.resize(size);
 	for (i = 0; i < size; i++) rele[i] = _rele[i];
 }
@@ -1354,8 +1354,8 @@ void od_systemMechanism::topology_analysis(vector<int>& perm, vector<int>& incid
 	int partial = 0;
 	obdyn_topology od_topo;
 
-	nbody = body_list.size();
-	njoint = constraint_list.size();
+	nbody = (int)body_list.size();
+	njoint = (int)constraint_list.size();
 	create_incidence(incidence, partial);
 	create_relevence(relevence, partial);
 	perm.resize((njoint > nbody) ? njoint : nbody);
@@ -1488,8 +1488,8 @@ void od_systemMechanism::topology_analysis_level1() {
 
 	topology_analysis(temp_perm, temp_inci, relevence_level1);
 
-	nbody = body_list.size();
-	njoint = constraint_list.size();
+	nbody = (int)body_list.size();
+	njoint = (int)constraint_list.size();
 	int num_joints = num_joint();
 	for (i = 0; i < num_body(); i++) {
 		for (j = 0; j < num_joints; j++) {
@@ -1512,7 +1512,7 @@ void od_systemMechanism::print_rele1(void) {
 double od_system::getKPE() {
 	int i;
 	double energy = 0.0;
-	double vec[3];
+	//double vec[3];
 	double KE, PE;
 	KE = 0.0; PE = 0.0;
 	for (i = 0; i < nbody; i++) {
@@ -1638,7 +1638,7 @@ void od_systemMechanism::init_tree(double *_p, double *_v, double *_a, int dof_i
 	parVel_dot_parqG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	//parVel_dot_parqG_alpha.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	parVel_dot_parq_dotG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
-	int _size = element_list.size();
+	int _size = (int)element_list.size();
 	if (_size) element_list_ = new od_element*[_size];
 	for (i = 0; i < _size; i++) element_list_[i] = element_list[i];
 
@@ -1800,7 +1800,7 @@ int od_systemMechanism::graphW() {
 	return 1;
 }
 int od_systemGeneric::initialize(int start_idx, int start_bidx) {
-	size_t i;
+	int i;
 	//size_t _size;
 	//int temp;
 
@@ -1811,7 +1811,7 @@ int od_systemGeneric::initialize(int start_idx, int start_bidx) {
 	topology_analysis_level2();
 
 	DELARY(body_list_);
-	nbody = body_list.size();
+	nbody = (int)body_list.size();
 	if (nbody) body_list_ = new od_body*[nbody];
 	for (i = 0; i < nbody; i++) {
 		body_list_[i] = body_list[i];
@@ -1819,7 +1819,7 @@ int od_systemGeneric::initialize(int start_idx, int start_bidx) {
 	}
 	body_list.clear();
 
-	njoint = constraint_list.size();
+	njoint = (int)constraint_list.size();
 	DELARY(constraint_list_);
 	if (njoint) constraint_list_ = new od_constraint*[njoint];
 	else constraint_list_ = 0;
@@ -1829,7 +1829,7 @@ int od_systemGeneric::initialize(int start_idx, int start_bidx) {
 		constraint_list_[i]->set_index(start_bindex + i);
 		((od_joint*)constraint_list_[i])->dofMap(dofmap_);
 	}
-	nforce = force_list.size();
+	nforce = (int)force_list.size();
 	if (nforce) force_list_ = new od_force*[nforce];
 	for (i = 0; i < num_force(); i++) {
 		force_list[i]->set_system(this);
@@ -1841,14 +1841,14 @@ int od_systemGeneric::initialize(int start_idx, int start_bidx) {
 		force_list_[i] = force_list[i];
 	}
 	force_list.clear();
-	njforce = joint_force_list.size();
+	njforce = (int)joint_force_list.size();
 	if (njforce) joint_force_list_ = new od_jointF*[njforce];
 	for (i = 0; i < njforce; i++) {
 		joint_force_list_[i] = joint_force_list[i];
 	}
 	joint_force_list.clear();
 
-	lambda_dof = 6 * explicit_constraint_list.size();
+	lambda_dof = 6 * (int)explicit_constraint_list.size();
 
 	initialized = 1;
 	return tree_dofs() + lambda_dof;
@@ -1883,7 +1883,7 @@ int od_systemMechanism::initialize() {
 	Tree_Ndofs = od_systemGeneric::initialize();
 	for (i = 0; i < tree_ndofs; i++) mapdof.push_back(dofmap_[i]);
 	for (i = tree_ndofs; i < blockSize(); i++) mapdof.push_back(LAMBDA);
-	nsystem = subSys.size();
+	nsystem = (int)subSys.size();
 	sindex = this->num_body();
 	if (nsystem) _subSys = new od_systemGeneric*[nsystem];
 	for (i = 0; i < tree_dofs(); i++) mapdof.push_back(DOF);
@@ -1916,13 +1916,13 @@ void od_systemMechanism::print_inci(vector<int>& inci, int nb, int nj) {
 	for (i = 0; i < nbody; i++) {
 		pB = body_list[i];
 		if (strlen((pB->name()).c_str()) > (unsigned)max_body_str_len) {
-			max_body_str_len = strlen((pB->name()).c_str()) + 1;
+			max_body_str_len = (int)strlen((pB->name()).c_str()) + 1;
 		}
 	}
 	for (i = 0; i < njoint; i++) {
 		pC = constraint_list[i];
 		if (strlen((pC->name()).c_str()) > (unsigned) max_joint_str_len) {
-			max_joint_str_len = strlen((pC->name()).c_str()) + 1;
+			max_joint_str_len = (int)strlen((pC->name()).c_str()) + 1;
 		}
 	}
 	//print title
@@ -2557,8 +2557,9 @@ int od_system::static_analysis(int iter, double tol)
 }
 
 
-//OdSystem::OdSystem(int i) {pS = new od_system(i);}
 OdSystem::OdSystem(char *pn, int r) { pS = new od_system(pn, r); }
+OdSystem::OdSystem(char *pn) { pS = new od_system(pn, 1); }
+
 OdSystem::~OdSystem() {
 	if (pS) delete pS;
 	pS = 0;
