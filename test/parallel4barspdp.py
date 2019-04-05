@@ -103,8 +103,8 @@ for i in range(1):
 start=time.time()
 datas=[]
 hht=1
-for i in range(2000):
-    t_=i*0.001
+for i in range(500):
+    t_=i*0.01
     data=[t_]
     if hht==1:
         sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)

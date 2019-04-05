@@ -2,14 +2,22 @@ import os, sys, glob, shutil
 import numpy as np
 cwd=os.getcwd()
 testfile_dir=os.path.dirname(__file__)
+py3=0
+print (sys.hexversion)
+if sys.hexversion  > 50000000: 
+    py3=1
 #print testfile_dir
 pyfiles=glob.glob(os.path.join(testfile_dir, "*.py"))
 #print pyfiles
 python_="python"
+if py3==1:
+    python_="python3"
 if "win" in sys.platform.lower():
     shutil.copy(os.path.join(testfile_dir.replace("test", "src"), "python", "odsystem.py"), os.path.join(cwd, "odsystem.py"))
     shutil.copy(os.path.join(cwd, "odsystem", "x64", "Debug", "_odsystem.pyd"), os.path.join(cwd, "_odsystem.pyd"))
     python_="c:\python27\python"
+    if py3==1:
+        python_="c:\python35\python"
 fn={}
 for pyf in pyfiles:
     pf=open(pyf, "r")
@@ -20,7 +28,7 @@ for pyf in pyfiles:
         #print pyf
         basename=os.path.basename(pyf)
         fn[basename]=-1
-        bnpy=os.path.join(cwd, "baseline", basename.replace("py", "npy"))
+        bnpy=os.path.join(cwd, "..", "baseline", basename.replace("py", "npy"))
         nnpy=os.path.join(cwd,  basename.replace("py", "npy"))
         if os.path.exists(bnpy)==False: continue
         if os.path.exists(nnpy)==False: continue
@@ -30,4 +38,3 @@ for pyf in pyfiles:
         fn[basename]=np.amax(dif)
 for i in fn.keys(): 
     print "%20s    %5.3f"%(i, fn[i])
-

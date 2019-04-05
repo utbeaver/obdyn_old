@@ -63,7 +63,7 @@ b[0].add_marker(omar8)
 c[3].set_imarker(omar7)
 c[3].set_jmarker(omar8)
 #c[3].spherical()
-#c[0].set_expression("pi/6+sin(time)")
+#c[0].set_expression("np.pi/6+sin(time)")
 sys_ = OdSystem("4bar")
 #sys_.setGravity(V3(0,0,0])
 omar9 = OdMarker(12, V3(ll, 0.0, 0.0), V3(),"mar112")
@@ -93,7 +93,7 @@ for i in fs[:]:
 hht=1    
 datas=[]
 start=time.time()
-for i in range(20):
+for i in range(200):
     t_=i*0.01
     data=[t_]
     if hht==1:
@@ -104,7 +104,7 @@ for i in range(20):
         P=c_.disp()
         for i in range(c_.dofs()):
             if c_.rotation(i)==1:
-                data.append(P.get(i)*180.0/pi)
+                data.append(P.get(i)*180.0/np.pi)
             else:    
                 data.append(P.get(i))
     datas.append(data)        

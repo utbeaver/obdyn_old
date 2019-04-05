@@ -61,7 +61,7 @@ for i in fs: sys_.add_joint_spdp(i)
 hht=1
 start=time.time()
 datas=[]
-for i in range(15):
+for i in range(500):
     t_=i*0.01
     data=[t_]
     if hht==1:

@@ -60,7 +60,7 @@ sys_.displacement_ic()
 #sys_.kinematic_analysis(0.1, 10, 1.0e-10, 20)
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 datas=[]
-for i in range(100):
+for i in range(500):
     t_=i*0.01
     data=[t_]
     sys_.dynamic_analysis_hht(t_, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)

@@ -102,7 +102,7 @@ p2=App.ActiveDocument.addObject("Part::Feature", "part2")
 p2.Shape=Part.makeBox(0.1, 0.1, lsin+1.0)
 p3=App.ActiveDocument.addObject("Part::Feature", "part3")
 p3.Shape=Part.makeBox(0.1, 0.1, 1.0)
-for i in range(100):
+for i in range(500):
     time_=i*0.01
     if hht==1:
         sys_.dynamic_analysis_bdf(time_, 1.0e-5, 6, 0.1, 1.0e-6, 0.001, 0)

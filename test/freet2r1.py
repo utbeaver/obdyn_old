@@ -57,11 +57,11 @@ for i in fs: sys_.add_joint_spdp(i)
 hht=1
 start=time.time()
 datas=[]
-for i in range(150):
+for i in range(550):
     t_=i*0.01
     data=[t_]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 1.0e-9, 10, 0.01, 1.0e-6, 1.0e-3, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     else:    
         sys_.dynamic_analysis_bdf(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     for c_ in c:

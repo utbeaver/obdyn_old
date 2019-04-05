@@ -50,7 +50,7 @@ find_package(PythonLibs 2.7 REQUIRED)
 endif()
 
 include_directories(${PYTHON_INCLUDE_DIRS})
-set(CMAKE_SOURCE_DIR, "/home/psong/obdyn/obdyn/src")
+#set(CMAKE_SOURCE_DIR, "/home/psong/obdyn/obdyn/src")
 link_directories("/home/psong/obdyn/build")
 
 #if (UNIX)
