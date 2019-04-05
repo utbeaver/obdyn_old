@@ -19,7 +19,8 @@ class LINKELEMENTSDLL OdBody {
   void setI(double*);
   char* info(char* msg); 
   void add_cm_marker(OdMarker *pM);
-  void add_marker(OdMarker *pM, int=0);
+  void add_marker(OdMarker *pM);
+  void add_global_marker(OdMarker *pM);
   od_body* core();
 };
 #endif

@@ -213,9 +213,13 @@ void OdBody::add_cm_marker(OdMarker *pM) {
 	od_marker *pm = pM->core();
 	pB->add_cm_marker(pm);
 }
-void OdBody::add_marker(OdMarker *pM, int _global) {
+void OdBody::add_marker(OdMarker *pM) {
 	od_marker *pm = pM->core();
-	pB->add_marker(pm, _global);
+	pB->add_marker(pm, 0);
+}
+void OdBody::add_global_marker(OdMarker *pM) {
+	od_marker *pm = pM->core();
+	pB->add_marker(pm, 1);
 }
 od_body* OdBody::core() { return pB; }
 

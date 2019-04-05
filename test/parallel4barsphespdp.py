@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
-from odsystem import *
-import time, sys
+import time, sys, os
 import numpy as np
+cwd=os.getcwd()
+sys.path.append(cwd)
+from odsystem import *
 py3=0
 if sys.hexversion == 50660592: 
     py3=1
@@ -113,4 +115,4 @@ plt.title("hht %d, time %f"%(hht, dt))
 plt.grid()
 plt.show()
 #sys_.numdif()
-sys.exit(0)
+#sys.exit(0)

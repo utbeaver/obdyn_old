@@ -100,7 +100,7 @@ p1=App.ActiveDocument.addObject("Part::Feature", "part1")
 p1.Shape=Part.makeBox(0.1, 0.1, ll)
 p2=App.ActiveDocument.addObject("Part::Feature", "part2")
 p2.Shape=Part.makeBox(0.1, 0.1, lsin+1.0)
-p3=App.ActiveDocument.addObject("Part::Feature", "part2")
+p3=App.ActiveDocument.addObject("Part::Feature", "part3")
 p3.Shape=Part.makeBox(0.1, 0.1, 1.0)
 for i in range(100):
     time_=i*0.01

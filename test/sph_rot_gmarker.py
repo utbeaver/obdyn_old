@@ -1,7 +1,8 @@
 import numpy as np
-from odsystem import *
 import matplotlib.pyplot as plt
-import time
+import time, sys, os
+sys.path.append(os.getcwd())
+from odsystem import *
 zeros = [0.0, 0.0, 0.0]
 d2r=np.pi/180.0
 d45=45*d2r
@@ -18,14 +19,14 @@ for i in range(2):
     c.append(OdJoint(i+1, "Js"+str(i)))
 cm0 = OdMarker(1, "cm0")
 b[0].add_cm_marker(cm0)
-gmar1=OdMarker(2, zeros, [45*d2r*0, 90*d2r*0, 0], "gndJ") 
+gmar1=OdMarker(2, V3(), V3(45*d2r*0, 90*d2r*0, 0), "gndJ") 
 b[0].add_marker(gmar1)
-cm1 = OdMarker(3, [c45, -s45, 0], [-d45, 0, 0], "cm1")
+cm1 = OdMarker(3, V3(c45, -s45, 0), V3(d45, 0, 0), "cm1")
 b[1].add_cm_marker(cm1)
-b1mar1=OdMarker(4, [0, 0, 0], [-d45, 0, 0], "b1I") 
-b[1].add_markerg(b1mar1)
-b1mar23=OdMarker(4, [c45*2, -s45*2, 0], [-d45, 0, 0], "b2_3") 
-b[1].add_markerg(b1mar23)
+b1mar1=OdMarker(4, V3(0, 0, 0), V3(d45, 0, 0), "b1I") 
+b[1].add_global_marker(b1mar1)
+b1mar23=OdMarker(4, V3(c45*2, -s45*2, 0), V3(d45, 0, 0), "b2_3") 
+b[1].add_global_marker(b1mar23)
 
 c[0].spherical()
 c[0].set_imarker(b1mar1)
@@ -40,9 +41,9 @@ c[0].set_jmarker(gmar1)
 #fs.append(spdp)
 
 
-cm2 = OdMarker(3, [c45*3, -s45*3, 0], [-d45, 0, 0], "cm1")
+cm2 = OdMarker(3, V3(c45*3, -s45*3, 0), V3(d45, 0, 0), "cm1")
 b[2].add_cm_marker(cm2)
-b2mar1=OdMarker(4, [-1, 0, 0], zeros, "b2I") 
+b2mar1=OdMarker(4, V3(1, 0, 0), V3(), "b2I") 
 b[2].add_marker(b2mar1)
 
 c[1].set_imarker(b2mar1)
@@ -53,27 +54,30 @@ sys_ = OdSystem("revJT2R1")
 for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
-x1=[]
-y1=[]
-t=[]
 hht=1
+datas=[]
 start=time.time()
 for i in range(905):
     t_=i*0.01
+    data=[t_]
     if hht==1:
         sys_.dynamic_analysis_hht(t_, 1.0e-3, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     else:    
         sys_.dynamic_analysis_bdf(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
-    xyz=cm1.position(0)
-    t.append(t_)
-    x1.append(xyz[0])
-    y1.append(xyz[1])
+    for c_ in c:
+        P=c_.disp()
+        for i in range(c_.dofs()):
+            if c_.rotation(i)==1:
+                data.append(P.get(i)*180.0/np.pi)
+            else:    
+                data.append(P.get(i))
+    datas.append(data)        
+datas=np.array(datas)
 end=time.time()
-print end-start
+dt= end-start
 
-plt.plot(t, x1, t, y1)#, t, x3)
-#plt.plot(t, y1, t, y2, t, y3)
-plt.title("hht "+str(hht))
+plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3])#, datas[:,0], datas[:,4], )#, t, x3)
+plt.title("hht %d, time %f"%(hht, dt))
 plt.grid()
 plt.show()
 if hht==1:
