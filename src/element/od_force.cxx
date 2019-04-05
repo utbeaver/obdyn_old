@@ -194,7 +194,7 @@ void od_force::re_eval_info() {
 od_force::~od_force()
 {
 	unsigned i, j;
-	if (DT) delete DT; DT = 0;
+	//if (DT) delete DT; DT = 0;
 	for (j = 0; j < 3; j++) {
 		for (i = 0; i < partial_iforce[j].size(); i++) delete partial_iforce[j][i];
 		for (i = 0; i < partial_jforce[j].size(); i++)  delete partial_jforce[j][i];

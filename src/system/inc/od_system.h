@@ -281,6 +281,8 @@ public:
 	int njforce;
 	int tree_ndofs;
 	int lambda_dof;
+	int element_num;
+	int aux_element_num;
 	int start_index, start_bindex;
 	double *states; //states
 	double *dstates; //state derivatives

@@ -115,9 +115,13 @@ void od_systemGeneric::add_measure(od_measure *pf) {
 }
 void od_systemGeneric::add_marker(od_marker *pm) {
 	int index;
-	marker_list.push_back(pm);
+	if (std::find(marker_list.begin(), marker_list.end(), pm) == marker_list.end()) {
+		marker_list.push_back(pm);
+	}
 	if (pm->get_id() >= 0) {
-		element_list.push_back((od_element*)pm);
+		if (std::find(element_list.begin(), element_list.end(), pm) == element_list.end()) {
+			element_list.push_back((od_element*)pm);
+		}
 	}
 	else {
 		aux_element_list.push_back((od_element*)pm);
@@ -1159,8 +1163,8 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 }
 void od_systemGeneric::unset_evaluated() {
 	int i;
-	int _size = (int)element_list.size();
-	for (i = 0; i < _size; i++) (*(element_list_ + i))->unevaluate();
+	aux_element_num = (int)element_list.size();
+	for (i = 0; i < aux_element_num; i++) (*(element_list_ + i))->unevaluate();
 	for_each(aux_element_list.begin(), aux_element_list.end(), mem_fun(&od_element::unevaluate));
 	for_each(expr_list.begin(), expr_list.end(), mem_fun(&Expression::unevaluate));
 }
@@ -1239,22 +1243,22 @@ void od_system::_init() {
 od_system::~od_system() {
 	int ii;
 	od_element *pE;
-	int size_ = (int)element_list.size();
+	//int size_ = (int)element_list.size();
 	if (pMsgFile) pMsgFile->close();
 	delete pMsgFile;
 	if (pOutFile) { pOutFile->close(); delete pOutFile; }
 	if (_from_py) {
-		for (ii = 0; ii < size_; ii++) {
+		for (ii = 0; ii < element_num; ii++) {
 			pE = element_list[ii];
 			if (pE) delete pE;
 		}
 	}
-	size_ = (int)aux_element_list.size();
-	for (ii = 0; ii < size_; ii++) {
+	aux_element_num = (int)aux_element_list.size();
+	for (ii = 0; ii < aux_element_num; ii++) {
 		pE = aux_element_list[ii];
 		if (pE) delete pE;
 	}
-	size_ = (int)expr_list.size();
+	int size_ = (int)expr_list.size();
 	for (ii = 0; ii < size_; ii++) {
 		delete expr_list[ii];
 	}
@@ -1638,9 +1642,9 @@ void od_systemMechanism::init_tree(double *_p, double *_v, double *_a, int dof_i
 	parVel_dot_parqG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	//parVel_dot_parqG_alpha.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	parVel_dot_parq_dotG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
-	int _size = (int)element_list.size();
-	if (_size) element_list_ = new od_element*[_size];
-	for (i = 0; i < _size; i++) element_list_[i] = element_list[i];
+    element_num = (int)element_list.size();
+	if (element_num) element_list_ = new od_element*[element_num];
+	for (i = 0; i < element_num; i++) element_list_[i] = element_list[i];
 
 	vector<od_constraint*>::iterator iter;
 	for (iter = explicit_constraint_list.begin(); iter != explicit_constraint_list.end(); iter++) {
