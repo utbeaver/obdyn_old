@@ -1,3 +1,4 @@
+##############################################
 import matplotlib.pyplot as plt
 import time, os, sys
 import numpy as np
@@ -19,10 +20,6 @@ def l2v(l):
     v=V3(l[0], l[1], l[2])
     return v	
 
-print "Four-bar linkage"
-print "Topology"
-print "bodies:       0->1->2->3->0"
-print "connections:    1  2  3  4"
 
 b=[]
 c=[]
@@ -31,22 +28,22 @@ for i in range(4):
 for i in range(4):
     c.append(OdJoint(i+1, "revJ"+str(i)))
 cm0 = OdMarker(1, "cm0")
-print b[0].add_cm_marker(cm0)
+b[0].add_cm_marker(cm0)
 pos=[-lsin/2.0, lcos/2.0, 0.0]
 ori=[d30, 0.0, 0.0]
 cm1 = OdMarker(1, l2v(pos), l2v(ori), "cm1")
-print b[1].add_cm_marker(cm1)
+b[1].add_cm_marker(cm1)
 cm2 = OdMarker(2, V3(0.5, h, 0.0), V3(0.0, 0.0, 0.0), "cm2")
-print b[2].add_cm_marker(cm2)
+b[2].add_cm_marker(cm2)
 cm3 = OdMarker(3, V3(1, h/2.0, 0.0), V3(0.0, 0.0, 0.0), "cm3")
-print b[3].add_cm_marker(cm3)
+b[3].add_cm_marker(cm3)
 
 omar1 = OdMarker(4, V3(), V3(),"mar1")
-print b[0].add_marker(omar1)
+b[0].add_marker(omar1)
 omar2 = OdMarker(5, V3(0,-ll/2.0,0), V3(d30,0,0), "mar2")
-print b[1].add_marker(omar2)
-print c[0].set_imarker(omar2)
-print c[0].set_jmarker(omar1)
+b[1].add_marker(omar2)
+c[0].set_imarker(omar2)
+c[0].set_jmarker(omar1)
 omar3 = OdMarker(6, V3(0.0, ll/2.0, 0.0), V3(d30,0,0), "mar3")
 b[1].add_marker(omar3)
 omar4 = OdMarker(7, V3(0.5-lsin, 0.0, 0.0), V3(), "mar4")
@@ -95,4 +92,9 @@ end=time.time()
 plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3], datas[:,0], datas[:,4], )#, t, x3)
 plt.title("hht %d, time %f"%(hht, dt))
 plt.grid()
-plt.show()
+if len(sys.argv)>1:
+	name_=os.path.splitext(os.path.basename(__file__))[0]
+	np.save(name_, datas)
+else:
+	plt.show()
+sys.exit(0)

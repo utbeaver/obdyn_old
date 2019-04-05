@@ -1,3 +1,4 @@
+#################################################
 import numpy as np
 import matplotlib.pyplot as plt
 import time, os, sys
@@ -78,7 +79,11 @@ datas=np.array(datas)
 plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3])#, datas[:,0], datas[:,4], )#, t, x3)
 plt.title("hht "+str(hht))
 plt.grid()
-plt.show()
+if len(sys.argv)>1:
+	name_=os.path.splitext(os.path.basename(__file__))[0]
+	np.save(name_, datas)
+else:
+	plt.show()
 if hht==1:
     sys_.numdif()
-
+sys.exit(0)

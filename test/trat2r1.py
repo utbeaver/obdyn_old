@@ -1,3 +1,4 @@
+#######################################
 import numpy as np
 from odsystem import *
 import matplotlib.pyplot as plt
@@ -75,7 +76,12 @@ plt.plot(t, x1, t, y1)#, t, x3)
 #plt.plot(t, y1, t, y2, t, y3)
 plt.title("hht "+str(hht))
 plt.grid()
-plt.show()
+if len(sys.argv)>1:
+	name_=os.path.splitext(os.path.basename(__file__))[0]
+	np.save(name_, datas)
+else:
+	plt.show()
 if hht==1:
     sys_.numdif()
+sys.exit(0)
 

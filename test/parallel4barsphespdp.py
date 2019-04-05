@@ -1,3 +1,4 @@
+############################################
 import matplotlib.pyplot as plt
 import time, sys, os
 import numpy as np
@@ -113,6 +114,10 @@ dt=end-start
 plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3], datas[:,0], datas[:,4], )#, t, x3)
 plt.title("hht %d, time %f"%(hht, dt))
 plt.grid()
-plt.show()
+if len(sys.argv)>1:
+	name_=os.path.splitext(os.path.basename(__file__))[0]
+	np.save(name_, datas)
+else:
+	plt.show()
 #sys_.numdif()
-#sys.exit(0)
+sys.exit(0)
