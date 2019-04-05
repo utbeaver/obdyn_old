@@ -1,28 +1,33 @@
-import os, sys, glob
+import os, sys, glob, shutil
 import numpy as np
 cwd=os.getcwd()
 testfile_dir=os.path.dirname(__file__)
 #print testfile_dir
 pyfiles=glob.glob(os.path.join(testfile_dir, "*.py"))
 #print pyfiles
+python_="python"
+if "win" in sys.platform.lower():
+    shutil.copy(os.path.join(testfile_dir.replace("test", "src"), "python", "odsystem.py"), os.path.join(cwd, "odsystem.py"))
+    shutil.copy(os.path.join(cwd, "odsystem", "x64", "Debug", "_odsystem.pyd"), os.path.join(cwd, "_odsystem.pyd"))
+    python_="c:\python27\python"
 fn={}
 for pyf in pyfiles:
     pf=open(pyf, "r")
     lines=pf.readlines()
     pf.close()
     if lines[0][:5]==5*"#":
-        os.system("python %s -v"%pyf) 
+        os.system("%s %s -v"%(python_, pyf)) 
         #print pyf
-	basename=os.path.basename(pyf)
-	fn[basename]=None
-	bnpy=os.path.join(cwd, "baseline", basename.replace("py", "npy"))
-	nnpy=os.path.join(cwd,  basename.replace("py", "npy"))
-	if os.path.exists(bnpy)==False: continue
-	if os.path.exists(nnpy)==False: continue
-	ba=np.load(bnpy)
-	na=np.load(nnpy)
+        basename=os.path.basename(pyf)
+        fn[basename]=-1
+        bnpy=os.path.join(cwd, "baseline", basename.replace("py", "npy"))
+        nnpy=os.path.join(cwd,  basename.replace("py", "npy"))
+        if os.path.exists(bnpy)==False: continue
+        if os.path.exists(nnpy)==False: continue
+        ba=np.load(bnpy)
+        na=np.load(nnpy)
         dif=na-ba
-	fn[basename]=np.amax(dif)
+        fn[basename]=np.amax(dif)
 for i in fn.keys(): 
-    print i, fn[i]
+    print "%20s    %5.3f"%(i, fn[i])
 

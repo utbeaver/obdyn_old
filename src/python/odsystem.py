@@ -283,8 +283,11 @@ class OdBody(_object):
     def add_cm_marker(self, pM):
         return _odsystem.OdBody_add_cm_marker(self, pM)
 
-    def add_marker(self, pM, arg3=0):
-        return _odsystem.OdBody_add_marker(self, pM, arg3)
+    def add_marker(self, pM):
+        return _odsystem.OdBody_add_marker(self, pM)
+
+    def add_global_marker(self, pM):
+        return _odsystem.OdBody_add_global_marker(self, pM)
 
     def core(self):
         return _odsystem.OdBody_core(self)

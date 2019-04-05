@@ -5130,46 +5130,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_OdBody_add_marker__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  OdBody *arg1 = (OdBody *) 0 ;
-  OdMarker *arg2 = (OdMarker *) 0 ;
-  int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:OdBody_add_marker",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OdBody, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OdBody_add_marker" "', argument " "1"" of type '" "OdBody *""'"); 
-  }
-  arg1 = reinterpret_cast< OdBody * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_OdMarker, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OdBody_add_marker" "', argument " "2"" of type '" "OdMarker *""'"); 
-  }
-  arg2 = reinterpret_cast< OdMarker * >(argp2);
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "OdBody_add_marker" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  (arg1)->add_marker(arg2,arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_OdBody_add_marker__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_OdBody_add_marker(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   OdBody *arg1 = (OdBody *) 0 ;
   OdMarker *arg2 = (OdMarker *) 0 ;
@@ -5199,59 +5160,33 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_OdBody_add_marker(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  Py_ssize_t ii;
+SWIGINTERN PyObject *_wrap_OdBody_add_global_marker(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OdBody *arg1 = (OdBody *) 0 ;
+  OdMarker *arg2 = (OdMarker *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   
-  if (!PyTuple_Check(args)) SWIG_fail;
-  argc = args ? PyObject_Length(args) : 0;
-  for (ii = 0; (ii < 3) && (ii < argc); ii++) {
-    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  if (!PyArg_ParseTuple(args,(char *)"OO:OdBody_add_global_marker",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OdBody, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OdBody_add_global_marker" "', argument " "1"" of type '" "OdBody *""'"); 
   }
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_OdBody, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_OdMarker, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_OdBody_add_marker__SWIG_1(self, args);
-      }
-    }
+  arg1 = reinterpret_cast< OdBody * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_OdMarker, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OdBody_add_global_marker" "', argument " "2"" of type '" "OdMarker *""'"); 
   }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_OdBody, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      void *vptr = 0;
-      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_OdMarker, 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_OdBody_add_marker__SWIG_0(self, args);
-        }
-      }
-    }
-  }
-  
+  arg2 = reinterpret_cast< OdMarker * >(argp2);
+  (arg1)->add_global_marker(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'OdBody_add_marker'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    OdBody::add_marker(OdMarker *,int)\n"
-    "    OdBody::add_marker(OdMarker *)\n");
-  return 0;
+  return NULL;
 }
 
 
@@ -10175,6 +10110,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"OdBody_info", _wrap_OdBody_info, METH_VARARGS, NULL},
 	 { (char *)"OdBody_add_cm_marker", _wrap_OdBody_add_cm_marker, METH_VARARGS, NULL},
 	 { (char *)"OdBody_add_marker", _wrap_OdBody_add_marker, METH_VARARGS, NULL},
+	 { (char *)"OdBody_add_global_marker", _wrap_OdBody_add_global_marker, METH_VARARGS, NULL},
 	 { (char *)"OdBody_core", _wrap_OdBody_core, METH_VARARGS, NULL},
 	 { (char *)"OdBody_swigregister", OdBody_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_OdSystem", _wrap_new_OdSystem, METH_VARARGS, NULL},
