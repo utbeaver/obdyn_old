@@ -2,6 +2,10 @@ import os, sys, glob, shutil
 import numpy as np
 cwd=os.getcwd()
 testfile_dir=os.path.dirname(__file__)
+itg="-h"
+if len(sys.argv) >1:
+    if sys.argv[1]=="-b":
+        itg="-b"
 py3=0
 print (sys.hexversion)
 if sys.hexversion  > 50000000: 
@@ -24,9 +28,10 @@ for pyf in pyfiles:
     lines=pf.readlines()
     pf.close()
     if lines[0][:5]==5*"#":
-        os.system("%s %s -v"%(python_, pyf)) 
-        #print pyf
         basename=os.path.basename(pyf)
+        #if basename[:4]!="t2r1": continue
+        os.system("%s %s %s"%(python_, pyf, itg)) 
+        #print pyf
         fn[basename]=-1
         bnpy=os.path.join(cwd, "..", "baseline", basename.replace("py", "npy"))
         nnpy=os.path.join(cwd,  basename.replace("py", "npy"))

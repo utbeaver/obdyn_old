@@ -60,6 +60,12 @@ sys_.displacement_ic()
 #sys_.kinematic_analysis(0.1, 10, 1.0e-10, 20)
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 datas=[]
+hht=1
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 for i in range(500):
     t_=i*0.01
     data=[t_]

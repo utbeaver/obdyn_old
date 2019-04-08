@@ -48,7 +48,7 @@ int od_loopr::initialize(int keep) {
 		}
 	}
 	for (i = 0; i < num_dofs; i++) {
-		if (ij_idx[0][i] != ij_idx[1][j]) {
+		if (ij_idx[0][i] != ij_idx[1][i]) {
 			if (ij_idx[0][i]) entries2[0].push_back(i);
 			if (ij_idx[1][i]) entries2[1].push_back(i);
 		}
@@ -67,7 +67,7 @@ int od_loopr::initialize(int keep) {
 		}
 	}
 	for (i = 0; i < njoint; i++) {
-		if (ij_idx[0][i] != ij_idx[1][j]) {
+		if (ij_idx[0][i] != ij_idx[1][i]) {
 			if (ij_idx[0][i]) entries1[0].push_back(i);
 			if (ij_idx[1][i]) entries1[1].push_back(i);
 		}

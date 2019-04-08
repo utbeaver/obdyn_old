@@ -946,11 +946,9 @@ double** od_systemMechanism::evaluateJac(double **pM, int base) {
 	}
 	return pM;
 }
-double* od_systemMechanism::evaluateRhs(double *pRhs) {
+double* od_systemMechanism::evaluateRhs(double *pRhs, int hhtacc) {
 	int i, index, i_index, j_index;
-//	double _m;
 	od_loop* pl;
-	//for (i = 0; i < nsystem; i++) pRhs = _subSys[i]->evaluateRhs(pRhs, _alphaonly);
 	od_body *pBi, *pBj;
 	od_object::Analysis_Type _type = get_analysis_type();
 	int nbody = num_body();
@@ -958,12 +956,12 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 	Vec3 *pV = 0;
 	double *pd = 0;
 	int tree_dof = tree_dofs();
-	if (_type == od_object::DYNAMIC || _type == od_object::STATIC || _type == od_object::ACC_FORCE) {
-		for (i = 0; i < num_force(); i++)
-			force_list_[i]->evaluate_rhs();
-		for (i = 0; i < num_jforce(); i++)
-			joint_force_list_[i]->evaluate_rhs();
-	}
+	//if (_type == od_object::DYNAMIC || _type == od_object::STATIC || _type == od_object::ACC_FORCE) {
+		//for (i = 0; i < num_force(); i++)
+		//	force_list_[i]->evaluate_rhs();
+		//for (i = 0; i < num_jforce(); i++)
+		//	joint_force_list_[i]->evaluate_rhs();
+	//}
 	if (_type == od_object::DYNAMIC) {
 		for (i = 0; i < nbodyx2; i++) { (_tree_rhs + i)->init(); }
 		//SumofForce: J*w_dot+w x Jw,  Mx_ddot
@@ -973,7 +971,12 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 			*(_tree_rhs + i) -= pBi->wxJw();
 			*(_tree_rhs + i + nbody) -= pBi->Mx_ddot();
 		}
-
+		if (hhtacc == 1) {
+			multiplyMatT_Rotq_Vec(nbody, _tree_rhs, pRhs, constraint_list_);
+			multiplyMatT_vec(nbody, _tree_rhs + nbody, _tree_rhs + nbody, constraint_list_);
+			multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
+			return pRhs + tree_dof;
+		}
 		if (num_force()) {
 			for (i = 0; i < num_force(); i++) {
 				force_list_[i]->evaluate_rhs();
@@ -1018,6 +1021,7 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 		multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
 		int len = num_jforce();
 		for (i = 0; i < len; i++) {
+			joint_force_list_[i]->evaluate_rhs();
 			int row = joint_force_list_[i]->row();
 			double tempd = joint_force_list_[i]->value();
 			pRhs[row] += tempd;
@@ -1143,8 +1147,9 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 		//mapping onto torque space
 		multiplyMatT_vec(nbody, _tree_rhs + nbody, _tree_rhs + nbody, constraint_list_);
 		multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
-		int len = num_jforce();
-		for (i = 0; i < len; i++) {
+		//int len = num_jforce();
+		for (i = 0; i < num_jforce(); i++) {
+			joint_force_list_[i]->evaluate_rhs();
 			int row = joint_force_list_[i]->row();
 			pRhs[row] += joint_force_list_[i]->value();
 		}
@@ -2109,10 +2114,6 @@ void od_system::toFile(ofstream* pf, string& __name) {
 }
 
 
-
-
-
-
 void od_system::parSi2_parq(double** pM) {
 	int i, j, k, start, num_dofs;
 	int nbody = num_body();
@@ -2404,9 +2405,9 @@ void od_system::getM(double **pM, int base) {
 			}
 		}*/
 }
-double* od_system::evaluate_rhs(double *pRhs) {
+double* od_system::evaluate_rhs(double *pRhs, int hhtacc) {
 	double _start = startRecord();
-	evaluateRhs(pRhs);
+	evaluateRhs(pRhs, hhtacc);
 	stopRecord(_start);
 	return pRhs;
 }

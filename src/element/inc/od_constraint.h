@@ -271,6 +271,7 @@ class od_joint :public od_constraint {
 protected:
 	int euler_or_not;
 	vector<od_marker*> betweenij;
+	vector<string> prinames;
 	jprim_rot** rot_joints;
 	jprim_tra** tra_joints;
 	//vector<od_motion*> motions;
@@ -327,6 +328,7 @@ public:
 	inline virtual int num_tra() { return num_tra_joints; }
 	inline virtual int num_rot() { return num_rot_joints; }
 	inline virtual int if_rotation(int i) { return (i < num_tra_joints) ? 0 : 1; }
+	inline const char* type(int i) const { return prinames[i].c_str(); }
 	void set_expr(const char* pexpr, int i = 0) {
 		//funcNum=i+1;
 		//func[i]=(char*) calloc(strlen(pexpr)+1, sizeof(char));
@@ -455,7 +457,14 @@ public:
 		num_dofs = 0;
 		jtype = od_object::FIXED;
 	}
-	virtual int initialize() { return 1; }
+	virtual int initialize() { 
+		prinames.push_back(string("tx"));
+		prinames.push_back(string("ty"));
+		prinames.push_back(string("tz"));
+		prinames.push_back(string("rx"));
+		prinames.push_back(string("ry"));
+		prinames.push_back(string("rz"));
+		return 1; }
 };
 
 class od_txyrz_joint : public od_joint {
@@ -479,7 +488,12 @@ public:
 		int i;
 		double xyz[3];// , xyz1[3];
 		Mat33 mat3;
-
+		prinames.push_back(string("tx"));
+		prinames.push_back(string("ty"));
+		//prinames.push_back(string("tz"));
+		//prinames.push_back(string("rx"));
+		//prinames.push_back(string("ry"));
+		prinames.push_back(string("rz"));
 		od_marker* tx = new od_marker(-1, (char*)"tx");
 		od_marker* ty = new od_marker(-1, (char*)"ty");
 		tx->equal(get_jmarker());
@@ -542,15 +556,12 @@ public:
 		int i;
 		double xyz[3], xyz1[3];
 		Mat33 mat3;
-
-		/*jprim_rot* p1 = rot_joints[0];
-		jprim_rot* p2 = rot_joints[1];
-		jprim_rot* p3 = rot_joints[2];*/
-
-
-		/*jprim_tra* t1 = tra_joints[0];
-		jprim_tra* t2 = tra_joints[1];
-		jprim_tra* t3 = tra_joints[2];*/
+		prinames.push_back(string("tx"));
+		prinames.push_back(string("ty"));
+		prinames.push_back(string("tz"));
+		prinames.push_back(string("rx"));
+		prinames.push_back(string("ry"));
+		prinames.push_back(string("rz"));
 
 		od_marker* tx = new od_marker(-1, (char*)"tx");
 		od_marker* ty = new od_marker(-1, (char*)"ty");
@@ -640,8 +651,12 @@ public:
 	}
 	virtual int initialize() {
 		if (initialized == 1) return 1;
-		//if (funcNum > 0) {
-		//	rot_joints[0]->set_expr(func[0]);
+		//prinames.push_back(string("tx"));
+		//prinames.push_back(string("ty"));
+		//push_back(string("tz"));
+		//prinames.push_back(string("rx"));
+		//prinames.push_back(string("ry"));
+		prinames.push_back(string("rz"));
 		rot_joints[0]->set_system(pSys);
 		//}
 		rot_joints[0]->set_from_marker(this->get_jmarker());
@@ -689,7 +704,12 @@ public:
 		//if (funcNum > 0) {
 		//	tra_joints[0]->set_expr(func[0]);
 		tra_joints[0]->set_system(pSys);
-		//}
+		//prinames.push_back(string("tx"));
+		//prinames.push_back(string("ty"));
+		prinames.push_back(string("tz"));
+		//prinames.push_back(string("rx"));
+		//prinames.push_back(string("ry"));
+		//prinames.push_back(string("rz"));
 		tra_joints[0]->set_from_marker(get_jmarker());
 		tra_joints[0]->set_to_marker(get_imarker());
 		tra_joints[0]->initialize();
@@ -710,17 +730,21 @@ public:
 		num_tra_joints = 0;
 		axisVecLen = 9;
 		jtype = od_object::SPHERICAL;
-		axisVecLen = 9;
 		rot_joints = new jprim_rot*[num_rot_joints];
-		rot_joints[0] = new jprim_rot(Mat33::ZAXIS, 0.0);
-		rot_joints[1] = new jprim_rot(Mat33::XAXIS, 0.0);
+		rot_joints[0] = new jprim_rot(Mat33::XAXIS, 0.0);
+		rot_joints[1] = new jprim_rot(Mat33::YAXIS, 0.0);
 		rot_joints[2] = new jprim_rot(Mat33::ZAXIS, 0.0);
 	}
 	~od_spherical_joint() {
 	}
 	virtual int initialize() {
 		if (initialized) return 1;
-
+		//prinames.push_back(string("tx"));
+		//prinames.push_back(string("ty"));
+		//prinames.push_back(string("tz"));
+		prinames.push_back(string("rx"));
+		prinames.push_back(string("ry"));
+		prinames.push_back(string("rz"));
 
 		od_marker* pm1 = new od_marker(-1, (char*)"r1");
 		od_marker* pm2 = new od_marker(-1, (char*)"r2");
@@ -757,6 +781,12 @@ public:
 	virtual int initialize() {
 		if (initialized) return 1;
 		int i;
+		//prinames.push_back(string("tx"));
+		//prinames.push_back(string("ty"));
+		//prinames.push_back(string("tz"));
+		prinames.push_back(string("rx"));
+		prinames.push_back(string("ry"));
+		//prinames.push_back(string("rz"));
 		double phi1, phi2;
 		double rel_mat[9], vec[2];
 		double *p = rel_mat;

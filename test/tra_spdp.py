@@ -43,6 +43,11 @@ for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
 datas=[]
 hht=1
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 start=time.time()
 for i in range(500):
     t_=i*0.01

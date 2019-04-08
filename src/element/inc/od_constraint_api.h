@@ -18,6 +18,7 @@ protected:
 	OdMarker *pi, *pj;
 	char *_expr;
 	char _name[100];
+	string tmpstr;
 	int _impl;
 	std::map<int, std::string> funs;
 public:
@@ -43,6 +44,7 @@ public:
 	V6 acc();
 	int dofs();
 	int rotation(int i);
+	const char* type(int i);
 	void explicitFixed(int);
 	int explicitFixed();
 };

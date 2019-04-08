@@ -1058,11 +1058,11 @@ int od_equation_hhti3::solve(double beta_hh) {
 	return errorCode;
 }
 
-double* od_equation_dynamic::evalRhs(double *prhs) {
+double* od_equation_dynamic::evalRhs(double *prhs, int hhtacc) {
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	if (!prhs) prhs = pRhs;
 	pSys->update();
-	pSys->evaluate_rhs(prhs);
+	pSys->evaluate_rhs(prhs, hhtacc);
 	return pRhs;
 }
 void od_system::numDif() {
@@ -1189,9 +1189,14 @@ double* od_equation_hhti3::evalRhs() {
 	ap1 = 1.0 + alpha;
 	//RHS   M\ddot{q}+(1+alpha)*NonLinQ-alpha/(1+alpha)*pQ=0
 	this->calNonLinQ(1);
+	/*{//calclate inertail without velocity
+		fill(pRhs, pRhs + dim_rows, 0.0);
+		this->set_states(2);
+		od_equation_dynamic::evalRhs(0, 1);
+	}*/
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	for (i = 0; i < tree_ndofs; i++) {
-		//for (j = 0; j < tree_ndofs; j++) pRhs[i] += M_a[i][j] * _Xddot[j];
+		for (j = 0; j < tree_ndofs; j++) pRhs[i] += M_a[i][j] * _Xddot[j];
 		temp = Q[i] * ap1 - pQ[i] * alpha;
 		pRhs[i] += temp;
 	}
@@ -1217,7 +1222,7 @@ void od_equation_hhti3::calNonLinQ(int flag) {
 	//---------------------------------------------------
 //phs=-M*nlinear_acc+\Phi^T\Lambda + T=-(Q-\Phi^T\Lambda -T)
 //(Q-\Phi^T\Lambda -T) = -rhs
-	this->set_states();  //zero \ddot{q}
+	this->set_states(flag);  //zero \ddot{q}
 	od_equation_dynamic::evalRhs();
 	for (int i = 0; i < tree_ndofs; i++) Q[i] = -pRhs[i];
 }

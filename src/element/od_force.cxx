@@ -43,6 +43,11 @@ int od_joint_spdp::evaluate_rhs() {
 	return 1;
 }
 
+int od_joint_spdp::evaluate_Jac() {
+
+	return 1;
+}
+
 od_joint_force::od_joint_force(int Id, char* name_, od_joint* pJ, char* _expr, int _ith) : od_jointF(Id, name_, pJ, _ith)
 {
 	pJoint = pJ;
@@ -77,7 +82,12 @@ void od_joint_force::evaluate(int partial) {
 	if (reversed) val = -val;
 }
 
-void od_jointF::init1() { index__ = pJoint->get_start_index() + ith; }
+void od_jointF::init1() {
+	if (pJoint->dofs() <= ith) {
+		ith = pJoint->dofs() - 1;
+	}
+	index__ = pJoint->get_start_index() + ith;
+}
 
 od_single_force::od_single_force(int Id, char* name_, od_marker* I, od_marker* J) : od_force(Id, name_, I, J) {
 	//pExpr = 0;

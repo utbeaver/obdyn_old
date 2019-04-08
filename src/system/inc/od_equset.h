@@ -186,7 +186,7 @@ public:
 	od_equation_dynamic(od_system *psys, double end = 1.0, int steps = 10, double tol = 1.0e-4);
 	~od_equation_dynamic();
 	virtual int initialize();
-	virtual double* evalRhs(double* prhs = 0);
+	virtual double* evalRhs(double* prhs = 0,int hhtacc=0);
 	void evalJac(int = 0);
 	void setSteps(int steps);
 	void setMinStepSize(double val);

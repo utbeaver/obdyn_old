@@ -95,7 +95,7 @@ from od_tree_ctrl import *
 
 # Needs Numeric or numarray
 try:
-    import Numeric as _Numeric
+    import numpy as _Numeric
 except:
     try:
         import numarray as _Numeric  #if numarray is used it is renamed Numeric

@@ -62,7 +62,7 @@ omar8 = OdMarker(11, V3(1.0, 0.0, 0.0), V3(),"mar8")
 b[0].add_marker(omar8)
 c[3].set_imarker(omar7)
 c[3].set_jmarker(omar8)
-#c[3].spherical()
+c[3].spherical()
 #c[0].set_expression("np.pi/6+sin(time)")
 sys_ = OdSystem("4bar")
 #sys_.setGravity(V3(0,0,0])
@@ -91,18 +91,25 @@ for i in range(4):
 for i in fs[:]:
     sys_.add_force(i)
 hht=1    
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 datas=[]
 start=time.time()
 for i in range(200):
     t_=i*0.01
     data=[t_]
+    types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-5, 6, 0.01, 1.0e-6, 0.001, 0)
     else:    
-        sys_.dynamic_analysis_bdf(t_, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_bdf(t_, 1.0e-3, 6, 0.01, 1.0e-6, 0.001, 0)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
+            types.append(c_.type(i))
             if c_.rotation(i)==1:
                 data.append(P.get(i)*180.0/np.pi)
             else:    
@@ -111,13 +118,21 @@ for i in range(200):
 datas=np.array(datas)    
 end=time.time()
 dt=end-start
-plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3], datas[:,0], datas[:,4], )#, t, x3)
-plt.title("hht %d, time %f"%(hht, dt))
-plt.grid()
+name_=os.path.splitext(os.path.basename(__file__))[0]
+dimx, dimy=datas.shape
+for i in range(1, dimy):
+    plt.subplot(dimy-1, 1, i)
+    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
+    plt.plot(datas[:,0], datas[:, i])
+    plt.grid()
 if len(sys.argv)>1:
-	name_=os.path.splitext(os.path.basename(__file__))[0]
 	np.save(name_, datas)
 else:
+        plt.tight_layout()
 	plt.show()
-#sys_.numdif()
+if len(sys.argv)>1:
+    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
+        plt.tight_layout()
+	plt.show()
 sys.exit(0)
+

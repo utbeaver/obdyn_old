@@ -270,7 +270,7 @@ int od_hhti3::correct() {
 		if (evalJac) {
 			numJacEvals++;
 			pEqu->evalJac();
-			pEqu->evalJacHHT();
+//			pEqu->evalJacHHT();
 			evalJac = 0;
 		}
 		for (j = 0; j < numVar; j++) {
@@ -343,8 +343,8 @@ int od_gstiff::correct() {
 		if (numCorrect%3 ==0) evalJac = 1;
 		if (evalJac ) {
 			numJacEvals++;
-			pEqu->evalJac(tinu);
-			pEqu->evalJacBdf(tinu);
+			if(1) pEqu->evalJac(tinu);
+			else pEqu->evalJacBdf(tinu);
 			evalJac = 0;
 		}
 		maxRhsIdx = getMax(pRhs, numVar, maxRhs);
@@ -354,9 +354,11 @@ int od_gstiff::correct() {
 			rhsConverged = 0;
 		}
 		double s = pEqu->startRecord();
-		errorCode = pEqu->solve(tinu);
-		pEqu->solveBDF(tinu);
-		pRhs = pprhs;
+		if(1) errorCode = pEqu->solve(tinu);
+		else {
+			pEqu->solveBDF(tinu);
+			pRhs = pprhs;
+		}
 		pEqu->stopRecord(s, 2);
 		if (errorCode) {
 			return 2; //singular Jacobian
@@ -614,7 +616,7 @@ int od_hhti3::toTime(double timeEnd)
 	if (pmsg && debug) *pmsg << "#Attemp to simulate from " << time << endl;
 	evalJac = 1;
 	phiN = phi*treedofs;
-//	pEqu->get_states();
+	//pEqu->get_states();
 	while (time < timeEnd) {
 		correctFail = 1;
 		saveOld();

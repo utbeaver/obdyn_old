@@ -102,10 +102,16 @@ for i in range(1):
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 start=time.time()
 datas=[]
-hht=1
+hht=0
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 for i in range(500):
     t_=i*0.01
     data=[t_]
+    types=["time"]
     if hht==1:
         sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)
     else:    
@@ -113,6 +119,7 @@ for i in range(500):
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
+            types.append(c_.type(i))
             if c_.rotation(i)==1:
                 data.append(P.get(i)*180.0/pi)
             else:    
@@ -122,13 +129,25 @@ end=time.time()
 dt=end-start
 datas=np.array(datas)    
 end=time.time()
-plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3], datas[:,0], datas[:,4], )#, t, x3)
-plt.title("hht %d, time %f"%(hht, dt))
-plt.grid()
+dimx, dimy=datas.shape
+name_=os.path.splitext(os.path.basename(__file__))[0]
+for i in range(1, dimy):
+    plt.subplot(dimy-1, 1, i)
+    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
+    plt.plot(datas[:,0], datas[:, i])
+    plt.grid()
+
 if len(sys.argv)>1:
-	name_=os.path.splitext(os.path.basename(__file__))[0]
 	np.save(name_, datas)
 else:
 	plt.show()
-#sys_.numdif()
+if len(sys.argv)>1:
+    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
+        plt.tight_layout()
+	plt.show()
+
+
+if hht==1:
+    sys_.numdif()
 sys.exit(0)
+

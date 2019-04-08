@@ -33,13 +33,13 @@ c[0].spherical()
 c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
 
-#spdp=OdJointSPDP(10, "spdpt")
-#spdp.set_joint(c[0], 0)
-#spdp.set_stiffness(3.14*3.14*4*40)
-#spdp.set_damping(1)
-#spdp.set_distance(0)
-#spdp.set_force(0)
-#fs.append(spdp)
+spdp=OdJointSPDP(10, "spdpt")
+spdp.setJoint(c[0], 0)
+spdp.set_stiffness(3.14*3.14*4*40)
+spdp.set_damping(1)
+spdp.set_distance(0)
+spdp.set_force(0)
+fs.append(spdp)
 
 
 cm2 = OdMarker(3, V3(c45*3, -s45*3, 0), V3(d45, 0, 0), "cm1")
@@ -56,11 +56,17 @@ for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
 hht=1
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 start=time.time()
 datas=[]
 for i in range(450):
     t_=i*0.01
     data=[t_]
+    types=["time"]
     if hht==1:
         sys_.dynamic_analysis_hht(t_, 5.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     else:    
@@ -68,22 +74,28 @@ for i in range(450):
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
+            types.append(c_.type(i))
             if c_.rotation(i)==1:
                 data.append(P.get(i)*180.0/np.pi)
             else:    
                 data.append(P.get(i))
     datas.append(data)        
 end=time.time()
-dt= end-start
 datas=np.array(datas)    
-plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3])#, datas[:,0], datas[:,4], )#, t, x3)
-plt.title("hht "+str(hht))
-plt.grid()
+dt= end-start
+name_=os.path.splitext(os.path.basename(__file__))[0]
+dimx, dimy=datas.shape
+for i in range(1, dimy):
+    plt.subplot(dimy-1, 1, i)
+    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
+    plt.plot(datas[:,0], datas[:, i])
+    plt.grid()
 if len(sys.argv)>1:
-	name_=os.path.splitext(os.path.basename(__file__))[0]
 	np.save(name_, datas)
 else:
 	plt.show()
-if hht==1:
-    sys_.numdif()
+if len(sys.argv)>1:
+    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
+	plt.show()
 sys.exit(0)
+

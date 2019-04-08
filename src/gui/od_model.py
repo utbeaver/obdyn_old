@@ -13,11 +13,11 @@ import time
 from od_utils import *
 import wx.lib.rcsizer as rcs
 from random import *
-from odsystem import *
 import xml.dom.minidom
 from xml.dom.minidom import Node
 from sets import *
-
+sys.path.append(os.getcwd())
+from odsystem import *
 
 def printTree(_tree, n=0):
     s = n*"   "    

@@ -67,6 +67,7 @@ public:
 	OdMarker(int id, double*, char* name_ = 0);
 	OdMarker(int id, V3* P, V3* Q, char* name_);
 	OdMarker(int id, V16* P, char* name_);
+	OdMarker(int id, OdMarker* ref, V3* P, V3* ang, char* name_);
 	~OdMarker();
 	od_marker* core();
 	char* info(char*);

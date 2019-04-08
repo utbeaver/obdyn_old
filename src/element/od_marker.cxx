@@ -27,7 +27,26 @@ od_marker::od_marker(int id, od_body *pBody, char* name_, int Real) : od_element
 		a_pos[i] = 0.0;
 	}
 }
-
+od_marker::od_marker(int ID, od_marker* ref, double pos[3], double ang[3], char *_name,int Real) 
+	: od_element(id, _name, Real) {
+	pbody = 0;
+	a_mat.set_type(Mat33::GENERAL);
+	for (int i = 0; i < 3; i++) {
+		a_pos[i] = ref->a_pos[i] + pos[i];
+		 r_pos[i] = pos[i]=0.0; r_euler[i] = ang[i];// r_pos[i] = 0.0;
+		vel[i] = omega_global[i] = omega_dot_global[i] = acc[i] = 0.0;
+	}
+	a_mat.set_type(Mat33::GENERAL);
+	Mat33 tmat;
+	tmat.set_type(Mat33::EULER);
+	tmat.update(ang);
+	a_mat = tmat;
+	a_mat = ref->a_mat*a_mat;
+	pos = a_mat * pos;
+	for (int i = 0; i < 3; i++) {
+		a_pos[i] = ref->a_pos[i] + pos[i];
+	}
+}
 od_marker::od_marker(int id, double pos[3], double ang[3], char* name_,
 	int Real) : od_element(id, name_, Real) {
 	pbody = 0;
@@ -286,7 +305,7 @@ void od_marker::translation(od_marker *wrt, Vec3& vec) {
 }
 double* od_marker::get_orientation_matrix() {
 		double* p = pmat;
-		p = temp_mat.to_double(p);
+		p = a_mat.to_double(p);
 		return p;
 	}
 double* od_marker::get_orientation_matrix(double* mat, od_marker* pJ){
@@ -378,6 +397,11 @@ OdMarker::OdMarker(int id, double *mat, char* name_) {
 }
 OdMarker::OdMarker(int id, V16* P, char* name_) {
 	pM = new od_marker(id, P->ptr(), name_);
+}
+
+OdMarker::OdMarker(int id, OdMarker* ref, V3* P, V3* ang, char* name_) {
+	pM = new od_marker(id, ref->core(), P->ptr(), ang->ptr(), name_);
+
 }
 OdMarker::~OdMarker() {/*if (pM) delete pM;*/ }
 

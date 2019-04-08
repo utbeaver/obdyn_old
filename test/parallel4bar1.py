@@ -72,7 +72,12 @@ for i in range(4):
     sys_.add_constraint(c[i])
 start=time.time()
 datas=[]
-hht=0
+hht=1
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h":
+        hht=1
+    if sys.argv[1]=="-b":
+        hht=0
 for i in range(1000):
     t_=0.01*i
     sys_.dynamic_analysis_bdf(t_, 1.0e-5, 6, 0.1, 1.0e-6, 0.001, 0)

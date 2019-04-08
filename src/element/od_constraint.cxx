@@ -470,7 +470,7 @@ int od_joint::initRotXYZ() {
 	od_marker *pM = get_jmarker();
 	int numTra = num_tra();
 	p = get_imarker()->get_orientation_matrix(p, pM);
-	if (fabs(dispDelta[8]) > .984) { //to bryant if theta < 10
+	if (fabs(dispDelta[6]) < .98) { //to bryant if phi_2 < 80
 		euler_or_not = 0;
 		p = vDelta; p = get_imarker()->get_omega(p, pM);
 		p = aDelta; p = get_imarker()->get_omega_dot(p, pM);
@@ -947,6 +947,12 @@ int OdJoint::rotation(int i) {
 	return pJ->if_rotation(i);
 }
 
+const char* OdJoint::type(int i) {
+	 tmpstr = _name;
+	 tmpstr += "_";
+	tmpstr += pJ->type(i);
+	return tmpstr.c_str();
+}
 void OdJoint::explicitFixed(int im) {
 	_impl = im;
 }

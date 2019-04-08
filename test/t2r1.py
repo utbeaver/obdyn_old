@@ -30,11 +30,11 @@ b[1].add_marker(b1mar1)
 c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
 c[0].txyrz()
-scale=1000
+scale=5000
 spdp=OdJointSPDP(10, "spdptx")
 spdp.setJoint(c[0], 0)
 spdp.set_stiffness(3.14*scale)
-spdp.set_damping(1)
+spdp.set_damping(0)
 spdp.set_distance(0)
 spdp.set_force(0)
 fs.append(spdp)
@@ -42,7 +42,7 @@ fs.append(spdp)
 spdpy=OdJointSPDP(11, "spdpty")
 spdpy.setJoint(c[0], 1)
 spdpy.set_stiffness(3.14*scale)
-spdpy.set_damping(1)
+spdpy.set_damping(0)
 spdpy.set_distance(0)
 spdpy.set_force(0)
 fs.append(spdpy)
@@ -60,18 +60,25 @@ for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
 hht=1
+if len(sys.argv)>1:
+    if sys.argv[1]=="-h" or sys.argv[1]=="-H" :
+        hht=1
+    if sys.argv[1]=="-b" or sys.argv[1]=="-B":
+        hht=0
 start=time.time()
 datas=[]
 for i in range(500):
     t_=i*0.01
     data=[t_]
+    types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(i*0.01, 1.0e-5, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_hht(i*0.01, 1.0e-5, 6, 0.01, 1.0e-6, 0.001, 0)
     else:
-        sys_.dynamic_analysis_bdf(i*0.01, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_bdf(i*0.01, 1.0e-3, 6, 0.01, 1.0e-6, 0.001, 0)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
+            types.append(c_.type(i))
             if c_.rotation(i)==1:
                 data.append(P.get(i)*180.0/np.pi)
             else:    
@@ -79,15 +86,23 @@ for i in range(500):
     datas.append(data)        
 end=time.time()
 datas=np.array(datas)    
-plt.plot(datas[:,0], datas[:,1], datas[:,0], datas[:,2], datas[:,0], datas[:,3])#, datas[:,0], datas[:,4], )#, t, x3)
 dt= end-start
-plt.title("hht "+str(hht))
-plt.grid()
-end=time.time()
+dimx, dimy=datas.shape
+name_=os.path.splitext(os.path.basename(__file__))[0]
+for i in range(1, dimy):
+    plt.subplot(dimy-1, 1, i)
+    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
+    plt.plot(datas[:,0], datas[:, i])
+    plt.grid()
+#plt.title("hht %s %d %5.3f"%(name_, hht, dt))
 if len(sys.argv)>1:
-	name_=os.path.splitext(os.path.basename(__file__))[0]
 	np.save(name_, datas)
 else:
+        plt.tight_layout()
+	plt.show()
+if len(sys.argv)>1:
+    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
+        plt.tight_layout()
 	plt.show()
 sys.exit(0)
 

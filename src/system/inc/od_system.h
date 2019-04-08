@@ -364,7 +364,7 @@ public:
 	int get_num_constraint();
 	//int getNumMotions() const { return motion_list.size(); }
 	virtual int Update(int = 0) = 0;
-	virtual double* evaluateRhs(double* rhs) = 0;
+	virtual double* evaluateRhs(double* rhs, int) = 0;
 	virtual double** evaluateJac(double** pM, int base = 0) = 0;
 	virtual void CreateTraM(double **pM, int = 0) = 0;
 	virtual void CreateRotM(double **pM, int = 0) = 0;
@@ -432,7 +432,7 @@ public:
 	virtual int Update(int = 0);
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
-	virtual double* evaluateRhs(double* rhs);
+	virtual double* evaluateRhs(double* rhs, int hhtacc=0);
 	virtual double** evaluateJac(double** pM, int base = 0);
 	inline int TreeDofs() const { return Tree_Ndofs; }
 	void updateQ();
@@ -494,7 +494,7 @@ public:
 	void setRef(od_marker *ref) { refM = ref; }
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
-	virtual double* evaluateRhs(double* rhs) { double* x = 0;  return x; }
+	virtual double* evaluateRhs(double* rhs, int i) { double* x = 0;  return x; }
 	virtual double** evaluateJac(double** pM, int base = 0) { double** x = 0; return x; }
 	void create_incidence(vector<int>&, int = 0) {}
 	void create_relevence(vector<int>&, int = 0) {}
@@ -587,7 +587,7 @@ public:
 
 	void update(int = 0);
 	//inline Vec3* tree_rhs_si2(int i) const { return _tree_rhs_si2 + i; }
-	double* evaluate_rhs(double* rhs);
+	double* evaluate_rhs(double* rhs, int hhtacc=0);
 	double** evaluate_Jac(double**);
 	int displacement_ic();
 	int velocity_ic();

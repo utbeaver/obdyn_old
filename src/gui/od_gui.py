@@ -1,15 +1,15 @@
 import wx
 import time
-import os
-import sys
+import sys, os
 from math import *
-from od_model import *
 from od_tree_ctrl import *
 from od_canvas import *
 from od_plot import *
 from od_utils import *
 from string import *
+from od_model import *
 global myModel
+
 myModel = None
 class Od_Frame(wx.Frame):
     def __init__(self, parent,  id, title):

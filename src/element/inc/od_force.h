@@ -30,7 +30,7 @@ protected:
 	int ith, index__;
 	int reversed;
 public:
-	od_jointF(int Id, char* name_, od_joint* pJ, int _ith = 0);
+	od_jointF(int Id, char* name_, od_joint* pJ, int _ith );
 	virtual void init() = 0;
 	void init1();// { index = pJoint->get_start_index() + ith; }
 	inline od_joint* Joint() const { return pJoint; }
@@ -54,10 +54,12 @@ public:
 	od_joint_spdp(int Id, char* name_, od_joint* pJ, double k, double c, double l, double f0, int _ith = 0);
 	virtual void init() { od_jointF::init1(); }
 	virtual int get_partial_size(int i = 0) const { return  (i < 2) ? 1 : 0; }
-	virtual int get_partial_col(int i, int j) const { return index__; }
+	virtual int get_partial_col(int i, int j) const { 
+		return index__;
+	}
 	virtual double get_partial(int i, int j = 0) const { return (i == 0) ? -K : -C; }
 	inline int evaluate_rhs();// { return 1; }
-	inline int evaluate_Jac() { return 1; }
+	inline int evaluate_Jac();// { return 1; }
 };
 
 class od_joint_force : public od_jointF {

@@ -34,6 +34,7 @@ public:
 	od_marker(int ID, od_body *pBody = 0, char* name_ = 0, int Real = 1);
 	od_marker(int ID, double pos[3], double ang[3], char* name_, int Real = 1);
 	od_marker(int ID, double matrix[16], char* name_, int Real = 1);
+	od_marker(int ID, od_marker* ref, double pos[3], double ang[3], char* name_, int Real = 1);
 	void set_position(double *pos) { EQ3(r_pos, pos); EQ3(a_pos, pos); }
 	void set_angles(double *ang) { EQ3(r_euler, ang); r_mat.update(r_euler); }
 	double* get_angles(double p[3]) {
