@@ -1096,8 +1096,8 @@ double* od_equation_hhti3::evalRhs() {
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	for (i = 0; i < tree_ndofs; i++) {
 		pRhs[i] = Mq[i];//
-		temp = 0.0;
-		for (j = 0; j < tree_ndofs; j++) temp += M_a[i][j] * _Xddot[j];
+		//temp = 0.0;
+		//for (j = 0; j < tree_ndofs; j++) temp += M_a[i][j] * _Xddot[j];
 		temp = Q[i] * ap1 - pQ[i] * alpha;
 		pRhs[i] += temp;
 	}
@@ -1254,7 +1254,7 @@ void od_equation_hhti3::calMa(double _h) {
 void  od_equation_dynamic::evalJac(double alpha) {
 	int i;
 	pSys->update();
-	pSys->updatePartials();
+	pSys->updatePartials(0, alpha);
 	for (i = 0; i < tree_ndofs; i++) {
 		//if (!hht)fill(M_a[i], M_a[i] + tree_ndofs, 0.0);
 		fill(M_a[i], M_a[i] + tree_ndofs, 0.0);

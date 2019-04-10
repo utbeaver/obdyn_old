@@ -312,7 +312,7 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 				for (k = 0; k < num_dof; k++) {
 					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
 					for (j = idx; j < idx + _len; j++) {
-						tgt[i]->multiplied_by(inva);
+						tgt[j]->multiplied_by(inva);
 					}
 					//pC->setPartialVec3(k, tgt);
 				}
@@ -364,7 +364,7 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 				for (k = 0; k < num_dof; k++) {
 					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
 					for (j = idx; j < idx + _len; j++) {
-						tgt[i]->multiplied_by(inva);
+						tgt[j]->multiplied_by(inva);
 					}
 					//pC->setPartialVec3(k, tgt);
 				}
@@ -729,7 +729,7 @@ void od_systemMechanism::parF_parq(double **pM,  double alpha)
 	//	base += _subSys[i]->tree_dofs();
 	//}
 	od_joint* pC;
-	Vec3 *pV;
+	//Vec3 *pV;
 	Vec3 **tgt;
 	Vec3 **dWdot_dq;
 	Vec3 **dW_dq;
@@ -740,13 +740,7 @@ void od_systemMechanism::parF_parq(double **pM,  double alpha)
 	// parT_parq Fr
 	// pd = tempVec;
 
-	/*if (alpha < 0.0) {
-		for (i = 0; i < nbody *2; i++) {
-			pV = (_tree_rhs_alpha + i);
-			for (j = 0; j < 3; j++) tempVec[j] = pV->v[j];// *inva;
-			*(_tree_rhs + i) += tempVec;
-		}
-	}*/
+	
 	for (i = 0; i < nbody; i++) {
 		pC = (od_joint*)(*(constraint_list_ + i));
 		start = pC->get_start_index();
@@ -1010,10 +1004,10 @@ double* od_systemMechanism::evaluateRhs(double *pRhs, double alpha) {
 		if (alpha <= 0.0) {
 			multiplyMatT_Rotq_Vec(nbody, _tree_rhs, pRhs, constraint_list_);
 			multiplyMatT_vec(nbody, _tree_rhs + nbody, _tree_rhs + nbody, constraint_list_);
-			for (i = 0; i < nbody; i++) {
+			/*for (i = 0; i < nbody; i++) {
 				*(_tree_rhs_alpha + i) = (_tree_rhs + i);
 				*(_tree_rhs_alpha + i + nbody) = (_tree_rhs + i + nbody);
-			}
+			}*/
 			multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
 			return pRhs + tree_dof;
 		}
@@ -1244,7 +1238,7 @@ od_systemGeneric::~od_systemGeneric() {
 	DELARY(relevenceLevel2);
 	DELARY(relevenceLevel3);
 	*/
-	DELARY(_tree_rhs_alpha);
+	//DELARY(_tree_rhs_alpha);
 	DELARY(_subSys);
 	for (int i = 0; i < (int)loop_list.size(); i++) delete loop_list[i];
 	loop_list.resize(0);
@@ -1623,7 +1617,7 @@ void od_systemMechanism::init_tree(double *_p, double *_v, double *_a, int dof_i
 	//non_array = new double*[nbody];
 	J_array = new Mat33*[nbody];
 	_tree_rhs = new Vec3[nbody * 2];
-	_tree_rhs_alpha = new Vec3[nbody * 2];
+	//_tree_rhs_alpha = new Vec3[nbody * 2];
 	for (i = 0; i < nbody; i++) {
 		pC = (od_joint*)constraint_list_[i];
 		pM = pC->get_imarker();

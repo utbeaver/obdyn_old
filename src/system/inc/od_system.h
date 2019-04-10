@@ -292,7 +292,7 @@ public:
 
 	Vec3 G_array;
 	Vec3* _tree_rhs;
-	Vec3* _tree_rhs_alpha;
+	//Vec3* _tree_rhs_alpha;
 	//analysis type
 	DVA_TYPE _dva_type;
 	JAC_TYPE _jac_type;

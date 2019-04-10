@@ -34,13 +34,12 @@ c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
 
 spdp=OdJointSPDP(10, "spdpt")
-spdp.setJoint(c[0], 0)
+spdp.setJoint(c[0], 2)
 spdp.set_stiffness(3.14*3.14*4*40)
 spdp.set_damping(1)
 spdp.set_distance(0)
 spdp.set_force(0)
 fs.append(spdp)
-
 
 cm2 = OdMarker(3, V3(c45*3, -s45*3, 0), V3(d45, 0, 0), "cm1")
 b[2].add_cm_marker(cm2)
@@ -50,6 +49,20 @@ b[2].add_marker(b2mar1)
 c[1].set_imarker(b2mar1)
 c[1].set_jmarker(b1mar23)
 c[1].txyrz()
+spdp1=OdJointSPDP(11, "spdpt1")
+spdp1.setJoint(c[1], 0)
+spdp1.set_stiffness(3.14*3.14*4*40)
+spdp1.set_damping(1)
+spdp1.set_distance(0)
+spdp1.set_force(0)
+fs.append(spdp1)
+spdp2=OdJointSPDP(12, "spdpt2")
+spdp2.setJoint(c[1], 1)
+spdp2.set_stiffness(3.14*3.14*4*40)
+spdp2.set_damping(1)
+spdp2.set_distance(0)
+spdp2.set_force(0)
+fs.append(spdp2)
 sys_ = OdSystem("revJT2R1")
 
 for i in b: sys_.add_body(i)
@@ -68,7 +81,7 @@ for i in range(450):
     data=[t_]
     types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 5.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     else:    
         sys_.dynamic_analysis_bdf(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
     for c_ in c:
