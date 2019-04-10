@@ -87,20 +87,7 @@ datas=np.array(datas)
 end=time.time()
 dt= end-start
 name_=os.path.splitext(os.path.basename(__file__))[0]
-dimx, dimy=datas.shape
-for i in range(1, dimy):
-    plt.subplot(dimy-1, 1, i)
-    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
-    plt.plot(datas[:,0], datas[:, i])
-    plt.grid()
-if len(sys.argv)>1:
-	np.save(name_, datas)
-else:
-        plt.tight_layout()
-	plt.show()
-if len(sys.argv)>1:
-    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
-        plt.tight_layout()
-	plt.show()
-sys.exit(0)
 
+import postutils
+postutils.ppt(datas, types, dt, hht, name_, sys.argv)
+sys.exit(0)

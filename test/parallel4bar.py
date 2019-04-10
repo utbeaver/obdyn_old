@@ -60,31 +60,31 @@ sys_.displacement_ic()
 #sys_.kinematic_analysis(0.1, 10, 1.0e-10, 20)
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 datas=[]
-hht=1
+hht=0
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1
     if sys.argv[1]=="-b":
         hht=0
+start=time.time()
 for i in range(500):
     t_=i*0.01
     data=[t_]
+    types=["time"]
     sys_.dynamic_analysis_hht(t_, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
+            types.append(c_.type(i))
             if c_.rotation(i)==1:
                 data.append(P.get(i)*180.0/np.pi)
             else:    
                 data.append(P.get(i))
     datas.append(data)        
 datas=np.array(datas)
-t=datas[:,0]
-plt.plot(t, datas[:,1])#, t, datas[:,2], t, datas[:,3], t, datas[:,4], t, datas[:,5], t, datas[:,6] )
-plt.grid()
-if len(sys.argv)>1:
-	name_=os.path.splitext(os.path.basename(__file__))[0]
-	np.save(name_, datas)
-else:
-	plt.show()
+end=time.time()
+dt= end-start
+name_=os.path.splitext(os.path.basename(__file__))[0]
+import postutils
+postutils.ppt(datas, types, dt, hht, name_, sys.argv)
 sys.exit(0)

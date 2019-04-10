@@ -47,12 +47,10 @@ public:
 	inline int numCols() const { return 1; }
 	int const operator!=(const Vec3& another) const {
 		Vec3 temp;
-		//int flag = 1;
 		temp = another;
 		temp = (*this) ^ (temp);
 		return 1;
 	}
-
 	const int operator==(Vec3& an) const {
 		double a;
 		for (int i = 0; i < 3; i++) {
@@ -62,7 +60,6 @@ public:
 		}
 		return 0;
 	}
-	
 	inline double* VxD(double *V, double d, int reset = 0) const {
 		if (reset) ZERO3(V);
 		V[0] += v[0] * d;
@@ -70,16 +67,8 @@ public:
 		V[2] += v[2] * d;
 		return V;
 	}
-
-	/*inline void divided_by(double a) {
-		if (fabs(a) > SMALL_VALUE) {
-			a = 1.0 / a;
-			v[0] *= a; v[1] *= a; v[2] *= a;
-		}
-	}*/
 	inline void multiplied_by(double a) { v[0] *= a; v[1] *= a; v[2] *= a; }
 	inline void negate() { NEG(v) }
-	//inline  double* v  const { return (double*)v; }
 	inline double* to_double(double* temp) const { EQ3(temp, v) return temp; }
 	inline  Vec3& operator= (const Vec3& another) { EQ3(v, another.v); return *this; }
 	inline Vec3& operator=(const Vec3* another) { if (another) { EQ3(v, another->v) } else { ZERO3(v); } return *this; }

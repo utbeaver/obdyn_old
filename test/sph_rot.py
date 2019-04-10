@@ -49,13 +49,13 @@ b[2].add_marker(b2mar1)
 
 c[1].set_imarker(b2mar1)
 c[1].set_jmarker(b1mar23)
-#c[1].txyrz()
+c[1].txyrz()
 sys_ = OdSystem("revJT2R1")
 
 for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
-hht=1
+hht=0
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1
@@ -83,21 +83,8 @@ for i in range(905):
 datas=np.array(datas)
 end=time.time()
 dt= end-start
-name_=os.path.splitext(os.path.basename(__file__))[0]
-dimx, dimy=datas.shape
-for i in range(1, dimy):
-    plt.subplot(dimy-1, 1, i)
-    plt.xlabel("%s %s %5.2f hht %d"%(name_, types[i], dt, hht))
-    plt.plot(datas[:,0], datas[:, i])
-    plt.grid()
-if len(sys.argv)>1:
-	np.save(name_, datas)
-else:
-        plt.tight_layout()
-	plt.show()
-if len(sys.argv)>1:
-    if sys.argv[1]=="-B" or sys.argv[1]=="-H" :
-        plt.tight_layout()
-	plt.show()
-sys.exit(0)
 
+name_=os.path.splitext(os.path.basename(__file__))[0]
+import postutils
+postutils.ppt(datas, types, dt, hht, name_, sys.argv)
+sys.exit(0)

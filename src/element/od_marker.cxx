@@ -8,7 +8,6 @@ od_marker::od_marker(int id, char* name_, int Real) : od_element(id, name_, Real
 	pbody = 0;
 	a_mat.set_type(Mat33::GENERAL);
 	r_mat.set_type(Mat33::GENERAL);
-	//fill(ifric, ifric+3, 0); fill(iftic, iftic+3, 0);
 	for (int i = 0; i < 3; i++) {
 		r_pos[i] = 0.0; a_r_pos[i] = 0.0;
 		a_pos[i] = 0.0;

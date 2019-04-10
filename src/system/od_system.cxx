@@ -267,10 +267,10 @@ void od_systemMechanism::updateQ() {
 		pCi->updateQ();
 	}
 }
-void od_systemMechanism::updatePartials(int pos_only) {
-	int i,  k, startindex, num_dof, idx, _len;
+void od_systemMechanism::updatePartials(int pos_only, double alpha) {
+	int i, j, k, startindex, num_dof, idx, _len;
 	//for (i = 0; i < nsystem; i++) _subSys[i]->updatePartials(pos_only);
-	
+	double inva = 1.0 / (1.0 + alpha);
 	Vec3 **tgt;
 	od_joint* pC = 0;
 	int nbody = num_body();
@@ -282,84 +282,104 @@ void od_systemMechanism::updatePartials(int pos_only) {
 	calculate_JTdot();
 
 	//parOmega_Parq:  par_J/par_q*q_dot
-	parOmega_parq.init();// .create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	for (i = 0; i < nbody; i++) {
-		pC = (od_joint*)(*(constraint_list_ + i));
-		startindex = pC->get_start_index();
-		num_dof = pC->dofs();
-		for (k = 0; k < num_dof; k++) {
-			tgt = parOmega_parq.column(startindex + k, &idx, &_len);
-			pC->setPartialVec3(k, tgt);
+	{
+		parOmega_parq.init();// .create_jacobian(nbody, tree_ndofs, relevenceLevel3);
+		for (i = 0; i < nbody; i++) {
+			pC = (od_joint*)(*(constraint_list_ + i));
+			startindex = pC->get_start_index();
+			num_dof = pC->dofs();
+			for (k = 0; k < num_dof; k++) {
+				tgt = parOmega_parq.column(startindex + k, &idx, &_len);
+				pC->setPartialVec3(k, tgt);
+			}
+			multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 1);
 		}
-		multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 1);// , 0);
 	}
 	//parOmega_dot/par_q
-	parOmega_dot_parq.init();// create_jacobian(nbody, tree_ndofs, relevenceLevel3);
+	{
+		parOmega_dot_parq.init();// create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 
-	for (i = 0; i < nbody; i++) {
-		pC = (od_joint*)(*(constraint_list_ + i));
-		startindex = pC->get_start_index();
-		num_dof = pC->dofs();
-		for (k = 0; k < num_dof; k++) {
-			tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
-			pC->setPartialVec3(k, tgt);
+		for (i = 0; i < nbody; i++) {
+			pC = (od_joint*)(*(constraint_list_ + i));
+			startindex = pC->get_start_index();
+			num_dof = pC->dofs();
+			for (k = 0; k < num_dof; k++) {
+				tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
+				pC->setPartialVec3(k, tgt);
+			}
+			multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 2);// , 0);
+			if (alpha < 0.5) {
+				for (k = 0; k < num_dof; k++) {
+					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
+					for (j = idx; j < idx + _len; j++) {
+						tgt[i]->multiplied_by(inva);
+					}
+					//pC->setPartialVec3(k, tgt);
+				}
+			}
+			multiplyParMatRotVec_q(nbody, constraint_list_, i, 1, 1);// , 1);
 		}
-		multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 2);// , 0);
-		multiplyParMatRotVec_q(nbody, constraint_list_, i, 1, 1);// , 1);
 	}
-
 	//parOmega_dot/par_q_dot
-	  //parOmega_dot_parq_dot.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	parOmega_dot_parq_dot = parOmega_parq;
-	parOmega_dot_parq_dot += JR_dot;
+	{
+		//omega_dot = J q_ddot + JR_dot *q_dot
+		parOmega_dot_parq_dot = JR_dot;
+		//parOmega_dot_parq_dot += parOmega_parq; //QUESTION
+	}
 	//parVel_parq = parJp_parqp * qp_dot + parJa_parqp * qa_dot
-	parVel_parq.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	parVel_parqG.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel2);
-	for (i = 0; i < nbody; i++) {
-		pC = (od_joint*)(*(constraint_list_ + i));
-		num_dof = pC->dofs();
-		startindex = pC->get_start_index();
-		for (k = 0; k < num_dof; k++) {
-			tgt = parVel_parq.column(startindex + k, &idx, &_len);
-			pC->setPartialVec3(k, tgt);
+	{
+		parVel_parq.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel3);
+		parVel_parqG.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel2);
+		for (i = 0; i < nbody; i++) {
+			pC = (od_joint*)(*(constraint_list_ + i));
+			num_dof = pC->dofs();
+			startindex = pC->get_start_index();
+			for (k = 0; k < num_dof; k++) {
+				tgt = parVel_parq.column(startindex + k, &idx, &_len);
+				pC->setPartialVec3(k, tgt);
+			}
+			multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 0, /*type=0 wrt to disp*/  1);// , 0);
+			multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 0, /*type=0 wrt to disp*/  1);// , 1);
 		}
-		multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 0, /*type=0 wrt to disp*/  1);// , 0);
-		multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 0, /*type=0 wrt to disp*/  1);// , 1);
+		multiplyMat_Assembly(JMAT, parVel_parq, parVel_parqG, constraint_list_);
 	}
-	multiplyMat_Assembly(JMAT, parVel_parq, parVel_parqG, constraint_list_);
 	//parVel_parq_dotG =JTG
-
-  //parVel_dot_parq =  parJp_parqp * qp_ddot + parJa_parqp * qa_ddot
-  //+ d( parJp_parqp)/dt *qp_dot + d(parJa_parqp)/dt * qa_dot
-	parVel_dot_parq.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	parVel_dot_parqG.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel2);
-	//parVel_dot_parq_alpha.init();
-	//parVel_dot_parqG_alpha.init();
-	for (i = 0; i < nbody; i++) {
-		pC = (od_joint*)(*(constraint_list_ + i));
-		startindex = pC->get_start_index();
-		num_dof = pC->dofs();
-		for (k = 0; k < num_dof; k++) {
-			tgt = parVel_dot_parq.column(startindex + k, &idx, &_len);
-			pC->setPartialVec3(k, tgt);
+	//parVel_dot_parq 
+	{
+		//parVel_dot_parq =  parJp_parqp * qp_ddot + parJa_parqp * qa_ddot
+		//+ d( parJp_parqp)/dt *qp_dot + d(parJa_parqp)/dt * qa_dot
+		parVel_dot_parq.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel3);
+		parVel_dot_parqG.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel2);
+		for (i = 0; i < nbody; i++) {
+			pC = (od_joint*)(*(constraint_list_ + i));
+			startindex = pC->get_start_index();
+			num_dof = pC->dofs();
+			for (k = 0; k < num_dof; k++) {
+				tgt = parVel_dot_parq.column(startindex + k, &idx, &_len);
+				pC->setPartialVec3(k, tgt);
+			}
+			multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 0, 2);// , 0);
+			multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 0, 2);// , 1);
+			if (alpha < 0.5) {
+				for (k = 0; k < num_dof; k++) {
+					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
+					for (j = idx; j < idx + _len; j++) {
+						tgt[i]->multiplied_by(inva);
+					}
+					//pC->setPartialVec3(k, tgt);
+				}
+			}
+			multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 1, 1);// , 1);
+			multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 1, 1);// , 1);
 		}
-		multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 0, 2);// , 0);
-		multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 0, 2);// , 1);
-		multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 1, 1);// , 1);
-		multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 1, 1);// , 1);
-	}
-	//parVel_dot_parq = parVel_dot_parq_alpha;
-	//multiplyMat_Assembly(JMAT, parVel_dot_parq_alpha, parVel_dot_parqG_alpha, constraint_list_);
-	multiplyMat_Assembly(JMAT, parVel_dot_parq, parVel_dot_parqG, constraint_list_);
-	//parVel_dot/par_qp_dot
-	//parVel_dot_parq_dotG.init();//create_jacobian(nbody, tree_ndofs, relevenceLevel2);
+		multiplyMat_Assembly(JMAT, parVel_dot_parq, parVel_dot_parqG, constraint_list_);
 
-	parVel_dot_parq_dotG = parVel_parqG;
-	parVel_dot_parq_dotG += JTG_dot;
+	}
+	//a= J q_ddot + J_dot q_dot
+	parVel_dot_parq_dotG = JTG_dot;
+	//parVel_dot_parq_dotG += parVel_parqG; 
 	for (i = 0; i < num_force(); i++) force_list_[i]->evaluate_Jac();
 	for (i = 0; i < num_jforce(); i++) joint_force_list_[i]->evaluate_Jac();
-	//for_each(force_list.begin(), force_list.end(), mem_fun(&od_force::evaluate_Jac));
-	//for_each(joint_force_list.begin(), joint_force_list.end(), mem_fun(&od_joint_force::evaluate_Jac));
 }
 
 void od_systemMechanism::calculate_JR(int no_dot) {
@@ -540,81 +560,6 @@ int od_systemGeneric::init_dynamics() {
 	return 1;
 }
 
-void od_systemMechanism::parF_parq_dot(double **pM, int base) {
-	//parF_par_dot = T^t parFr_parq_dot + T^t parFt_parq_dot
-	int i, j, k, _size, idx, _len;
-	//for (i = 0; i < nsystem; i++) {
-	//	_subSys[i]->parF_parq_dot(pM, base);
-	//	base += _subSys[i]->tree_dofs();
-	//}
-	double tempVec[3], *pd;
-	int nbody = num_body();
-	pd = tempVec;
-	Vec3 **tgt;
-	Vec3 **dWdot_dq;
-	od_body *pB = 0;
-	int tree_dof = tree_dofs();
-	//parFr_parq_dot
-	Vec3* parFparq = new Vec3[nbody * 2];
-	double* par_col = new double[tree_dof];
-	Vec3 *vecTemp1 = new Vec3[nbody];
-	double vecTemp[3];
-	//vector<Vec3*> vecList(nbody);;
-	//for (i = 0; i < (int)loop_list.size(); i++) loop_list[i]->evaluate(0);
-	for (j = 0; j < tree_dof; j++) {
-		for (i = 0; i < nbody + nbody; i++) parFparq[i].init();
-		//J*parOmega_dot_parq_dot
-		tgt = parOmega_dot_parq_dot.column(j, &idx, &_len);
-		dWdot_dq = parOmega_parq_dot.column(j, &idx, &_len);
-		for (i = idx; i < idx + _len; i++) {
-			pB = body_list_[i];
-			pB->J_v(vecTemp, tgt[i]->v);
-			parFparq[i] -= vecTemp;
-			pd = dWdot_dq[i]->v;
-			pB->parWxJW_parq(vecTemp, pd);
-			parFparq[i] -= vecTemp;
-		}
-
-		//Par from loop_list: see evalJac in od_equation.cxx
-		// par from Torque
-		_size = parTorqueparPVA[1].length(j);
-		for (k = 0; k < _size; k++) {
-			Vec3* pV = parTorqueparPVA[1].ithVec(k, j, i);
-			if (pV) parFparq[i] += pV;
-		}
-		tgt = parVel_dot_parq_dotG.column(j, &idx, &_len);
-		for (i = idx; i < idx + _len; i++) {
-			parFparq[i + nbody] = tgt[i];// ->v;
-			parFparq[i + nbody].multiplied_by(-(body_list_[i]->get_M()));
-		}
-		//Par from loop_list: see evalJac in od_equation.cxx
-		//par from Force 
-		_size = parForceparPVA[1].length(j);
-		for (k = 0; k < _size; k++) {
-			Vec3* pV = parForceparPVA[1].ithVec(k, j, i);
-			if (pV) parFparq[i + nbody] += pV;
-		}
-		fill(par_col, par_col + tree_dof, 0.0);
-		multiplyMatT_Rotq_Vec(nbody, parFparq, par_col, constraint_list_);
-		multiplyMatT_vec(nbody, parFparq + nbody, vecTemp1, constraint_list_);
-		multiplyMatT_Traq_Vec(nbody, vecTemp1, par_col, constraint_list_);
-		for (k = 0; k < tree_dof; k++) {
-			pM[base + k][base + j] += par_col[k];
-		}
-	}
-	int len = num_jforce();
-	for (i = 0; i < len; i++) {
-		od_jointF* pf = joint_force_list_[i];
-		int row = pf->row();
-		int size = pf->get_partial_size(1);
-		for (j = 0; j < size; j++) {
-			int col = pf->get_partial_col(1, j);
-			double tempd = pf->get_partial(1, j);
-			pM[base + row][base + col] += tempd;
-		}
-	}
-	DELARY(par_col);  DELARY(vecTemp1);  DELARY(parFparq);
-}
 void od_systemMechanism::topology_analysis_level2() {
 	int temp_int, num_dofs, i, j, _value, if_rot;
 	int num_nz = 1;
@@ -695,14 +640,96 @@ void od_systemMechanism::topology_analysis_level2() {
 		cout << endl;
 	}
 }
-void od_systemMechanism::parF_parq(double **pM, int base)
+void od_systemMechanism::parF_parq_dot(double **pM, double alpha) {
+	//parF_par_dot = T^t parFr_parq_dot + T^t parFt_parq_dot
+	int i, j, k, _size, idx, _len, base = 0;
+	//for (i = 0; i < nsystem; i++) {
+	//	_subSys[i]->parF_parq_dot(pM, base);
+	//	base += _subSys[i]->tree_dofs();
+	//}
+	//double inva = 1.0 / (1.0 + alpha);
+	//if (alpha > 0.1) inva = 1.0;
+	double tempVec[3], *pd;
+	int nbody = num_body();
+	pd = tempVec;
+	Vec3 **tgt;
+	Vec3 **dW_dq_dot;
+	od_body *pB = 0;
+	int tree_dof = tree_dofs();
+	//parFr_parq_dot
+	Vec3* parFparq = new Vec3[nbody * 2];
+	double* par_col = new double[tree_dof];
+	Vec3 *vecTemp1 = new Vec3[nbody];
+	double vecTemp[3];
+	//vector<Vec3*> vecList(nbody);;
+	//for (i = 0; i < (int)loop_list.size(); i++) loop_list[i]->evaluate(0);
+	for (j = 0; j < tree_dof; j++) {
+		for (i = 0; i < nbody + nbody; i++) parFparq[i].init();
+		//J*parOmega_dot_parq_dot
+		tgt = parOmega_dot_parq_dot.column(j, &idx, &_len);
+		dW_dq_dot = parOmega_parq_dot.column(j, &idx, &_len);
+		for (i = idx; i < idx + _len; i++) {
+			pB = body_list_[i];
+			pB->J_v(vecTemp, tgt[i]->v);
+			//for (int jj = 0; jj < 3; jj++) vecTemp[jj] *= inva;
+			parFparq[i] -= vecTemp;
+			pd = dW_dq_dot[i]->v;
+			pB->parWxJW_parq(vecTemp, pd);
+			parFparq[i] -= vecTemp;
+		}
+
+		//Par from loop_list: see evalJac in od_equation.cxx
+		// par from Torque
+		_size = parTorqueparPVA[1].length(j);
+		for (k = 0; k < _size; k++) {
+			Vec3* pV = parTorqueparPVA[1].ithVec(k, j, i);
+			if (pV) parFparq[i] += pV;
+		}
+		tgt = parVel_dot_parq_dotG.column(j, &idx, &_len);
+		for (i = idx; i < idx + _len; i++) {
+			parFparq[i + nbody] = tgt[i];// ->v;
+			parFparq[i + nbody].multiplied_by(-(body_list_[i]->get_M())/*inva*/);
+		}
+		//Par from loop_list: see evalJac in od_equation.cxx
+		//par from Force 
+		_size = parForceparPVA[1].length(j);
+		for (k = 0; k < _size; k++) {
+			Vec3* pV = parForceparPVA[1].ithVec(k, j, i);
+			if (pV) parFparq[i + nbody] += pV;
+		}
+		fill(par_col, par_col + tree_dof, 0.0);
+		multiplyMatT_Rotq_Vec(nbody, parFparq, par_col, constraint_list_);
+		multiplyMatT_vec(nbody, parFparq + nbody, vecTemp1, constraint_list_);
+		multiplyMatT_Traq_Vec(nbody, vecTemp1, par_col, constraint_list_);
+		for (k = 0; k < tree_dof; k++) {
+			pM[base + k][base + j] += par_col[k];
+		}
+	}
+	int len = num_jforce();
+	for (i = 0; i < len; i++) {
+		od_jointF* pf = joint_force_list_[i];
+		int row = pf->row();
+		int size = pf->get_partial_size(1);
+		for (j = 0; j < size; j++) {
+			int col = pf->get_partial_col(1, j);
+			double tempd = pf->get_partial(1, j);
+			pM[base + row][base + col] += tempd;
+		}
+	}
+	DELARY(par_col);  DELARY(vecTemp1);  DELARY(parFparq);
+}
+void od_systemMechanism::parF_parq(double **pM,  double alpha)
 {
 	int i, j, k, start, num_dofs, _size, idx, _len;
+	int base = 0;
+	//double inva = 1.0 / (1.0 + alpha);
+	//if (alpha > 0.1) inva = 1.0;
 	//for (i = 0; i < nsystem; i++) {
 	//	_subSys[i]->parF_parq(pM, base);
 	//	base += _subSys[i]->tree_dofs();
 	//}
 	od_joint* pC;
+	Vec3 *pV;
 	Vec3 **tgt;
 	Vec3 **dWdot_dq;
 	Vec3 **dW_dq;
@@ -712,6 +739,14 @@ void od_systemMechanism::parF_parq(double **pM, int base)
 	//parF_parq = T^t parFr_parq + parT_parq Fr
 	// parT_parq Fr
 	// pd = tempVec;
+
+	/*if (alpha < 0.0) {
+		for (i = 0; i < nbody *2; i++) {
+			pV = (_tree_rhs_alpha + i);
+			for (j = 0; j < 3; j++) tempVec[j] = pV->v[j];// *inva;
+			*(_tree_rhs + i) += tempVec;
+		}
+	}*/
 	for (i = 0; i < nbody; i++) {
 		pC = (od_joint*)(*(constraint_list_ + i));
 		start = pC->get_start_index();
@@ -769,6 +804,7 @@ void od_systemMechanism::parF_parq(double **pM, int base)
 			pQQ = tgt[i]->v;
 			pd = dWdot_dq[i]->v;
 			pB->parJparq_v(tempVec, pQQ, pd, /*omega_dot=*/ 1);
+			//for (int jj = 0; jj < 3; jj++) tempVec[jj] *= inva;
 			parFparq[i] -= tempVec;
 			//omega x parJ_parq omega
 			pd = dW_dq[i]->v;
@@ -790,7 +826,7 @@ void od_systemMechanism::parF_parq(double **pM, int base)
 		for (i = idx; i < idx + _len; i++) {
 			double m = body_list_[i]->get_M();
 			parFparq[i + nbody] = tgt[i];// ->v;
-			parFparq[i + nbody].multiplied_by(-m);
+			parFparq[i + nbody].multiplied_by(-m/*inva*/);
 		}
 		//Par from loop_list
 		//par from Force and Torque
@@ -946,7 +982,7 @@ double** od_systemMechanism::evaluateJac(double **pM, int base) {
 	}
 	return pM;
 }
-double* od_systemMechanism::evaluateRhs(double *pRhs, int hhtacc) {
+double* od_systemMechanism::evaluateRhs(double *pRhs, double alpha) {
 	int i, index, i_index, j_index;
 	od_loop* pl;
 	od_body *pBi, *pBj;
@@ -967,13 +1003,17 @@ double* od_systemMechanism::evaluateRhs(double *pRhs, int hhtacc) {
 		//SumofForce: J*w_dot+w x Jw,  Mx_ddot
 		for (i = 0; i < nbody; i++) {
 			pBi = body_list_[i];
-			*(_tree_rhs + i) -= pBi->J_Wdot();
+			*(_tree_rhs + i) -= pBi->J_Wdot();  
 			*(_tree_rhs + i) -= pBi->wxJw();
-			*(_tree_rhs + i + nbody) -= pBi->Mx_ddot();
+			*(_tree_rhs + i + nbody) -= pBi->Mx_ddot(); 
 		}
-		if (hhtacc == 1) {
+		if (alpha <= 0.0) {
 			multiplyMatT_Rotq_Vec(nbody, _tree_rhs, pRhs, constraint_list_);
 			multiplyMatT_vec(nbody, _tree_rhs + nbody, _tree_rhs + nbody, constraint_list_);
+			for (i = 0; i < nbody; i++) {
+				*(_tree_rhs_alpha + i) = (_tree_rhs + i);
+				*(_tree_rhs_alpha + i + nbody) = (_tree_rhs + i + nbody);
+			}
 			multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
 			return pRhs + tree_dof;
 		}
@@ -1204,6 +1244,7 @@ od_systemGeneric::~od_systemGeneric() {
 	DELARY(relevenceLevel2);
 	DELARY(relevenceLevel3);
 	*/
+	DELARY(_tree_rhs_alpha);
 	DELARY(_subSys);
 	for (int i = 0; i < (int)loop_list.size(); i++) delete loop_list[i];
 	loop_list.resize(0);
@@ -1244,7 +1285,6 @@ void od_system::_init() {
 	pMsgFile = new ofstream(name__.c_str(), ios_base::out);
 	pOutFile = 0;
 }
-
 od_system::~od_system() {
 	int ii;
 	od_element *pE;
@@ -1583,7 +1623,7 @@ void od_systemMechanism::init_tree(double *_p, double *_v, double *_a, int dof_i
 	//non_array = new double*[nbody];
 	J_array = new Mat33*[nbody];
 	_tree_rhs = new Vec3[nbody * 2];
-
+	_tree_rhs_alpha = new Vec3[nbody * 2];
 	for (i = 0; i < nbody; i++) {
 		pC = (od_joint*)constraint_list_[i];
 		pM = pC->get_imarker();
@@ -1638,14 +1678,11 @@ void od_systemMechanism::init_tree(double *_p, double *_v, double *_a, int dof_i
 	JTG_dot.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	parOmega_parq.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 	parOmega_dot_parq.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	//parOmega_dot_parq_alpha.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 	parOmega_dot_parq_dot.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 	parVel_parq.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 	parVel_parqG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	parVel_dot_parq.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
-	//parVel_dot_parq_alpha.create_jacobian(nbody, tree_ndofs, relevenceLevel3);
 	parVel_dot_parqG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
-	//parVel_dot_parqG_alpha.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
 	parVel_dot_parq_dotG.create_jacobian(nbody, tree_ndofs, relevenceLevel2);
     element_num = (int)element_list.size();
 	if (element_num) element_list_ = new od_element*[element_num];
@@ -2355,7 +2392,6 @@ void od_systemMechanism::CreateTraM(double **pM, int base)
 	}
 	DELARY(vecTemp1)  DELARY(vecTemp2)  DELARY(col)
 }
-
 void od_systemMechanism::CreateRotM(double **pM, int base)
 {
 	int tree_dof = tree_dofs();
@@ -2405,9 +2441,9 @@ void od_system::getM(double **pM, int base) {
 			}
 		}*/
 }
-double* od_system::evaluate_rhs(double *pRhs, int hhtacc) {
+double* od_system::evaluate_rhs(double *pRhs, double alpha) {
 	double _start = startRecord();
-	evaluateRhs(pRhs, hhtacc);
+	evaluateRhs(pRhs, alpha);
 	stopRecord(_start);
 	return pRhs;
 }
@@ -2543,7 +2579,6 @@ int od_system::kinematic_analysis(double end_time, int nums, double tol, int ite
 	kinematics.disp_maxit = old_iters;
 	return errorCode;
 }
-
 int od_system::static_analysis(int iter, double tol)
 {
 	int error_code;
@@ -2560,7 +2595,6 @@ int od_system::static_analysis(int iter, double tol)
 	}
 	return error_code;
 }
-
 
 OdSystem::OdSystem(char *pn, int r) { pS = new od_system(pn, r); }
 OdSystem::OdSystem(char *pn) { pS = new od_system(pn, 1); }
@@ -2581,7 +2615,6 @@ void OdSystem::add_body(OdBody* pB) {
 		pS->add_marker(pb->get_ith_marker(i));
 	}
 }
-
 void OdSystem::add_joint_spdp(OdJointSPDP *pF) {
 	od_joint_spdp* pf = pF->core();
 	pS->add_joint_spdp(pf);
@@ -2590,7 +2623,6 @@ void OdSystem::add_joint_force(OdJointForce *pF) {
 	od_joint_force* pf = pF->core();
 	pS->add_joint_force(pf);
 }
-
 /*void OdSystem::add_subsystem(OdSubSystem* pSub) {
   od_systemGeneric *ps = pSub->core();
   pS->add_subsystem(ps);
@@ -2619,8 +2651,6 @@ char* OdSystem::add_constraint(OdJoint* pJ) {
 	}
 	return &tmpstr[0];
 }
-
-
 char* OdSystem::info(char* msg) {
 	msg = pS->info(msg);
 	return msg;

@@ -620,8 +620,7 @@ int od_hhti3::toTime(double timeEnd)
 	while (time < timeEnd) {
 		correctFail = 1;
 		saveOld();
-		//pEqu->updatepQ();
-		pEqu->calMa(h);
+		//pEqu->calMa(h);
 		this->predict();
 		time += h;
 		errorCode = correct();
@@ -725,13 +724,14 @@ od_hhti3::od_hhti3(od_equation_hhti3* pequ, double _initStep, double _alpha) : o
 	}
 	allocate();
 	init(0.0, _initStep);
-	pEqu->calMa(_initStep);
+	//pEqu->calMa(_initStep);
 	for (i = 0; i < numVar; i++) {
 		yy[i][0] = _Xddot[i];
 	}
 	Dx = Dx1 = 0.0;
 	integratorOrder = 1;
 	integratorOrderMax = 3;
+
 }
 
 void od_hhti3::fromYYtoX(double factor) {

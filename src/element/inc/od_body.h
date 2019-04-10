@@ -50,7 +50,7 @@ public:
 	void for_ground_body_only();
 	void initialize();
 	inline double get_M() { return _mass; }
-	inline Mat33* get_J() { return &_Ia; }
+	inline Mat33* get_J()  { return &_Ia; }
 	inline double* J_Wdot() { return Jw_dot; }
 	inline double* J_W() { return Jw; }
 	inline void J_v(double* pd, double* v) { mat_doubles(_Ia, v, pd); }

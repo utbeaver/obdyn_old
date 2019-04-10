@@ -71,6 +71,7 @@ void od_systemTrack2D::init_tree(double *_p, double *_v, double *_a, int dof_idx
 	//non_array = new double*[nbody];
 	J_array = new Mat33*[nbody];
 	_tree_rhs = new Vec3[nbody * 2];
+	_tree_rhs_alpha = new Vec3[nbody * 2];
 	constraint_list_[0]->set_prev_idx(-1);
 	constraint_list_[0]->set_tail(nbody - 1);
 	for (i = 1; i < nbody; i++) {
@@ -202,7 +203,7 @@ void od_systemTrack2D::calculate_JT(int no_dot) {
 		}
 	}
 }
-void od_systemTrack2D::updatePartials(int pos_only) {
+void od_systemTrack2D::updatePartials(int pos_only, double alpha) {
 //	int     temp_int;
 	int nb = num_body();
 	//od_joint *pCj, *pCi;
@@ -544,6 +545,6 @@ void od_systemTrack2D::CreateTraM(double **pM, int base) {
 		}
 	}
 }
-void od_systemTrack2D::parF_parq(double**, int base) {
+void od_systemTrack2D::parF_parq(double**,  double alpha) {
 	//double Jac[9][9];
 }

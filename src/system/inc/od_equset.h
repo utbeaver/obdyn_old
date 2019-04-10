@@ -186,8 +186,8 @@ public:
 	od_equation_dynamic(od_system *psys, double end = 1.0, int steps = 10, double tol = 1.0e-4);
 	~od_equation_dynamic();
 	virtual int initialize();
-	virtual double* evalRhs(double* prhs = 0,int hhtacc=0);
-	void evalJac(int = 0);
+	virtual double* evalRhs(double* prhs = 0,double alpha=1.0);
+	void evalJac(double alpha = 1.0);
 	void setSteps(int steps);
 	void setMinStepSize(double val);
 	void setMaxStepSize(double val);
@@ -227,20 +227,18 @@ private:
 	od_hhti3* pIntegrator;
 	double* pQ;
 	double* Q;
+	double *Mq;
 	od_matrix_hht *SysJacHHT;
 	double *pprhs;
 public:
 	od_equation_hhti3(od_system *psys, double end = 1, int steps = 1, double tol = 1.0e-3, double al =  -1.0 / 3.0);
-	~od_equation_hhti3(); /* {
-		delete pIntegrator; DELARY(pQ); DELARY(Q); pIntegrator = 0;
-		delete SysJacHHT;
-		delete[] pprhs;
-	}*/
+	~od_equation_hhti3(); 
 	int solve(double = 0.0);
 	double* evalRhs();
-	void calNonLinQ(int = 1);
-	void calMa(double = -1);
-	void evalJac(int = 0);
+	void calNonLinQ();
+	void calMq();
+	void calMa(double = -1.0);
+	void evalJac();
 	void evalJacHHT(int = 0);
 	virtual int initialize();
 	void set_states(int = 0);
