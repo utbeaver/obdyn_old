@@ -1,27 +1,35 @@
 import os, sys, glob, shutil
 import numpy as np
-cwd=os.getcwd()
 testfile_dir=os.path.dirname(__file__)
+
 itg="-h"
 if len(sys.argv) >1:
     if sys.argv[1]=="-b":
         itg="-b"
 py3=0
-print (sys.hexversion)
+#print (sys.hexversion)
 if sys.hexversion  > 50000000: 
     py3=1
-#print testfile_dir
-pyfiles=glob.glob(os.path.join(testfile_dir, "*.py"))
-#print pyfiles
 python_="python"
 if py3==1:
     python_="python3"
 if "win" in sys.platform.lower():
-    shutil.copy(os.path.join(testfile_dir.replace("test", "src"), "python", "odsystem.py"), os.path.join(cwd, "odsystem.py"))
-    shutil.copy(os.path.join(cwd, "odsystem", "x64", "Debug", "_odsystem.pyd"), os.path.join(cwd, "_odsystem.pyd"))
+    home=os.getenv("HOMEPATH")
+    wb=os.path.join(oddir, "wb")
+    oddir=os.path.join(home, "obdyn")
+    sys.path.append(os.path.join(oddir, "obdyn", "src", "python"))
     python_="c:\python27\python"
     if py3==1:
         python_="c:\python35\python"
+else:
+    home=os.getenv("HOME")
+    oddir=os.path.join(home, "obdyn")
+    libdir=os.path.join(oddir, "build")
+    wb=os.path.join(oddir, "wb")
+    shutil.copy(os.path.join(libdir, "_odsystem.so"), os.path.join(wb, "_odsystem.so"))
+    shutil.copy(os.path.join(libdir, "odsystem.py"), os.path.join(wb, "odsystem.py"))
+os.chdir(wb)
+pyfiles=glob.glob(os.path.join(oddir, "obdyn", "test",  "*.py"))
 fn={}
 for pyf in pyfiles:
     pf=open(pyf, "r")
@@ -33,8 +41,8 @@ for pyf in pyfiles:
         os.system("%s %s %s"%(python_, pyf, itg)) 
         #print pyf
         fn[basename]=-1
-        bnpy=os.path.join(cwd, "..", "baseline", basename.replace("py", "npy"))
-        nnpy=os.path.join(cwd,  basename.replace("py", "npy"))
+        bnpy=os.path.join(wb, "..", "baseline", basename.replace("py", "npy"))
+        nnpy=os.path.join(wb,  basename.replace("py", "npy"))
         if os.path.exists(bnpy)==False: continue
         if os.path.exists(nnpy)==False: continue
         ba=np.load(bnpy)
