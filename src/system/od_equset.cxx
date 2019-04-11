@@ -786,7 +786,7 @@ void od_equation_bdf_I::get_states() {
 
 }
 
-void od_equation_hhti3::set_states(int dva) {
+void od_equation_hhti3::set_states(int dva, double scale) {
 	//dva:  0 update all
 	//dav:  1 calculate nonlinear term
 	//dav:  2 calculate linear term
@@ -796,7 +796,12 @@ void od_equation_hhti3::set_states(int dva) {
 	memcpy(dstates, _Xdot, intTemp);
 	if (dva == 2) fill(dstates, dstates + tree_ndofs, 0.0);
 	memcpy(ddstates, _Xddot, intTemp);
-	if (dva == 1) fill(ddstates, ddstates + tree_ndofs, 0.0);
+	if (dva == 1) {
+		fill(ddstates, ddstates + tree_ndofs, 0.0);
+	}
+	else {
+		for (i = 0; i < tree_ndofs; i++) ddstates[i] = _Xddot[i] * scale;
+	}
 	pSys->set_states();
 	for (i = 0; i < numLoops; i++) {
 		pSys->loop_list[i]->set_lambda(_Xddot + tree_ndofs + 6 * i, 0);
@@ -1083,9 +1088,9 @@ double* od_equation_bdf_I::evalRhs() {
 }
 double* od_equation_hhti3::evalRhs() {
 	int i, j, base;
-	double temp, ap1;
+	double ap1;
 	ap1 = 1.0 + alpha;
-	this->calMq();
+	//this->calMq();
 	//RHS   M\ddot{q}+(1+alpha)*NonLinQ-alpha/(1+alpha)*pQ=0
 	this->calNonLinQ();
 	/*{//calclate inertail without velocity
@@ -1095,11 +1100,11 @@ double* od_equation_hhti3::evalRhs() {
 	}*/
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	for (i = 0; i < tree_ndofs; i++) {
-		pRhs[i] = Mq[i];//
+		//pRhs[i] = Mq[i];//
 		//temp = 0.0;
 		//for (j = 0; j < tree_ndofs; j++) temp += M_a[i][j] * _Xddot[j];
-		temp = Q[i] * ap1 - pQ[i] * alpha;
-		pRhs[i] += temp;
+		pRhs[i] = Q[i] * ap1 - pQ[i] * alpha;
+		//pRhs[i] += temp;
 	}
 	for (i = 0; i < numLoops; i++) {
 		base = tree_ndofs + (i*numLoops) * 6;
@@ -1113,11 +1118,11 @@ double* od_equation_hhti3::evalRhs() {
 	for (i = 0; i < dim_rows; i++) pprhs[i] = pRhs[i];
 	return pRhs;
 }
-double* od_equation_dynamic::evalRhs(double *prhs, double alpha) {
+double* od_equation_dynamic::evalRhs(double *prhs) {
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	if (!prhs) prhs = pRhs;
 	pSys->update();
-	pSys->evaluate_rhs(prhs, alpha);
+	pSys->evaluate_rhs(prhs);
 	return pRhs;
 }
 void od_system::numDif() {
@@ -1213,27 +1218,33 @@ void od_equation_dynamic::numDif() {
 //RHS   M\ddot{q}+(Q-\Phi^T\Lambda - T)*(1+alpha)-()*alpha=0
 // NonLinQ = (Q-\Phi^T\Lambda - T)
 //RHS   M\ddot{q}+NonLinQ*(1+alpha)-()*alpha=0
-void od_equation_hhti3::calNonLinQ() {
+void od_equation_hhti3::calNonLinQ(int m_q) {
 	//---------------------------------------------------
 //phs=-M*nlinear_acc+\Phi^T\Lambda + T=-(Q-\Phi^T\Lambda -T)
 //(Q-\Phi^T\Lambda -T) = -rhs
-	this->set_states(0);  //calculate with acc != 0, and then cut the linear inertia force Mq
+	double scale = 1.0 / (1.0 + alpha);
+	if (!m_q)
+		this->set_states(1);  //calculate nonlear Q-------------Q
+	else
+		this->set_states(0, scale); //calculate with acc*scale-------- scale*Mq+Q
 	od_equation_dynamic::evalRhs();
-	for (int i = 0; i < tree_ndofs; i++) Q[i] = -pRhs[i]-Mq[i];
+	for (int i = 0; i < tree_ndofs; i++) Q[i] = -pRhs[i];
 }
+/*
 void od_equation_hhti3::calMq() {
 	//---------------------------------------------------
 //rhs= -Mq
 	this->set_states(2);  //zero \dot{q}
-	od_equation_dynamic::evalRhs(0, alpha);
+	od_equation_dynamic::evalRhs(0);
 	for (int i = 0; i < tree_ndofs; i++) Mq[i] = -pRhs[i];
 }
+*/
 void od_equation_hhti3::updatepQ() {
-	this->calMq();
-	this->calNonLinQ();
+	//this->calMq();
+	this->calNonLinQ(0);
 	copy(Q, Q + tree_ndofs, pQ);
 }
-void od_equation_hhti3::calMa(double _h) {
+/*void od_equation_hhti3::calMa(double _h) {
 	int i;
 	double _time = pSys->time();
 	if (_h > 0) h = _h;
@@ -1250,11 +1261,11 @@ void od_equation_hhti3::calMa(double _h) {
 	for (i = 0; i < tree_ndofs; i++) _X[i] -= _Xdot[i] * (1.0 + alpha)*h;
 	pSys->time(_time);
 	this->set_states();
-}
-void  od_equation_dynamic::evalJac(double alpha) {
+}*/
+void  od_equation_dynamic::evalJac() {
 	int i;
 	pSys->update();
-	pSys->updatePartials(0, alpha);
+	pSys->updatePartials(0);
 	for (i = 0; i < tree_ndofs; i++) {
 		//if (!hht)fill(M_a[i], M_a[i] + tree_ndofs, 0.0);
 		fill(M_a[i], M_a[i] + tree_ndofs, 0.0);
@@ -1265,8 +1276,8 @@ void  od_equation_dynamic::evalJac(double alpha) {
     pSys->getM(M_a);
 	for (i = 0; i < (int)(pSys->loop_list.size()); i++) pSys->loop_list[i]->evaluate(0);
 	this->checkRedundancy();
-	pSys->parF_parq_dot(M_v, alpha);
-	pSys->parF_parq(M_d, alpha);
+	pSys->parF_parq_dot(M_v);
+	pSys->parF_parq(M_d);
 	reEval = 1;
 }
 void od_equation_hhti3::evalJac() {
@@ -1280,7 +1291,7 @@ void od_equation_hhti3::evalJac() {
 	}
 	//RHS   M\ddot{q}+NonLinQ*(1+alpha)-()*alpha=0
 
-	od_equation_dynamic::evalJac(alpha);
+	od_equation_dynamic::evalJac();
 	ap1 = 1.0 + alpha;
 	h = pIntegrator->getH();
 	//for (i = 0; i < dim_rows; i++) fill(pJac[i], pJac[i] + dim_cols, 0.0);
@@ -1316,7 +1327,7 @@ void od_equation_hhti3::evalJac() {
 	
 }
 
-void od_equation_hhti3::evalJacHHT(int __debug) {
+void od_equation_hhti3::evalJacHHT() {
 	int i, j, ii, jj, base;
 	double value, ap1;
 	fill(dofmap.begin(), dofmap.end(), 1);
@@ -1328,7 +1339,7 @@ void od_equation_hhti3::evalJacHHT(int __debug) {
 	//RHS   M\ddot{q}/(1+alpha)+NonLinQ-()*alpha/(1+alpha)=0
 	ap1 = 1.0 + alpha;
 	h = pIntegrator->getH();
-	od_equation_dynamic::evalJac(alpha);
+	od_equation_dynamic::evalJac();
 	SysJacHHT->M()->equalsub(tree_ndofs, tree_ndofs, M_a);
 	SysJacHHT->Mv()->equalsub(tree_ndofs, tree_ndofs, M_v, - h * gamma*ap1);
 	SysJacHHT->Md()->equalsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);

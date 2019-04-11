@@ -186,8 +186,8 @@ public:
 	od_equation_dynamic(od_system *psys, double end = 1.0, int steps = 10, double tol = 1.0e-4);
 	~od_equation_dynamic();
 	virtual int initialize();
-	virtual double* evalRhs(double* prhs = 0,double alpha=1.0);
-	void evalJac(double alpha = 1.0);
+	virtual double* evalRhs(double* prhs = 0);
+	void evalJac();
 	void setSteps(int steps);
 	void setMinStepSize(double val);
 	void setMaxStepSize(double val);
@@ -235,13 +235,13 @@ public:
 	~od_equation_hhti3(); 
 	int solve(double = 0.0);
 	double* evalRhs();
-	void calNonLinQ();
-	void calMq();
-	void calMa(double = -1.0);
+	void calNonLinQ(int m_q=1);
+	//void calMq();
+	//void calMa(double = -1.0);
 	void evalJac();
-	void evalJacHHT(int = 0);
+	void evalJacHHT();
 	virtual int initialize();
-	void set_states(int = 0);
+	void set_states(int = 0, double scale=1.0);
 	void get_states();
 	virtual void simulate(double, int);
 	void updatepQ(); // { copy(Q, Q + tree_ndofs, pQ); }

@@ -269,6 +269,7 @@ double* od_matrix_dense::solve(double* X, int repar, int effn, int* pvec) {
 	if (effn != 0 && pvec != 0) {
 		setPvecN(pvec, effn);
 	}
+	//print_out();
 	if (repar || _repar) {
 		LU();
 		repar = 0;

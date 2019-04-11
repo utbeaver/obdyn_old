@@ -292,7 +292,6 @@ public:
 
 	Vec3 G_array;
 	Vec3* _tree_rhs;
-	//Vec3* _tree_rhs_alpha;
 	//analysis type
 	DVA_TYPE _dva_type;
 	JAC_TYPE _jac_type;
@@ -354,9 +353,9 @@ public:
 	void add_subsystem(od_systemGeneric*);
 	void add_explicit_constraint(od_constraint* pC);
 	od_body* ground(od_body *pb = 0) { if (pb) { pGround = pb; } return pGround; }
-	virtual void updatePartials(int pos_only = 0, double=1.0) = 0;
-	virtual void parF_parq(double**,  double=1.0) = 0;
-	virtual void parF_parq_dot(double**, double = 1.0) = 0;
+	virtual void updatePartials(int pos_only = 0) = 0;
+	virtual void parF_parq(double**) = 0;
+	virtual void parF_parq_dot(double**) = 0;
 	int init_dynamics();
 	virtual void init_tree(double* = 0, double* = 0, double* = 0, int = 0) = 0;
 	virtual void topology_analysis_level1() = 0;
@@ -365,7 +364,7 @@ public:
 	int get_num_constraint();
 	//int getNumMotions() const { return motion_list.size(); }
 	virtual int Update(int = 0) = 0;
-	virtual double* evaluateRhs(double* rhs, double) = 0;
+	virtual double* evaluateRhs(double* rhs) = 0;
 	virtual double** evaluateJac(double** pM, int base = 0) = 0;
 	virtual void CreateTraM(double **pM, int = 0) = 0;
 	virtual void CreateRotM(double **pM, int = 0) = 0;
@@ -413,8 +412,6 @@ protected:
 	od_jacobian<Vec3> parVel_parq, parVel_dot_parq, parVel_dot_parq_dot;  //parVel_parq_dot; //JTL;
 	//Vel Global
 	od_jacobian<Vec3> parVel_parqG, parVel_dot_parqG, parVel_dot_parq_dotG; //parVel_parq_dotG; =JTG;
-	// Omega_dot_parq_alpha
-	//od_jacobian<Vec3> parOmega_dot_parq_alpha, parVel_dot_parq_alpha, parVel_dot_parqG_alpha;
 
 public:
 	od_systemMechanism(char* pn, int from_py = 0);
@@ -433,11 +430,11 @@ public:
 	virtual int Update(int = 0);
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
-	virtual double* evaluateRhs(double* rhs, double alpha = 1.0);
+	virtual double* evaluateRhs(double* rhs);//, double alpha = 1.0);
 	virtual double** evaluateJac(double** pM, int base = 0);
 	inline int TreeDofs() const { return Tree_Ndofs; }
 	void updateQ();
-	virtual void updatePartials(int pos_only = 0, double alpha=1.0);
+	virtual void updatePartials(int pos_only = 0);
 	int checkEulerBryant();
 	virtual void topology_analysis_level1();
 	virtual void topology_analysis_level2();
@@ -450,8 +447,8 @@ public:
 	void print_rele1();
 	void DFSrecur(int, std::vector<int> &, std::vector<int> &);
 	virtual void init_tree(double* = 0, double* = 0, double* = 0, int = 0);
-	virtual void parF_parq(double**, double alpha=1.0);
-	virtual void parF_parq_dot(double**, double alpha=1.0);
+	virtual void parF_parq(double**);
+	virtual void parF_parq_dot(double**);
 	virtual inline Vec3* getJR(int i, int j) const { return JR.element(i, j); }
 	virtual inline Vec3* getJT(int i, int j) const { return JTG.element(i, j); }
 	virtual inline Vec3* getJRdot_dq(int i, int j) const { return parOmega_parq.element(i, j); }
@@ -495,7 +492,7 @@ public:
 	void setRef(od_marker *ref) { refM = ref; }
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
-	virtual double* evaluateRhs(double* rhs, double alpha) { double* x = 0;  return x; }
+	virtual double* evaluateRhs(double* rhs) { double* x = 0;  return x; }
 	virtual double** evaluateJac(double** pM, int base = 0) { double** x = 0; return x; }
 	void create_incidence(vector<int>&, int = 0) {}
 	void create_relevence(vector<int>&, int = 0) {}
@@ -503,7 +500,7 @@ public:
 	virtual void calculate_JRdot() { calculate_JR(0); }
 	virtual void calculate_JT(int no_dot = 1);
 	virtual void calculate_JTdot() { calculate_JT(0); }
-	virtual void updatePartials(int pos_only = 0, double=1.0);// {}
+	virtual void updatePartials(int pos_only = 0);// {}
 	virtual int Update(int = 0);// { return 0; }
 	virtual void topology_analysis_level1() {}
 	virtual void topology_analysis_level2() {}
@@ -512,8 +509,8 @@ public:
 	virtual inline Vec3* getJT(int i, int j) const { return &(JT[i][j]); }
 	virtual inline Vec3* getJRdot_dq(int i, int j) const { return &(JR_dot[i][j]); }
 	virtual inline Vec3* getJTdot_dq(int i, int j) const { return &(JT_dot[i][j]); }
-	virtual void parF_parq(double**, double alpha = 1.0);
-	virtual void parF_parq_dot(double**, double alpha=1.0) {}
+	virtual void parF_parq(double**);
+	virtual void parF_parq_dot(double**) {}
 	virtual inline int getL1(int i) const { return 1; }
 	virtual inline int getL2(int i) const { return 1; }
 	virtual inline int getL3(int i) const { return 1; }

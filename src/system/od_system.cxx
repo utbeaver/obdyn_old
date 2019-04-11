@@ -267,10 +267,9 @@ void od_systemMechanism::updateQ() {
 		pCi->updateQ();
 	}
 }
-void od_systemMechanism::updatePartials(int pos_only, double alpha) {
-	int i, j, k, startindex, num_dof, idx, _len;
+void od_systemMechanism::updatePartials(int pos_only) {
+	int i,  k, startindex, num_dof, idx, _len;
 	//for (i = 0; i < nsystem; i++) _subSys[i]->updatePartials(pos_only);
-	double inva = 1.0 / (1.0 + alpha);
 	Vec3 **tgt;
 	od_joint* pC = 0;
 	int nbody = num_body();
@@ -308,15 +307,6 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 				pC->setPartialVec3(k, tgt);
 			}
 			multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 2);// , 0);
-			if (alpha < 0.5) {
-				for (k = 0; k < num_dof; k++) {
-					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
-					for (j = idx; j < idx + _len; j++) {
-						tgt[j]->multiplied_by(inva);
-					}
-					//pC->setPartialVec3(k, tgt);
-				}
-			}
 			multiplyParMatRotVec_q(nbody, constraint_list_, i, 1, 1);// , 1);
 		}
 	}
@@ -324,7 +314,7 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 	{
 		//omega_dot = J q_ddot + JR_dot *q_dot
 		parOmega_dot_parq_dot = JR_dot;
-		//parOmega_dot_parq_dot += parOmega_parq; //QUESTION
+		parOmega_dot_parq_dot += parOmega_parq; //QUESTION
 	}
 	//parVel_parq = parJp_parqp * qp_dot + parJa_parqp * qa_dot
 	{
@@ -360,15 +350,6 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 			}
 			multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 0, 2);// , 0);
 			multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 0, 2);// , 1);
-			if (alpha < 0.5) {
-				for (k = 0; k < num_dof; k++) {
-					tgt = parOmega_dot_parq.column(startindex + k, &idx, &_len);
-					for (j = idx; j < idx + _len; j++) {
-						tgt[j]->multiplied_by(inva);
-					}
-					//pC->setPartialVec3(k, tgt);
-				}
-			}
 			multiplyParMatTraVec_q_I(nbody, constraint_list_, i, 1, 1);// , 1);
 			multiplyParMatTraVec_q_II(nbody, constraint_list_, i, 1, 1);// , 1);
 		}
@@ -377,7 +358,7 @@ void od_systemMechanism::updatePartials(int pos_only, double alpha) {
 	}
 	//a= J q_ddot + J_dot q_dot
 	parVel_dot_parq_dotG = JTG_dot;
-	//parVel_dot_parq_dotG += parVel_parqG; 
+	parVel_dot_parq_dotG += parVel_parqG; 
 	for (i = 0; i < num_force(); i++) force_list_[i]->evaluate_Jac();
 	for (i = 0; i < num_jforce(); i++) joint_force_list_[i]->evaluate_Jac();
 }
@@ -640,15 +621,13 @@ void od_systemMechanism::topology_analysis_level2() {
 		cout << endl;
 	}
 }
-void od_systemMechanism::parF_parq_dot(double **pM, double alpha) {
+void od_systemMechanism::parF_parq_dot(double **pM) {
 	//parF_par_dot = T^t parFr_parq_dot + T^t parFt_parq_dot
 	int i, j, k, _size, idx, _len, base = 0;
 	//for (i = 0; i < nsystem; i++) {
 	//	_subSys[i]->parF_parq_dot(pM, base);
 	//	base += _subSys[i]->tree_dofs();
 	//}
-	//double inva = 1.0 / (1.0 + alpha);
-	//if (alpha > 0.1) inva = 1.0;
 	double tempVec[3], *pd;
 	int nbody = num_body();
 	pd = tempVec;
@@ -671,7 +650,6 @@ void od_systemMechanism::parF_parq_dot(double **pM, double alpha) {
 		for (i = idx; i < idx + _len; i++) {
 			pB = body_list_[i];
 			pB->J_v(vecTemp, tgt[i]->v);
-			//for (int jj = 0; jj < 3; jj++) vecTemp[jj] *= inva;
 			parFparq[i] -= vecTemp;
 			pd = dW_dq_dot[i]->v;
 			pB->parWxJW_parq(vecTemp, pd);
@@ -688,7 +666,7 @@ void od_systemMechanism::parF_parq_dot(double **pM, double alpha) {
 		tgt = parVel_dot_parq_dotG.column(j, &idx, &_len);
 		for (i = idx; i < idx + _len; i++) {
 			parFparq[i + nbody] = tgt[i];// ->v;
-			parFparq[i + nbody].multiplied_by(-(body_list_[i]->get_M())/*inva*/);
+			parFparq[i + nbody].multiplied_by(-(body_list_[i]->get_M()));
 		}
 		//Par from loop_list: see evalJac in od_equation.cxx
 		//par from Force 
@@ -718,12 +696,10 @@ void od_systemMechanism::parF_parq_dot(double **pM, double alpha) {
 	}
 	DELARY(par_col);  DELARY(vecTemp1);  DELARY(parFparq);
 }
-void od_systemMechanism::parF_parq(double **pM,  double alpha)
+void od_systemMechanism::parF_parq(double **pM)
 {
 	int i, j, k, start, num_dofs, _size, idx, _len;
 	int base = 0;
-	//double inva = 1.0 / (1.0 + alpha);
-	//if (alpha > 0.1) inva = 1.0;
 	//for (i = 0; i < nsystem; i++) {
 	//	_subSys[i]->parF_parq(pM, base);
 	//	base += _subSys[i]->tree_dofs();
@@ -798,7 +774,6 @@ void od_systemMechanism::parF_parq(double **pM,  double alpha)
 			pQQ = tgt[i]->v;
 			pd = dWdot_dq[i]->v;
 			pB->parJparq_v(tempVec, pQQ, pd, /*omega_dot=*/ 1);
-			//for (int jj = 0; jj < 3; jj++) tempVec[jj] *= inva;
 			parFparq[i] -= tempVec;
 			//omega x parJ_parq omega
 			pd = dW_dq[i]->v;
@@ -820,7 +795,7 @@ void od_systemMechanism::parF_parq(double **pM,  double alpha)
 		for (i = idx; i < idx + _len; i++) {
 			double m = body_list_[i]->get_M();
 			parFparq[i + nbody] = tgt[i];// ->v;
-			parFparq[i + nbody].multiplied_by(-m/*inva*/);
+			parFparq[i + nbody].multiplied_by(-m);
 		}
 		//Par from loop_list
 		//par from Force and Torque
@@ -976,7 +951,7 @@ double** od_systemMechanism::evaluateJac(double **pM, int base) {
 	}
 	return pM;
 }
-double* od_systemMechanism::evaluateRhs(double *pRhs, double alpha) {
+double* od_systemMechanism::evaluateRhs(double *pRhs) {
 	int i, index, i_index, j_index;
 	od_loop* pl;
 	od_body *pBi, *pBj;
@@ -1000,16 +975,6 @@ double* od_systemMechanism::evaluateRhs(double *pRhs, double alpha) {
 			*(_tree_rhs + i) -= pBi->J_Wdot();  
 			*(_tree_rhs + i) -= pBi->wxJw();
 			*(_tree_rhs + i + nbody) -= pBi->Mx_ddot(); 
-		}
-		if (alpha <= 0.0) {
-			multiplyMatT_Rotq_Vec(nbody, _tree_rhs, pRhs, constraint_list_);
-			multiplyMatT_vec(nbody, _tree_rhs + nbody, _tree_rhs + nbody, constraint_list_);
-			/*for (i = 0; i < nbody; i++) {
-				*(_tree_rhs_alpha + i) = (_tree_rhs + i);
-				*(_tree_rhs_alpha + i + nbody) = (_tree_rhs + i + nbody);
-			}*/
-			multiplyMatT_Traq_Vec(nbody, _tree_rhs + nbody, pRhs, constraint_list_);
-			return pRhs + tree_dof;
 		}
 		if (num_force()) {
 			for (i = 0; i < num_force(); i++) {
@@ -2437,7 +2402,7 @@ void od_system::getM(double **pM, int base) {
 }
 double* od_system::evaluate_rhs(double *pRhs, double alpha) {
 	double _start = startRecord();
-	evaluateRhs(pRhs, alpha);
+	evaluateRhs(pRhs);
 	stopRecord(_start);
 	return pRhs;
 }
