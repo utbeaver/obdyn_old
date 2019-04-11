@@ -1,4 +1,5 @@
-import os, sys
+import os, sys, shutil
+sys.dont_write_bytecode = True
 import platform
 linux=(platform.system()=='Linux')
 py3=0
@@ -12,11 +13,12 @@ if linux:
 else:
     home=os.getenv("HOMEPATH")
     obdir=os.path.join(home, 'OneDrive', 'Desktop', 'obdyn')
+wb=os.path.join(obdir, 'wb')
 if py3==1:
     odpy=os.path.join(obdir, 'obdyn', 'src', 'python')
 else:    
     odpy=os.path.join(obdir, 'obdyn', 'src', 'python')
-sys.path.append(odpy)
+shutil.copy(os.path.join(odpy, "odsystem.py"), os.path.join(wb, "odsystem.py"))    
 if linux:
     libdir=os.path.join(obdir, "build" )
 else:
@@ -27,7 +29,6 @@ else:
 sys.path.append(libdir)
 testdir=os.path.join(obdir, 'obdyn', 'test')
 sys.path.append(testdir)
-wb=os.path.join(obdir, 'wb')
 os.chdir(wb)
 cwd=os.getcwd()
 #print "You are in %s"%cwd

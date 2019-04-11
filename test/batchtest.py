@@ -1,4 +1,5 @@
 import os, sys, glob, shutil
+sys.dont_write_bytecode = True
 import numpy as np
 testfile_dir=os.path.dirname(__file__)
 
@@ -15,9 +16,12 @@ if py3==1:
     python_="python3"
 if "win" in sys.platform.lower():
     home=os.getenv("HOMEPATH")
+    oddir=os.path.join(home, "OneDrive", "Desktop","obdyn")
     wb=os.path.join(oddir, "wb")
-    oddir=os.path.join(home, "obdyn")
-    sys.path.append(os.path.join(oddir, "obdyn", "src", "python"))
+    pydir=os.path.join(oddir, "obdyn", "src", "python")
+    libdir=os.path.join(oddir, "od_solver", "odsystem", "x64", "Debug")
+    shutil.copy(os.path.join(libdir, "_odsystem.pyd"), os.path.join(wb, "_odsystem.pyd"))
+    shutil.copy(os.path.join(pydir, "odsystem.py"), os.path.join(wb, "odsystem.py"))
     python_="c:\python27\python"
     if py3==1:
         python_="c:\python35\python"
@@ -47,7 +51,8 @@ for pyf in pyfiles:
         if os.path.exists(nnpy)==False: continue
         ba=np.load(bnpy)
         na=np.load(nnpy)
-        dif=na-ba
+        if np.size(na) == np.size(ba):
+            dif=na-ba
         fn[basename]=np.amax(dif)
 for i in fn.keys(): 
     print "%20s    %5.3f"%(i, fn[i])
