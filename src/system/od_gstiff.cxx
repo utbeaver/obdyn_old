@@ -10,6 +10,7 @@ od_integrator::od_integrator(double initS) {
 	hMin = 1.0e-6; hMax = 1.0e-2; numFuncEvals = 0; numJacEvals = 0; numSteps = 0;
 	rhsTol = 1.e-12;
 	success = 0;
+	modifiedLU = 0;
 }
 
 od_integrator::~od_integrator(void)
@@ -71,16 +72,7 @@ od_gstiff::od_gstiff(od_equation_bdf_I* pequ, double _initStep) : od_integrator(
 }
 
 od_gstiff::~od_gstiff() {
-	/*int i;
-	for (i = 0; i < numVar; i++) {
-		DELARY(yy[i]);
-		DELARY(yySave[i]);
-	}
-	DELARY(yy);
-	DELARY(yySave);
-	DELARY(yyErr);
-	DELARY(yyErrSave);
-	DELARY(yyMax);*/
+	
 }
 
 void od_gstiff::restartIntegrator() {
@@ -251,6 +243,8 @@ int od_hhti3::correct() {
 	double xi = 1.0;
 	double c = 0.001;
 	double scale = 1.0;
+	double *pprhs;
+	
 	ofstream* pmsg = pEqu->msgFile();
 	int debug = pEqu->debug();
 	pEqu->time(time);
@@ -266,11 +260,12 @@ int od_hhti3::correct() {
 		Dx = Dx1;
 		this->fromYYtoX();
 		pRhs= pEqu->evalRhs(); numFuncEvals++;
+		pprhs = pEqu->pprhs;
 		if (numCorrect % 3 == 0) evalJac = 1;
 		if (evalJac) {
 			numJacEvals++;
-			pEqu->evalJac();
-//			pEqu->evalJacHHT();
+			if(!modifiedLU) pEqu->evalJac();
+			else pEqu->evalJacHHT();
 			evalJac = 0;
 		}
 		for (j = 0; j < numVar; j++) {
@@ -287,7 +282,8 @@ int od_hhti3::correct() {
 			rhsConverged = 0;
 		}
 	
-		pEqu->solve(bhh);
+		if(!modifiedLU) pEqu->solve(bhh);
+		else pEqu->solveHHT(bhh);
 		Dx1 = getNorm(pRhs, _Xddot, treedofs);
 		for (i = 0; i < numVar; i++) {
 			_Xddot[i] += pRhs[i]*scale;
@@ -343,7 +339,7 @@ int od_gstiff::correct() {
 		if (numCorrect%3 ==0) evalJac = 1;
 		if (evalJac ) {
 			numJacEvals++;
-			if(1) pEqu->evalJac(tinu);
+			if(!modifiedLU) pEqu->evalJac(tinu);
 			else pEqu->evalJacBdf(tinu);
 			evalJac = 0;
 		}
@@ -354,10 +350,9 @@ int od_gstiff::correct() {
 			rhsConverged = 0;
 		}
 		double s = pEqu->startRecord();
-		if(1) errorCode = pEqu->solve(tinu);
+		if(!modifiedLU) errorCode = pEqu->solve(tinu);
 		else {
 			pEqu->solveBDF(tinu);
-			pRhs = pprhs;
 		}
 		pEqu->stopRecord(s, 2);
 		if (errorCode) {
@@ -491,8 +486,9 @@ void od_gstiff::getNewStepAndOrder(int fail) {
 	return;
 }
 
-int od_gstiff::toTime(double timeEnd) {
+int od_gstiff::toTime(double timeEnd, int mLU) {
 	if (time >= timeEnd) return 0;
+	modifiedLU = mLU;
 	int returnCode = 0;
 	int errorCode = 0;
 	int correctFail = 0;
@@ -602,9 +598,10 @@ void od_hhti3::getNewStepAndOrder(int fail) {
 
 }
 
-int od_hhti3::toTime(double timeEnd)
+int od_hhti3::toTime(double timeEnd, int mLU)
 {
 	if (time >= timeEnd) return 0;
+	modifiedLU = mLU;
 	int returnCode = 0;
 	double PHI, deltaX = 0.0;
 	int errorCode = 0;

@@ -113,9 +113,9 @@ for i in range(500):
     data=[t_]
     types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 1)
     else:    
-        sys_.dynamic_analysis_bdf(t_, 1.0e-5, 6, 0.1, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_bdf(t_, 1.0e-5, 6, 0.1, 1.0e-6, 0.001, 1)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):

@@ -25,6 +25,7 @@ else:
     if py3==1:
         libdir=os.path.join(obdir, 'od_solver3', 'odsystem', 'x64', "debug" )
     else:    
+        print "xxxx"
         libdir=os.path.join(obdir, 'od_solver', 'odsystem', 'x64', "debug" )
 sys.path.append(libdir)
 testdir=os.path.join(obdir, 'obdyn', 'test')
@@ -34,12 +35,12 @@ cwd=os.getcwd()
 #print "You are in %s"%cwd
 
 #execfile(os.path.join(testdir, "two_link.py"))
-#execfile(os.path.join(testdir, "parallel4barsphespdp.py"))
+execfile(os.path.join(testdir, "parallel4barsphespdp.py"))
 #execfile(os.path.join(testdir, "parallel4barspdp.py"))
 #execfile(os.path.join(testdir, "parallel4bar.py"))
 #execfile(os.path.join(testdir, "sphonly.py"))
 #execfile(os.path.join(testdir, "spht2r1.py"))
-execfile(os.path.join(testdir, "sph_rot.py"))
+#execfile(os.path.join(testdir, "sph_rot.py"))
 #execfile(os.path.join(testdir, "sph_rot_gmarker.py"))
 #execfile(os.path.join(testdir, "trat2r1.py"))
 #execfile(os.path.join(testdir, "t2r1.py"))

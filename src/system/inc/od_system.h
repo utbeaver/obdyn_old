@@ -525,7 +525,7 @@ public:
 	int ndofs;
 private:
 	ofstream * pMsgFile;
-	ofstream* pOutFile;
+	//ofstream* pOutFile;
 	void _init();
 
 	od_equation_kinematic *pKin;
@@ -562,7 +562,7 @@ public:
 	od_system(char* pn, int from_py = 0);
 	~od_system();
 	ofstream* msgFile() const { return pMsgFile; }
-	ofstream* outFile(int __debug) {
+	/*ofstream* outFile(int __debug) {
 		if (__debug) {
 			if (!pOutFile) {
 				string name__ = name() + ".m";
@@ -570,7 +570,7 @@ public:
 			}
 		}
 		return pOutFile;
-	}
+	}*/
 	int initialize(DVA_TYPE, JAC_TYPE, Analysis_Type);
 	virtual void get_states();
 	virtual void set_states();

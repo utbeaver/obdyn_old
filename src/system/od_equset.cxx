@@ -703,6 +703,7 @@ od_equation_dynamic::od_equation_dynamic(od_system *psys, double end, int steps,
 	_dva_type = od_object::DISP_VEL_ACC;
 	_jac_type = od_object::JAC_DYNAMIC;
 	reEval = 1;
+	modifiedLU = 0;
 }
 
 od_equation_dynamic::~od_equation_dynamic() {
@@ -719,7 +720,7 @@ int od_equation_dynamic::initialize() {
 
 	od_equation::initialize();
 	pSys->init_dynamics();
-	hht = 0;
+	//hht = 0;
 	M_a = new double*[tree_ndofs];
 	for (j = 0; j < tree_ndofs; j++) {
 		M_a[j] = new double[tree_ndofs];
@@ -837,7 +838,7 @@ void od_equation_dynamic::setInitStep(double val) { _initStep = val; h = val; }
 void od_equation_dynamic::setLocalErrorTol(double val) { _tol = val; }
 void od_equation_dynamic::setMaxCorrectNum(int val) { _corrNum = val; }
 
-void od_equation_bdf_I::simulate(double end_time, int debug_) {
+void od_equation_bdf_I::simulate(double end_time, int mLU) {
 	int i = 0;
 	double expectedTime = 0;
 	double _delta;
@@ -846,7 +847,7 @@ void od_equation_bdf_I::simulate(double end_time, int debug_) {
 	expectedTime = pSys->time();
 	_delta = _end / (double)_steps;
 	_delta = (_end - expectedTime) / (double)_steps;
-	_debug = debug_;
+	//_debug = debug_;
 	if (expectedTime < 1.0e-15) {
 		pIntegrator->setMinStepSize(hMin);
 		pIntegrator->setMaxStepSize(hMax);
@@ -857,7 +858,7 @@ void od_equation_bdf_I::simulate(double end_time, int debug_) {
 
 	for (i = 0; i < _steps; i++) {
 		expectedTime += _delta;
-		int errorCode = pIntegrator->toTime(expectedTime);
+		int errorCode = pIntegrator->toTime(expectedTime, mLU);
 		if (errorCode) {
 			throw equ_exception(0, 0.0, 0, 0.0, 0, pSys->time());
 		}
@@ -866,7 +867,7 @@ void od_equation_bdf_I::simulate(double end_time, int debug_) {
 	pSys->update();
 }
 
-void od_equation_hhti3::simulate(double end_time, int debug_) {
+void od_equation_hhti3::simulate(double end_time, int mLU) {
 	int i;// , j;
 	double expectedTime = 0.0;
 	double _delta;
@@ -875,7 +876,7 @@ void od_equation_hhti3::simulate(double end_time, int debug_) {
 	expectedTime = pSys->time();
 	_delta = _end / (double)_steps;
 	_delta = (_end - expectedTime) / (double)_steps;
-	_debug = debug_;
+	//_debug = debug_;
 	if (expectedTime < 1.0e-15) {
 		pIntegrator->setMinStepSize(hMin);
 		pIntegrator->setMaxStepSize(hMax);
@@ -886,7 +887,7 @@ void od_equation_hhti3::simulate(double end_time, int debug_) {
 
 	for (i = 0; i < _steps; i++) {
 		expectedTime += _delta;
-		int errorCode = pIntegrator->toTime(expectedTime);
+		int errorCode = pIntegrator->toTime(expectedTime, mLU);
 		if (errorCode) {
 			throw equ_exception(0, 0.0, 0, 0.0, 0, pSys->time());
 		}
@@ -940,7 +941,7 @@ int od_equation_hhti3::initialize() {
 		//base += numLoops * 6;
 		for (k = 0; k < 6; k++) Vars[base + k] = 1;
 	}
-	hht = 1;
+	//hht = 1;
 	dofmap.resize(dim_rows);
 	fill(dofmap.begin(), dofmap.end(), 1);
 	_X = new double[dim_rows];
@@ -962,7 +963,7 @@ int od_equation_hhti3::initialize() {
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	updatepQ();
 	SysJac = (od_matrix*)(new od_matrix_dense(dim_rows, dim_rows));
-	SysJacHHT = (new od_matrix_hht(dim_rows, dim_rows));
+	SysJacHHT = (new od_matrix_hht(tree_ndofs, dim_rows- tree_ndofs));
 	pJac = SysJac->values();
 	return 1;
 }
@@ -1031,6 +1032,7 @@ int od_equation_bdf_I::solveBDF(double tinu) {
 	pprhs = SysJacBDF->solve(pprhs, reEval);// , effDim, permuV);
 	reEval = 0;
 	for (i = intTemp; i < dim_cols; i++) pprhs[i] /=mu;
+	for (i = 0; i < dim_rows; i++) pRhs[i] = pprhs[i];
 	pSys->stopRecord(s, 2);
 	return errorCode;
 }
@@ -1053,6 +1055,28 @@ int od_equation_hhti3::solve(double beta_hh) {
 //	SysJac->print_out();
 	pRhs = SysJac->solve(pRhs, reEval, effDim, permuV);
 	reEval = 0;
+	pSys->stopRecord(s, 2);
+	return errorCode;
+}
+int od_equation_hhti3::solveHHT(double beta_hh) {
+	int i, errorCode = 0;
+	double s = pSys->startRecord();
+	/*
+	M           Phi^T   X    rhs1
+						  =
+	Phi*beta_hh  0      L    rhs2
+	====>
+	M           Phi^T  X      rhs1
+						 =
+	Phi            0   L    rhs2/beta_hh
+	*/
+
+	for (i = tree_ndofs; i < dim_cols; i++) pprhs[i] /= beta_hh;
+	//scaling the diff rhs because the the Jac scaling
+//	SysJac->print_out();
+	pprhs = SysJacHHT->solve(pprhs, reEval, effDim, permuV);
+	reEval = 0;
+	for (i = 0; i < dim_rows; i++) pRhs[i] = pprhs[i];
 	pSys->stopRecord(s, 2);
 	return errorCode;
 }
@@ -1090,21 +1114,12 @@ double* od_equation_hhti3::evalRhs() {
 	int i, j, base;
 	double ap1;
 	ap1 = 1.0 + alpha;
-	//this->calMq();
 	//RHS   M\ddot{q}+(1+alpha)*NonLinQ-alpha/(1+alpha)*pQ=0
 	this->calNonLinQ();
-	/*{//calclate inertail without velocity
-		fill(pRhs, pRhs + dim_rows, 0.0);
-		this->set_states(2);
-		od_equation_dynamic::evalRhs(0, 1);
-	}*/
+	
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	for (i = 0; i < tree_ndofs; i++) {
-		//pRhs[i] = Mq[i];//
-		//temp = 0.0;
-		//for (j = 0; j < tree_ndofs; j++) temp += M_a[i][j] * _Xddot[j];
 		pRhs[i] = Q[i] * ap1 - pQ[i] * alpha;
-		//pRhs[i] += temp;
 	}
 	for (i = 0; i < numLoops; i++) {
 		base = tree_ndofs + (i*numLoops) * 6;
@@ -1314,8 +1329,8 @@ void od_equation_hhti3::evalJac() {
 			ii = pSys->loop_list[i]->row(j) + base + i * 6;
 			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
-			pJac[ii][jj] += value; //if (tempJac) tempJac[ii][jj] += value;//parV_parq_dot
-			pJac[jj][ii] -= value; //if (tempJac) tempJac[jj][ii] -= value;//parV_parq_dot^T
+			pJac[ii][jj] += value; 
+			pJac[jj][ii] -= value; 
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {
@@ -1330,6 +1345,8 @@ void od_equation_hhti3::evalJac() {
 void od_equation_hhti3::evalJacHHT() {
 	int i, j, ii, jj, base;
 	double value, ap1;
+	od_matrix_dense *pM, *pMv, *pMd;
+	od_matrix_dense3C *pJ;
 	fill(dofmap.begin(), dofmap.end(), 1);
 	for (i = 0; i < tree_ndofs; i++) {
 		int val = pSys->dofmap_[i];
@@ -1340,19 +1357,20 @@ void od_equation_hhti3::evalJacHHT() {
 	ap1 = 1.0 + alpha;
 	h = pIntegrator->getH();
 	od_equation_dynamic::evalJac();
-	SysJacHHT->M()->equalsub(tree_ndofs, tree_ndofs, M_a);
-	SysJacHHT->Mv()->equalsub(tree_ndofs, tree_ndofs, M_v, - h * gamma*ap1);
-	SysJacHHT->Md()->equalsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);
-	
+	pM = SysJacHHT->M();
+	pMv = SysJacHHT->Mv();
+	pMd = SysJacHHT->Md();
+	pM->equalsub(tree_ndofs, tree_ndofs, M_a);
+	pMv->equalsub(tree_ndofs, tree_ndofs, M_v, - h * gamma*ap1);
+	pMd->equalsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);
+	pJ = SysJacHHT->J();
+	base = tree_ndofs;
 	for (i = 0; i < numLoops; i++) {
-		base = tree_ndofs;
 		for (j = 0; j < pSys->loop_list[i]->num_nonzero(); j++) {
-			ii = pSys->loop_list[i]->row(j) + base + i * 6;
+			ii = pSys->loop_list[i]->row(j) + i * 6;
 			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
-			SysJacHHT->J()->addr(ii, jj, value);
-			//pJac[ii][jj] += value; //if (tempJac) tempJac[ii][jj] += value;//parV_parq_dot
-			//pJac[jj][ii] -= value; //if (tempJac) tempJac[jj][ii] -= value;//parV_parq_dot^T
+			pJ->addr(ii, jj, value);
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {

@@ -52,7 +52,9 @@ public:
 	inline void elementr(int i, int j, double val) { mat[i][j] = val; }
 	inline void elementc(int i, int j, double val) { mat[j][i] = val; }
 	inline void add(int i, int j, double val) { if (rowwise) mat[i][j] += val; else mat[j][i] += val; }
-	inline void addr(int i, int j, double val) { mat[i][j] += val; }
+	inline void addr(int i, int j, double val) { 
+		mat[i][j] += val;
+	}
 	inline void addc(int i, int j, double val) { mat[j][i] += val; }
 	void equalsub(int m1, int n1, double** ms, double = 1.0);
 	void addsub(int m1, int n1, double** ms, double = 1.0);

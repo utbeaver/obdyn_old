@@ -55,7 +55,7 @@ sys_ = OdSystem("revJT2R1")
 for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
-hht=0
+hht=1
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1
@@ -87,4 +87,4 @@ dt= end-start
 name_=os.path.splitext(os.path.basename(__file__))[0]
 import postutils
 postutils.ppt(datas, types, dt, hht, name_, sys.argv)
-#sys.exit(0)
+sys.exit(0)

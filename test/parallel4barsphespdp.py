@@ -103,7 +103,7 @@ for i in range(200):
     data=[t_]
     types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 1.0e-5, 6, 0.01, 1.0e-6, 0.001, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-5, 6, 0.01, 1.0e-6, 0.001, 1)
     else:    
         sys_.dynamic_analysis_bdf(t_, 1.0e-3, 6, 0.01, 1.0e-6, 0.001, 0)
     for c_ in c:

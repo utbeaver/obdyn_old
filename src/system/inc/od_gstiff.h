@@ -23,7 +23,7 @@ protected:
 	int integratorOrderOld;
 	int integratorOrderMax;
 	int success;
-
+	int modifiedLU;
 
 public:
 	od_integrator(double initStep);
@@ -85,7 +85,7 @@ public:
 	void restartIntegrator();
 	//void setErrorBound(double val);
 	void setOrder(int val);
-	int toTime(double end);
+	int toTime(double end, int=0);
 	void predict();
 	void interpolate(double _end);
 	//void saveOld();
@@ -125,7 +125,7 @@ public:
 		EPS = val; Phi();
 	}
 	
-	int toTime(double);
+	int toTime(double, int=0);
 	void predict();
 	void interpolate(double _end);
 

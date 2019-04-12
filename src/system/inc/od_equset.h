@@ -181,7 +181,7 @@ protected:
 	double** M_a;
 	double** M_v;
 	double** M_d;
-	int hht;
+	int modifiedLU;
 public:
 	od_equation_dynamic(od_system *psys, double end = 1.0, int steps = 10, double tol = 1.0e-4);
 	~od_equation_dynamic();
@@ -205,11 +205,7 @@ public:
 	double *pprhs;
 public:
 	od_equation_bdf_I(od_system *psys, double end = 1, int steps = 1, double tol = 1.0e-3);
-	~od_equation_bdf_I(); /* {
-		delete pIntegrator;
-		delete SysJacBDF;
-		delete[] pprhs;
-	}*/
+	~od_equation_bdf_I(); 
 	int solve(double = 0.0);
 	int solveBDF(double = 0.0);
 	void evalJac(double tinu);
@@ -229,11 +225,13 @@ private:
 	double* Q;
 	double *Mq;
 	od_matrix_hht *SysJacHHT;
+public:
 	double *pprhs;
 public:
 	od_equation_hhti3(od_system *psys, double end = 1, int steps = 1, double tol = 1.0e-3, double al =  -1.0 / 3.0);
 	~od_equation_hhti3(); 
 	int solve(double = 0.0);
+	int solveHHT(double = 0.0);
 	double* evalRhs();
 	void calNonLinQ(int m_q=1);
 	//void calMq();

@@ -60,7 +60,7 @@ sys_.displacement_ic()
 #sys_.kinematic_analysis(0.1, 10, 1.0e-10, 20)
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 datas=[]
-hht=0
+hht=1
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1
@@ -71,7 +71,10 @@ for i in range(500):
     t_=i*0.01
     data=[t_]
     types=["time"]
-    sys_.dynamic_analysis_hht(t_, 1.0e-3, 6, 0.1, 1.0e-6, 0.001, 0)
+    if hht==1:
+        sys_.dynamic_analysis_hht(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 1)
+    else:    
+        sys_.dynamic_analysis_bdf(t_, 1.0e-6, 6, 0.1, 1.0e-6, 0.001, 0)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):

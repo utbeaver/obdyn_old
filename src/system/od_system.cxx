@@ -1242,7 +1242,7 @@ void od_system::_init() {
 	pKin = 0; pDyn = 0; pDynHHT = 0;
 	string name__ = name() + ".msg";
 	pMsgFile = new ofstream(name__.c_str(), ios_base::out);
-	pOutFile = 0;
+	//pOutFile = 0;
 }
 od_system::~od_system() {
 	int ii;
@@ -1250,7 +1250,7 @@ od_system::~od_system() {
 	//int size_ = (int)element_list.size();
 	if (pMsgFile) pMsgFile->close();
 	delete pMsgFile;
-	if (pOutFile) { pOutFile->close(); delete pOutFile; }
+	//if (pOutFile) { pOutFile->close(); delete pOutFile; }
 	if (_from_py) {
 		for (ii = 0; ii < element_num; ii++) {
 			pE = element_list[ii];
@@ -2451,7 +2451,7 @@ double od_system::cputime() {
 
 }
 
-int od_system::dynamic_analysis_bdf(double end_time, double tol, int iter, double maxH, double minH, double _initStep, int debug) {
+int od_system::dynamic_analysis_bdf(double end_time, double tol, int iter, double maxH, double minH, double _initStep, int mLU) {
 	int errorCode = 0;
 	if (!pDyn) {
 		displacement_ic();
@@ -2467,7 +2467,7 @@ int od_system::dynamic_analysis_bdf(double end_time, double tol, int iter, doubl
 	}
 	try {
 		double _start = cputime();
-		pDyn->simulate(end_time, debug);
+		pDyn->simulate(end_time, mLU);
 		double _delta = cputime() - _start;
 		_cputime += _delta * 1.0e-7;
 	}
@@ -2480,7 +2480,7 @@ int od_system::dynamic_analysis_bdf(double end_time, double tol, int iter, doubl
 	return errorCode;
 }
 
-int od_system::dynamic_analysis_hht(double end_time, double tol, int iter, double maxH, double minH, double _initStep, int debug) {
+int od_system::dynamic_analysis_hht(double end_time, double tol, int iter, double maxH, double minH, double _initStep, int mLU) {
 	int errorCode = 0;
 	if (!pDynHHT) {
 		displacement_ic();
@@ -2496,7 +2496,7 @@ int od_system::dynamic_analysis_hht(double end_time, double tol, int iter, doubl
 	}
 	try {
 		double _start = cputime();
-		pDynHHT->simulate(end_time, debug);
+		pDynHHT->simulate(end_time, mLU);
 		double _delta = cputime() - _start;
 		_cputime += _delta * 1.0e-7;
 	}
@@ -3194,21 +3194,6 @@ void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
 		}
 		else {
 			ZERO3(vecTemp2);
-			/*for (int ii = head; ii < start; ii++) {
-				pCi = (od_joint*)C[ii];
-				prev_id=pCi->get_prev_idx();
-				if(prev_id<head && ii>head) continue;
-				pCi = (od_joint*)C[ii];
-				pd = pCi->getQ(0, od_object::ROT_DOF, v1a2);
-				U_ADD3(vecTemp, pd);
-				pd_dot = pCi->getQ(type, od_object::ROT_DOF, v1a2);
-				U_ADD3(vecTemp2, pd_dot);
-			}
-			CROSS_X(vecTemp2, pzk, vecTemp1);
-			U_ADD3(pout, vecTemp1);
-			CROSS_X(vecTemp, pzk_dot, vecTemp1);
-			U_ADD3(pout, vecTemp1);
-			*/
 			pd = pCk->get_jmarker()->get_omega_dot();
 			CROSS_X(pd, pzk, vecTemp);
 			U_ADD3(pout, vecTemp);
