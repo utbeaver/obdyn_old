@@ -107,7 +107,12 @@ Mat33& Mat33::TMTt(Mat33& T) {
   return T;
 }
 
-
+void Mat33::setI(double *p) {
+	this->init();
+	x[0] = p[0]; y[0] = p[3]; z[0] = p[4];
+	x[1] = p[3]; y[1] = p[1]; z[1] = p[5];
+	x[2] = p[4]; y[2] = p[5]; z[2] = p[2];
+}
 
 void cross_product_with_doubles(const double* const v, const double* const vec, Vec3& temp) {
   if (!v || !vec) {

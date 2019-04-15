@@ -34,8 +34,8 @@ class LINKSYSTEMDLL OdSystem {
   }*/
   void setName(char*);
   void add_body(OdBody* pB); 
-  char* add_constraint(OdJoint* pJ); 
-  char* add_force(OdForce *pF);
+  std::string add_constraint(OdJoint* pJ);
+  std::string add_force(OdForce *pF);
   void add_joint_force(OdJointForce *pJF);
   void add_joint_spdp(OdJointSPDP *pJF);
   
@@ -47,7 +47,7 @@ class LINKSYSTEMDLL OdSystem {
   int velocity_ic();
   int acceleration_and_force_ic();
   int kinematic_analysis(double=1.0, int=1, double tol=5.0e-16, int iters=26);
-  int static_analysis(int iter = 15, double tol=5.0e-5);
+  std::string static_analysis(int iter = 15, double tol=5.0e-5);
   int dynamic_analysis_bdf(double end_time, double tol=1.0e-3, int iter=6, double maxH=.1, double minH=1.0e-6, double _initStep=.005, int = 0);
   int dynamic_analysis_hht(double end_time, double tol = 1.0e-3, int iter = 6, double maxH = .1, double minH = 1.0e-6, double _initStep = .005, int = 0);
   void numdif();

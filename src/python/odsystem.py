@@ -138,8 +138,8 @@ class V6(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, V6, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _odsystem.new_V6()
+    def __init__(self, *args):
+        this = _odsystem.new_V6(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:

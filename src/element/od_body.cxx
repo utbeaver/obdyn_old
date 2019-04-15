@@ -230,6 +230,6 @@ OdBody::~OdBody() {
 void OdBody::setMass(double ma) {
 	pB->set_mass(ma);
 }
-void OdBody::setI(double *inertia) {
-	pB->set_I(inertia);
+void OdBody::setI(V6* a) {
+	pB->set_I(a->ptr());
 }

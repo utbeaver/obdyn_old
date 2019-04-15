@@ -13,38 +13,7 @@ class od_system;
 class od_gstiff;
 class od_hhti3;
 
-class equ_exception {
-private:
-	int iterations;
-	double variation;
-	int var_row;
-	double rhs;
-	int rhs_row;
-	double __time;
-public:
-	equ_exception(int iter, double resi, int _row, double _rhs, int _rhsrow, double _time = 0.0) {
-		iterations = iter;
-		variation = resi;
-		var_row = _row;
-		rhs = _rhs;
-		rhs_row = _rhsrow;
-		__time = _time;
-	}
-	inline int get_num_iteration() const { return iterations; }
-	inline double getVariation() const { return variation; }
-	inline double getRhs() const { return rhs; }
-	inline int getVarRow() const { return var_row; }
-	inline int getRhsRow() const { return rhs_row; }
-	inline double time() const { return __time; }
-	string& msg(string& _msg) const {
-		ostringstream _str;
-		_str << "At time " << time() << "with Iterations " << get_num_iteration() << endl;
-		_str << "Maximum RHS " << getRhs() << " with " << getRhsRow() << "th variable" << endl;
-		_str << "Maximum Variation " << getVariation() << " with " << getVarRow() << "th variable" << endl;
-		_msg += _str.str();
-		return _msg;
-	}
-};
+
 
 class od_equation : public od_object {
 protected:

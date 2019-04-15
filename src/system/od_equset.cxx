@@ -1300,9 +1300,7 @@ void od_equation_hhti3::evalJac() {
 	double value, ap1;
 	fill(dofmap.begin(), dofmap.end(), 1);
 	for (i = 0; i < tree_ndofs; i++) {
-		int val = pSys->dofmap_[i];
-		if (val == 0) val = -1;
-		this->dofmap[i] = val;
+		this->dofmap[i] = pSys->dofmap_[i];;
 	}
 	//RHS   M\ddot{q}+NonLinQ*(1+alpha)-()*alpha=0
 
@@ -1317,14 +1315,9 @@ void od_equation_hhti3::evalJac() {
 	//value = -h * h* beta*ap1;
 	SysJac->addsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);
 	
-	/*for (i = 0; i < tree_ndofs; i++) {
-		for (j = 0; j < tree_ndofs; j++) {
-			pJac[i][j] = M_a[i][j];// / (1.0 + alpha);
-			pJac[i][j] -= h * (gamma*M_v[i][j] + h * beta*M_d[i][j])*ap1;
-		}
-	}*/
+	//SysJac->print_out();
+	base = tree_ndofs;
 	for (i = 0; i < numLoops; i++) {
-		base = tree_ndofs;
 		for (j = 0; j < pSys->loop_list[i]->num_nonzero(); j++) {
 			ii = pSys->loop_list[i]->row(j) + base + i * 6;
 			jj = pSys->loop_list[i]->col(j);
@@ -1338,6 +1331,7 @@ void od_equation_hhti3::evalJac() {
 			}
 		}
 	}
+	//SysJac->print_out();
 	createPermuV();// dofmap);
 	
 }

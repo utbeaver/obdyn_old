@@ -97,6 +97,7 @@ int od_loopr::initialize(int keep) {
 			if (pTempV3 == 0) { pTempV3 = new Vec3; collector.push_back(pTempV3); }
 			JR_vel[i][j] = pTempV3;
 			pTempV3 = pSys->getJRdot_dq(b_index[i], entry2ij);// parOmega_parq.element(b_index[i], entry2ij);
+			if (pTempV3 == 0) { pTempV3 = new Vec3; collector.push_back(pTempV3); }
 			JR_veld[i][j] = pTempV3;
 
 			for (k = 0; k < 3; k++) {

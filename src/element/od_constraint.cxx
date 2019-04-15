@@ -273,7 +273,14 @@ int od_connector::j_body_index() {
 	int index_ = pB->get_index();
 	return index_;
 }
-
+int od_connector::check() {
+	  if (!i_marker) return 1;
+	  if (!j_marker) return 2;
+	  if (!(i_marker->get_body()))  return 3;
+	  if (!(j_marker->get_body()))  return 4;
+	  if (i_marker->get_body() == j_marker->get_body()) return 5;
+	  return 0;
+  }
 int od_constraint::untag_attached_body() {
 	od_body *pB;
 	od_marker *pM;

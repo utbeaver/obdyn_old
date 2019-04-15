@@ -98,6 +98,7 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 		  //error_code = 1;                // Set the error_code flag
 			error_code = pVec[i] + 1;
 			DELARY(vv);                      // Release work space memory
+			throw equ_exception(i);
 			///         cout << endl << " Singular Matrix:  Row " << i << " is a zero row" << endl;
 			return (error_code);            // Return the error_code flag
 		}
@@ -384,6 +385,7 @@ void od_matrix_dense::setPvecN(int *pvec, int effn) {
 int od_matrix_dense::LU() {
 	double d;
 	int error_code = 0;
+//	print_out();
 	error_code = ludcmp(mat, eff_dim, perm, &d);
 	if (!error_code) _repar = 0;
 	return error_code;

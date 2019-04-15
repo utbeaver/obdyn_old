@@ -32,6 +32,9 @@ private:
 	double *p;
 public:
 	V6() { for (int i = 0; i < 6; i++) v[i] = 0.0; p = v; }
+	V6(double x, double y, double z, double xy, double xz, double yz) {
+		v[0] = x; v[1] = y; v[2] = z; v[3] = xy; v[4] = xz; v[5] = yz; p = v;
+	}
 	void set(double* val, int n=6) { for (int i = 0; i < n; i++) v[i] = val[i]; }
 	double get(int i) { return v[i]; }
 	double* ptr() { return p; }

@@ -242,6 +242,7 @@ public:
 	void transpose(Mat33&);
 	void update(double *q);
 	Mat33& TMTt(Mat33 &T);
+	void setI(double*);
 };
 
 class  vector_int {

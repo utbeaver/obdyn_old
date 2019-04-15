@@ -36,7 +36,7 @@ public:
 	inline void set_pos_rhs(Vec3* vec) { pos_rhs = vec; }
 	inline void set_ang_rhs(Vec3* vec) { ang_rhs = vec; }
 	inline void set_mass(double m) { _mass = m; /*if (is_real() == 0) _mass = 0.0;*/ }
-	inline void set_I(double *val) { _I = val; /*if (is_real() == 0) _I.init(); */}
+	inline void set_I(double *val) { _I.setI(val); /*if (is_real() == 0) _I.init(); */}
 	void add_cm_marker(od_marker *mar);
 	void add_marker(od_marker *mar, int _global=0);
 	inline od_marker* cm_marker(void) { return cm; }

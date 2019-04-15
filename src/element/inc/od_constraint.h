@@ -330,19 +330,13 @@ public:
 	inline virtual int if_rotation(int i) { return (i < num_tra_joints) ? 0 : 1; }
 	inline const char* type(int i) const { return prinames[i].c_str(); }
 	void set_expr(const char* pexpr, int i = 0) {
-		//funcNum=i+1;
-		//func[i]=(char*) calloc(strlen(pexpr)+1, sizeof(char));
-		//strcpy(func[i], pexpr);
 		if (i < num_tra_joints) {
 			tra_joints[i]->set_expr(pexpr);
 		}
 		else if (i < (num_tra_joints + num_rot_joints)) {
-			rot_joints[num_tra_joints]->set_expr(pexpr);
+			rot_joints[i-num_tra_joints]->set_expr(pexpr);
 		}
-		//num_dofs--;
 	}
-	//inline virtual int numMotions() { return motions.size(); }
-//	inline virtual od_motion* motion(int i) { return motions[i]; }
 
 	inline virtual void set_temp_pva(double *p, double *v, double *a) {
 		temp_pos = p;

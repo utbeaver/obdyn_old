@@ -2586,29 +2586,38 @@ void OdSystem::add_joint_force(OdJointForce *pF) {
   od_systemGeneric *ps = pSub->core();
   pS->add_subsystem(ps);
 }*/
-char* OdSystem::add_force(OdForce *pF) {
+std::string OdSystem::add_force(OdForce *pF) {
 	od_force *pf = pF->core();
+	
 	int code = pf->check();
 	if (code == 1) { strcpy(tmpstr, (char*)"iMarker is missing: Action Fails!"); }
 	if (code == 2) { strcpy(tmpstr, (char*)"jMarker is missing: Action Fails!"); }
+	if (code == 3) { strcpy(tmpstr, (char*)"iMarker's body is not defined"); }
+	if (code == 4) { strcpy(tmpstr, (char*)"iMarker's body is not defined"); }
+	if (code == 5) { strcpy(tmpstr, (char*)"iMarker and IMarker are on the ame body"); }
 	if (code == 0) {
 		pS->add_force(pf);
 		strcpy(tmpstr, (char*)"Success!");
 	}
-	return &tmpstr[0];
+	std::string msg = tmpstr;
+	return msg;
 }
-char* OdSystem::add_constraint(OdJoint* pJ) {
+std::string OdSystem::add_constraint(OdJoint* pJ) {
 	od_joint *pj = pJ->core();
 	int code = pj->check();
 	if (code == 1) { strcpy(tmpstr, (char*)"iMarker is missing: Action Fails!"); }
 	if (code == 2) { strcpy(tmpstr, (char*)"jMarker is missing: Action Fails!");}
+	if (code == 3) { strcpy(tmpstr, (char*)"iMarker's body is not defined"); }
+	if (code == 4) { strcpy(tmpstr, (char*)"iMarker's body is not defined"); }
+	if (code == 5) { strcpy(tmpstr, (char*)"iMarker and IMarker are on the ame body"); }
 	if (code == 0) {
 		int expl = pJ->explicitFixed();
 		if (!expl) pS->add_constraint((od_constraint*)pj);
 		else pS->add_explicit_constraint((od_constraint*)pj);
 		strcpy(tmpstr, (char*)"Success!");
 	}
-	return &tmpstr[0];
+	std::string msg = tmpstr;
+	return msg;
 }
 char* OdSystem::info(char* msg) {
 	msg = pS->info(msg);
@@ -2634,8 +2643,16 @@ int OdSystem::acceleration_and_force_ic() {
 int OdSystem::kinematic_analysis(double end, int nums, double tol, int iters) {
 	return pS->kinematic_analysis(end, nums, tol, iters);
 }
-int OdSystem::static_analysis(int nums, double tol) {
-	return pS->static_analysis(nums, tol);
+std::string OdSystem::static_analysis(int nums, double tol) {
+	std::string ret = "";
+	try {
+		pS->static_analysis(nums, tol);
+		ret += "Success!";
+	}
+	catch (string msg) {
+		ret= msg;
+	}
+	return ret;
 }
 int OdSystem::dynamic_analysis_bdf(double end_time, double tol, int iter, double maxH, double minH, double _initStep, int _debug) {
 	return pS->dynamic_analysis_bdf(end_time, tol, iter, maxH, minH, _initStep, _debug);

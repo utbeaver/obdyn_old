@@ -25,7 +25,6 @@ else:
     if py3==1:
         libdir=os.path.join(obdir, 'od_solver3', 'odsystem', 'x64', "debug" )
     else:    
-        print "xxxx"
         libdir=os.path.join(obdir, 'od_solver', 'odsystem', 'x64', "debug" )
 sys.path.append(libdir)
 testdir=os.path.join(obdir, 'obdyn', 'test')
@@ -34,8 +33,9 @@ os.chdir(wb)
 cwd=os.getcwd()
 #print "You are in %s"%cwd
 
+execfile(os.path.join(testdir, "governor.py"))
 #execfile(os.path.join(testdir, "two_link.py"))
-execfile(os.path.join(testdir, "parallel4barsphespdp.py"))
+#execfile(os.path.join(testdir, "parallel4barsphespdp.py"))
 #execfile(os.path.join(testdir, "parallel4barspdp.py"))
 #execfile(os.path.join(testdir, "parallel4bar.py"))
 #execfile(os.path.join(testdir, "sphonly.py"))

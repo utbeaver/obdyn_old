@@ -33,6 +33,52 @@ static  unsigned int fp_control_state = _controlfp(_EM_INEXACT, _MCW_EM);
 //static  unsigned int fp_control_state = _controlfp(_DN_FLUSH, _MCW_DN);
 //static  unsigned int fp_control_state = _controlfp(_EM_INVALID, _MCW_EM);
 #endif
+
+class equ_exception {
+private:
+	int iterations;
+	double variation;
+	int var_row;
+	double rhs;
+	int rhs_row;
+	double __time;
+	int type; //do not converge;1 matrix singular 2
+public:
+	equ_exception(int iter, double resi, int _row, double _rhs, int _rhsrow, double _time = 0.0) {
+		iterations = iter;
+		variation = resi;
+		var_row = _row;
+		rhs = _rhs;
+		rhs_row = _rhsrow;
+		__time = _time;
+		type = 1;
+	}
+	equ_exception(int row_, double _time = 0.0) {
+		var_row = row_;
+		__time = _time;
+		type = 2;
+	}
+	inline int get_num_iteration() const { return iterations; }
+	inline double getVariation() const { return variation; }
+	inline double getRhs() const { return rhs; }
+	inline int getVarRow() const { return var_row; }
+	inline int getRhsRow() const { return rhs_row; }
+	inline double time() const { return __time; }
+	string& msg(string& _msg) const {
+		ostringstream _str;
+		if (type == 1) {
+			_str << "At time " << time() << "with Iterations " << get_num_iteration() << endl;
+			_str << "Maximum RHS " << getRhs() << " with " << getRhsRow() << "th variable" << endl;
+			_str << "Maximum Variation " << getVariation() << " with " << getVarRow() << "th variable" << endl;
+			_msg += _str.str();
+		}
+		else {
+			_str << "At time " << time() << " Jacobian  is singular with zero pivot in line " << var_row << endl;
+			_msg += _str.str();
+		}
+		return _msg;
+	}
+};
 class od_object {
  public:
   enum System_Type {SINGLE_CHIAN, BEAMS, CLOSE_CHAIN};       
@@ -150,12 +196,7 @@ public:
 	  j_marker = temp_mar;
 	  reversesign = -1.0;
   }
-  int check() {
-	  if (!i_marker) return 1;
-	  if (!j_marker) return 2;
-	  return 0;
-  }
- 
+  int check();
 };
 
 #endif

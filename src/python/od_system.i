@@ -1,6 +1,6 @@
 
 %module odsystem 
-
+%include "std_string.i"
 %{
 #include "od_marker_api.h"
 #include "od_constraint_api.h"
