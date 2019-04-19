@@ -42,8 +42,7 @@ protected:
 	int* Vars;
 	int _debug;
 	int dofs_calculated;
-	int* permuV;
-	//int* permuV_;
+	//int* permuV;
 	vector<int> dofmap;
 	int* _dofmap;
 	od_object::DVA_TYPE _dva_type;
@@ -52,7 +51,7 @@ protected:
 public:
 	od_equation(od_system *psys) : od_object() {
 		pSys = psys; pRhs = 0; //numMotions=0;
-		ddstates = 0; dstates = 0; states = 0; initialized = 0; pJac = 0; permuV = 0;
+		ddstates = 0; dstates = 0; states = 0; initialized = 0; pJac = 0; //permuV = 0;
 		error = 0; SysJac = 0; removed_entries.resize(0);
 		_X = _Xdot = 0;  pMsg = 0; _debug = 0; pOut = 0; Vars = 0; dofs_calculated = 0;
 	}

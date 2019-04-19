@@ -98,7 +98,6 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 		  //error_code = 1;                // Set the error_code flag
 			error_code = pVec[i] + 1;
 			DELARY(vv);    // Release work space memory
-		//	_print_out();
 			throw equ_exception(i);
 			///         cout << endl << " Singular Matrix:  Row " << i << " is a zero row" << endl;
 			return (error_code);            // Return the error_code flag
@@ -139,7 +138,6 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 		  //error_code = 1;                      // Set the error_code flag
 			error_code = j + 1;
 			DELARY(vv);
-	//		_print_out();
 			throw equ_exception(i);
 			//        cout << endl << " Singular Matrix:  pivot " << j << ", " << j << " row(" << indx[j]
 			//            << ") is " << a[j][j] << endl;
@@ -275,7 +273,6 @@ double* od_matrix_dense::solve(double* X, int repar, int effn, int* pvec) {
 	if (effn != 0 && pvec != 0) {
 		setPvecN(pvec, effn);
 	}
-	//print_out();
 	if (repar || _repar) {
 		LU();
 		repar = 0;
@@ -405,20 +402,6 @@ int od_matrix_dense::LU() {
 	if (!error_code) _repar = 0;
 	return error_code;
 }
-/*
-void od_matrix_dense::_print_out(int* pVec) {
-	for (int i = 0; i < dim; i++) {
-		for (int j = 0; j < dim; j++) {
-			if (pVec == 0) {
-				cout << setw(8) << setfill(' ') << setprecision(1) << _mat[i][j] << ' ';
-			}
-			else {
-				cout << setw(8) << setfill(' ') << setprecision(1) << _mat[pVec[i]][pVec[j]] << ' ';
-			}
-		}
-		cout << endl;
-	}
-}*/
 
 	void od_matrix_dense::print_out(int* pVec) {
 		for (int i = 0; i < dim; i++) {
