@@ -1025,6 +1025,11 @@ double* od_systemMechanism::evaluateRhs(double *pRhs) {
 			double tempd = joint_force_list_[i]->value();
 			pRhs[row] += tempd;
 		}
+		/*for (i = 0; i < tree_ndofs; i++) {
+			if (dofmap_[i] != 1) {
+				pRhs[i] += ddstates[i];
+			}
+		}*/
 	}
 	else if (_type == od_object::STATIC) {
 		//Vec3* vecTemp1 = new Vec3[nbody];
@@ -2387,18 +2392,6 @@ void od_system::getM(double **pM, int base) {
 	//	base += _subSys[i]->tree_dofs();
 	//}
 	od_systemGeneric::getM(pM, base);
-	od_object::Analysis_Type _type = get_analysis_type();
-	/*	if (_type == od_object::DYNAMIC) {
-			int len = num_jforce();
-			for (int i = 0; i < len; i++) {
-				int row = joint_force_list_[i]->row();
-				for (int j = 0; j < joint_force_list_[i]->get_partial_size(2); j++) {
-					int col = joint_force_list[i]->get_partial_col(2, j);
-					double tempd = joint_force_list_[i]->get_partial(2, j);
-					pM[base + row][base + col] += tempd;
-				}
-			}
-		}*/
 }
 double* od_system::evaluate_rhs(double *pRhs, double alpha) {
 	double _start = startRecord();

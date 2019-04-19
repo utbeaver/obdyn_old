@@ -54,9 +54,10 @@ protected:
 	Vec3 vecTemp;
 	double temp_rhs[3];
 	double element(int i, int j, int ij = 0, int si2 = 0);
+	double* element(int r0t1, int j, int, double*);
 	void clean();
 	void find_redundants();
-
+	od_marker *pMref;
 public:
 	friend class od_systemGeneric;
 	od_loop(od_constraint* pC, od_systemGeneric*);
@@ -77,13 +78,19 @@ public:
 	inline int row(int i) const { return row_index[i]; }
 	inline int col(int i) const { return col_index[i]; }
 	void evaluate(int rhs_only = 0);
-	inline double rhs(int i)  const { return (i < 3) ? ori_rhs.v[i] : pos_rhs.v[i - 3]; }
+	inline double rhs(int i)  const { 
+		return (i < 3) ? ori_rhs.v[i] : pos_rhs.v[i - 3];
+	}
 	inline double velRhs(int i) const { return (i < 3) ? omega_rhs.v[i] : vel_rhs.v[i - 3]; }
 	inline double accRhs(int i) const { return (i < 3) ? domega_rhs.v[i] : acc_rhs.v[i - 3]; }
 	inline int if_redundant(int i) const { return redundant[i]; }
 
 	double* set_lambda(double* lamb, int inc = 1) {
 		double* p = lamb + 3;
+		/*if (pMref) {
+			pMref->vec_wrt_ground(lamb);
+			pMref->vec_wrt_ground(p);
+		}*/
 		if (inc) { _force[0] += p; 		_moment[0] += lamb; }
 		else { _force[0] = p; 		_moment[0] = lamb; }
 		_force[1] = _force[0]; _force[1].negate();

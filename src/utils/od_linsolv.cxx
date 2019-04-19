@@ -87,7 +87,7 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 	int i, imax, j, k;
 	double big, sum, temp;
 	double *vv;                       //  vv stores the implicit scaling of each row.
-
+//	for (i = 0; i < n; i++)for (j = 0; j < n; j++) _mat[i][j] = mat[i][j];
 	vv = new double[n];               //  Allocate vv.
 	if (d) *d = 1.0;                         //  No row interchanges yet.
 	for (i = 0; i < n; i++) {   //  Loop over rows to get the implicit scaling information.
@@ -97,7 +97,8 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 		if (fabs(big) < SMALL_VALUE) {  // No nonzero element in this row
 		  //error_code = 1;                // Set the error_code flag
 			error_code = pVec[i] + 1;
-			DELARY(vv);                      // Release work space memory
+			DELARY(vv);    // Release work space memory
+		//	_print_out();
 			throw equ_exception(i);
 			///         cout << endl << " Singular Matrix:  Row " << i << " is a zero row" << endl;
 			return (error_code);            // Return the error_code flag
@@ -138,6 +139,8 @@ int od_matrix_dense::ludcmp(double **a, int n, int *indx, double *d)
 		  //error_code = 1;                      // Set the error_code flag
 			error_code = j + 1;
 			DELARY(vv);
+	//		_print_out();
+			throw equ_exception(i);
 			//        cout << endl << " Singular Matrix:  pivot " << j << ", " << j << " row(" << indx[j]
 			//            << ") is " << a[j][j] << endl;
 			return (error_code);                  // Return the error_code flag
@@ -254,8 +257,10 @@ void od_matrix_dense::init() {
 	for (i = 0; i < max(dim, dim_n); i++) { pVec[i] = i; }
 	if (rowwise == 1) {
 		mat = new double*[dim];
+	//	_mat= new double*[dim];
 		for (i = 0; i < dim; i++) {
-			mat[i] = new double[dim_n]; //fill(mat[i], mat[i] + dim_n, 0.0);
+			mat[i] = new double[dim_n];
+	//		_mat[i] = new double[dim_n];//fill(mat[i], mat[i] + dim_n, 0.0);
 		}
 	}
 	else {
@@ -371,16 +376,26 @@ double* od_matrix_dense::solveT(double* X, int repar, int effn, int* pvec) {
 }
 void od_matrix_dense::setPvecN(int *pvec, int effn) {
 	int temp = (rowwise == 1) ? dim : dim_n;
-	for (int i = 0; i < temp; i++) {
+	/*for (int i = 0; i < temp; i++) {
 		if (pVec[i] != pvec[i]) {
 			pVec[i] = pvec[i];
 			_repar = 1;
 		}
+	}*/
+	int ii = 0;
+	for (int i = 0; i < temp; i++) {
+		if (pvec[i] == 1) pVec[ii++] = i;
 	}
-	if (eff_dim != effn) {
-		eff_dim = effn;
-		_repar = 1;
+	if (ii != eff_dim) {
+		eff_dim = ii; _repar = 1;
 	}
+	for (int i = 0; i < temp; i++) {
+		if (pvec[i] != 1) pVec[ii++] = i;
+	}
+	//if (eff_dim != effn) {
+		//eff_dim = effn;
+		//_repar = 1;
+	//}
 }
 int od_matrix_dense::LU() {
 	double d;
@@ -390,20 +405,36 @@ int od_matrix_dense::LU() {
 	if (!error_code) _repar = 0;
 	return error_code;
 }
-void od_matrix_dense::print_out(int* pVec) {
+/*
+void od_matrix_dense::_print_out(int* pVec) {
 	for (int i = 0; i < dim; i++) {
 		for (int j = 0; j < dim; j++) {
 			if (pVec == 0) {
-				cout << setw(8) << setfill(' ') << setprecision(1) << mat[i][j] << ' ';
+				cout << setw(8) << setfill(' ') << setprecision(1) << _mat[i][j] << ' ';
 			}
 			else {
-				cout << setw(8) << setfill(' ') << setprecision(1) << mat[pVec[i]][pVec[j]] << ' ';
+				cout << setw(8) << setfill(' ') << setprecision(1) << _mat[pVec[i]][pVec[j]] << ' ';
 			}
 		}
 		cout << endl;
 	}
+}*/
+
+	void od_matrix_dense::print_out(int* pVec) {
+		for (int i = 0; i < dim; i++) {
+			for (int j = 0; j < dim; j++) {
+				if (pVec == 0) {
+					cout << setw(8) << setfill(' ') << setprecision(1) << mat[i][j] << ' ';
+				}
+				else {
+					cout << setw(8) << setfill(' ') << setprecision(1) << mat[pVec[i]][pVec[j]] << ' ';
+				}
+			}
+			cout << endl;
+		}
 	cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
 }
+	
 od_blockTriDiagonal::od_blockTriDiagonal(int _n) {
 	//int i;
 	n = _n;
@@ -508,15 +539,16 @@ od_matrix_composite::od_matrix_composite(int m_, int a_m, int *pev) {
 
 void od_matrix_composite::setPvecN(int *pvec, int effn) {
 	for (int i = 0; i < m + aux_m; i++) {
-		if (pVec[i] != pvec[i]) {
-			pVec[i] = pvec[i];
-			_repar = 1;
-		}
+		pVec[i] = pvec[i];
+	//	if (pVec[i] != pvec[i]) {
+	//		
+	//		_repar = 1;
+	//	}
 	}
-	if (eff_dim != effn) {
+	/*if (eff_dim != effn) {
 		eff_dim = effn;
 		_repar = 1;
-	}
+	}*/
 }
 od_matrix_bdf::od_matrix_bdf(int m_, int a_m, int *pvec) : od_matrix_composite(m_, a_m, pvec){
 	aux_m = a_m;
@@ -564,8 +596,8 @@ void od_matrix_bdf::update(double tinu, int* pvec, int effn) {
 	pMd->BX(pJ);
 	pB->equalT(pJ, 0, 0, mu); //muMdJ^t
 
-	for (i = 0; i < aux_m; i++)
-		pVec[m + i] -= m;
+	//for (i = 0; i < aux_m; i++)
+	//	pVec[m + i] -= m;
 	pA->setPvecN(pVec, h_m);
 	pC->setPvecN(pVec + m, eff_dim - m);
 	pB->setPvecN(pVec + m, eff_dim - m);
@@ -647,8 +679,8 @@ void od_matrix_hht::update(double tinu, int* pvec, int effn) {
 	pC->equal(pJ);
 	pB->equalT(pJ, 0, 0, -1.0);
 
-	for (i = 0; i < aux_m; i++)
-		pVec[m + i] -= m;
+	//for (i = 0; i < aux_m; i++)
+	//	pVec[m + i] -= m;
 	pA->setPvecN(pVec, m);
 	pC->setPvecN(pVec + m, eff_dim - m);
 	pB->setPvecN(pVec + m, eff_dim - m);

@@ -319,6 +319,7 @@ public:
 	inline int num_joint() const { return njoint; }
 	inline int num_force() const { return nforce; }
 	inline int num_jforce() const { return njforce; }
+	inline od_body* get_body_via_index(int index) const { return body_list_[index]; }
 	inline od_constraint* get_constraint_via_index(int index) const { return constraint_list_[index]; }
 	inline od_force* get_force_via_index(int idx) const { return force_list_[idx]; }
 	inline od_jointF* get_jforce_via_index(int idx) const { return joint_force_list_[idx]; }

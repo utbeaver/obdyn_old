@@ -736,7 +736,7 @@ double Expression::eval_wrt_time() {
 				value_ = op2 / op1;
 			}
 			else if ((tempInt - 10000) == '^') {
-				dvalue_ = op1 * pow(op2, op1 - 1)*dop2 + pow(op2, op1)*log(op2)*dop1;
+				dvalue_ = op1 * pow(op2, op1 - 1)*dop2;// +pow(op2, op1)*log(op2)*dop1;
 				value_ = pow(op2, op1);
 			}
 			temp_stack.push(value_);

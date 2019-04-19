@@ -339,8 +339,10 @@ int od_gstiff::correct() {
 		if (numCorrect%3 ==0) evalJac = 1;
 		if (evalJac ) {
 			numJacEvals++;
-			if(!modifiedLU) pEqu->evalJac(tinu);
-			else pEqu->evalJacBdf(tinu);
+			if(!modifiedLU)
+				pEqu->evalJac(tinu);
+			else 
+				pEqu->evalJacBdf(tinu);
 			evalJac = 0;
 		}
 		maxRhsIdx = getMax(pRhs, numVar, maxRhs);
@@ -350,8 +352,9 @@ int od_gstiff::correct() {
 			rhsConverged = 0;
 		}
 		double s = pEqu->startRecord();
-		if(!modifiedLU) errorCode = pEqu->solve(tinu);
-		else {
+		if (!modifiedLU) {
+			errorCode = pEqu->solve(tinu);
+		} else {
 			pEqu->solveBDF(tinu);
 		}
 		pEqu->stopRecord(s, 2);
@@ -662,6 +665,7 @@ int od_hhti3::toTime(double timeEnd, int mLU)
 			pEqu->updatepQ();
 		}
 	}
+	pEqu->set_states();
 	return 0;
 }
 

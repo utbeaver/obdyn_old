@@ -361,8 +361,8 @@ double* od_marker::get_rotation(double *vec, od_marker *pJ)
 		x2[0] = y2[1] = z2[2] = 1.0;
 	}
 	//calculate RX = ATAN2(y1*z2, y1*y2)
-	tempy = DOT_X(z2, y1);//z2[0]*y1[0]+z2[1]*y1[1]+z2[2]*y1[2];
-	tempx = DOT_X(y2, y1);//y2[0]*y1[0]+y2[1]*y1[1]+ y2[2]*y1[2];
+	tempy = DOT_X(z2, y1);
+	tempx = DOT_X(y2, y1);
 	vec[0] = atan2(tempy, tempx);
 	tempy = DOT_X(z1, x2);//z1[0]*x2[0] + z1[1]*x2[1] + z1[2]*x2[2];
 	tempx = DOT_X(z1, z2);//z1[0]*z2[0] + z1[1]*z2[1] + z1[2]*z2[2];
@@ -412,23 +412,7 @@ char* OdMarker::info(char* msg) {
 
 
 od_marker* OdMarker::core() { return pM; }
-/*
-void OdMarker::set_position(double *pos) {
-	core()->set_position(pos);
-}
 
-void OdMarker::set_omega(double* ome, int *idx) {
-	core()->set_omega(ome, idx);
-}
-
-void OdMarker::set_velocity(double* vel, int *idx) {
-	core()->set_velocity(vel, idx);
-}
-
-void OdMarker::set_angles(double *ang) {
-	core()->set_angles(ang);
-}
-*/
 double* OdMarker::position(int pva) {
 	double *pos;
 	if (pva == 0) pos = core()->get_position();

@@ -11,7 +11,7 @@ using namespace std;
 #else
 #define LINKODJACDLL
 #endif
-
+/*
 template<class T>
 class BlockLU {
 private:
@@ -54,7 +54,7 @@ public:
 		return vals + m + n;
 	}
 };
-
+*/
 template<class T>
 class LINKODJACDLL od_jacobian {
 private:

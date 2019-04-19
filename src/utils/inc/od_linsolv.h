@@ -12,6 +12,7 @@ class od_matrix {
 public:
 	int dim, dim_n, rowwise;
 	double** mat;
+//	double** _mat;
 	int* pVec;
 	int _repar;
 	int eff_dim;
@@ -112,9 +113,11 @@ private:
 public:
 	od_matrix_dense(int dim_s, int dim_c, int* = 0, int = 1);
 	~od_matrix_dense() {
+		int i;
 		DELARY(perm);  DELARY(pCol);
 		int temp = (rowwise == 1) ? dim : dim_n;
-		for (int i = 0; i < temp; i++) DELARY(mat[i]); DELARY(mat);
+		for ( i = 0; i < temp; i++) DELARY(mat[i]); DELARY(mat);
+//		for ( i = 0; i < temp; i++) DELARY(_mat[i]); DELARY(_mat);
 	}
 	virtual void init();
 	virtual double* solve(double*, int repar = 0, int = 0, int* d = 0);
@@ -124,6 +127,7 @@ public:
 	virtual void solve(od_matrix*, int = 0, int = 0);
 	virtual void solveT(od_matrix*, int = 0, int = 0);
 	virtual void print_out(int* flag = 0);
+	//void _print_out(int* flag = 0);
 	virtual int LU();
 	void lbksb(double **a, int n, int *indx, double* b = 0);
 	void ubksb(double **a, int n, int *indx, double* b = 0);
@@ -146,6 +150,7 @@ class od_matrix_denseB : public od_matrix_dense {
 public:
 	od_matrix_denseB(int m, int n) :od_matrix_dense(m, n, 0, 0) { rowwise = 0; init(); }
 };
+
 class od_blockTriDiagonal {
 protected:
 	int n;

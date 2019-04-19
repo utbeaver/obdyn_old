@@ -43,6 +43,7 @@ protected:
 	int _debug;
 	int dofs_calculated;
 	int* permuV;
+	//int* permuV_;
 	vector<int> dofmap;
 	int* _dofmap;
 	od_object::DVA_TYPE _dva_type;

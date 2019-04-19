@@ -18,6 +18,7 @@ od_loop::od_loop(od_constraint *pC, od_systemGeneric *pS) {
 	row_index = col_index = 0;
 	//delocMem = 0;
 	notFirst = 0;
+	pMref = 0;
 }
 
 int od_loopr::initialize(int keep) {
@@ -26,6 +27,7 @@ int od_loopr::initialize(int keep) {
 	int b_index[2], i, j, k;
 	int *ij_idx[2];
 	int entry2ij;
+	int loop_root=-1;
 //	od_joint *pC;
 	Vec3 *pTempV3;
 	b_index[1] = Fixed->j_body_index();
@@ -71,6 +73,12 @@ int od_loopr::initialize(int keep) {
 			if (ij_idx[0][i]) entries1[0].push_back(i);
 			if (ij_idx[1][i]) entries1[1].push_back(i);
 		}
+		else {
+			loop_root = i;
+		}
+	}
+	if (loop_root != -1) {
+		pMref = pSys->get_body_via_index(loop_root)->cm_marker();
 	}
 	for (i = 0; i < 2; i++) delete[] ij_idx[i];
 	num_NZ = 0;
@@ -94,10 +102,14 @@ int od_loopr::initialize(int keep) {
 			entry2ij = entries2[i][j];
 			JR_disp[i][j] = new Vec3;
 			pTempV3 = pSys->getJR(b_index[i], entry2ij); //JR.element(b_index[i], entry2ij);
-			if (pTempV3 == 0) { pTempV3 = new Vec3; collector.push_back(pTempV3); }
+			if (pTempV3 == 0) {
+				pTempV3 = new Vec3; collector.push_back(pTempV3);
+			}
 			JR_vel[i][j] = pTempV3;
 			pTempV3 = pSys->getJRdot_dq(b_index[i], entry2ij);// parOmega_parq.element(b_index[i], entry2ij);
-			if (pTempV3 == 0) { pTempV3 = new Vec3; collector.push_back(pTempV3); }
+			if (pTempV3 == 0) {
+				pTempV3 = new Vec3; collector.push_back(pTempV3);
+			}
 			JR_veld[i][j] = pTempV3;
 
 			for (k = 0; k < 3; k++) {
@@ -126,8 +138,6 @@ int od_loopr::initialize(int keep) {
 	redundant_cons.clear();
 	return 1;
 }
-
-
 int od_loopv::initialize(int keep) {
 	if (keep) return 0;
 	clean();
@@ -236,7 +246,6 @@ int od_loopv::initialize(int keep) {
 	redundant_cons.clear();
 	return 1;
 }
-
 void od_loop::clean() {
 	int i, temp_int, j;
 	for (i = 0; i < (int)collector.size(); i++) delete collector[i];
@@ -261,11 +270,9 @@ void od_loop::clean() {
 	}
 	//}
 }
-
 od_loop::~od_loop() {
 	clean();
 }
-
 void od_loop::init() {
 	unsigned i, j;
 	for (i = 0; i < 2; i++) {
@@ -273,6 +280,26 @@ void od_loop::init() {
 			JR_disp[i][j]->init();
 		}
 	}
+}
+double* od_loop::element(int r0t1, int j, int ij, double v[3]) {
+	Vec3 *pV = 0;
+	od_object::JAC_TYPE __type = pSys->get_jac_type();
+		if (
+			__type == od_object::JAC_INIT_DISP ||
+			__type == od_object::JAC_DISP ||
+			__type == od_object::JAC_STATIC) {
+			pV = (r0t1 == 0)? JR_disp[ij][j]: JT_disp[ij][j];
+		}
+		else if (__type == od_object::JAC_VEL || __type == od_object::JAC_ACC ||
+			__type == od_object::JAC_DYNAMIC) {
+			pV = (r0t1 == 0) ? JR_vel[ij][j]: JT_vel[ij][j];
+		}
+		pV->to_double(v);
+		//if (pMref) pMref->vec_wrt_this(v);
+		if (ij == 1){
+			NEG(v);
+		}
+		return v;
 }
 
 double od_loop::element(int i, int j, int ij, int si2) {
@@ -283,12 +310,12 @@ double od_loop::element(int i, int j, int ij, int si2) {
 		if (
 			__type == od_object::JAC_INIT_DISP ||
 			__type == od_object::JAC_DISP ||
-			__type == od_object::JAC_STATIC ||
-			__type == od_object::JAC_DYNAMIC) {
+			__type == od_object::JAC_STATIC ) {
 			pV = JR_disp[ij][j];
 			//if (si2) pV= JR_veld[ij][j];
 		}
-		else if (__type == od_object::JAC_VEL || __type == od_object::JAC_ACC) {
+		else if (__type == od_object::JAC_VEL || __type == od_object::JAC_ACC ||
+			__type == od_object::JAC_DYNAMIC) {
 			pV = JR_vel[ij][j];
 		}
 		fltTemp += (pV->v)[i];
@@ -297,12 +324,12 @@ double od_loop::element(int i, int j, int ij, int si2) {
 		if (
 			__type == od_object::JAC_INIT_DISP ||
 			__type == od_object::JAC_DISP ||
-			__type == od_object::JAC_STATIC ||
-			__type == od_object::JAC_DYNAMIC) {
+			__type == od_object::JAC_STATIC ) {
 			pV = JT_disp[ij][j];
 			//if (si2) pV = JT_veld[ij][j];
 		}
-		else if (__type == od_object::JAC_VEL || __type == od_object::JAC_ACC) {
+		else if (__type == od_object::JAC_VEL || __type == od_object::JAC_ACC ||
+			__type == od_object::JAC_DYNAMIC) {
 			pV = JT_vel[ij][j];
 		}
 		fltTemp += (pV->v)[i - 3];
@@ -318,11 +345,28 @@ void od_loop::find_redundants() {
 	int total_leni = (int)entries2[0].size();
 	int total_lenj = (int)entries2[1].size();
 	int total_len = total_leni + total_lenj;
+	double v[6], *pd;
 	redundant_cons.clear();
 	temp_int = total_len * 6;
 	temp_mat = new double[temp_int];
 	fill(temp_mat, temp_mat + temp_int, 0.0);
 	for (j = 0; j < total_leni; j++) {
+		pd = v;
+		pd = element(0, j, 0, pd);
+		element(1, j, 0, pd + 3);
+		for (i = 0; i < 6; i++) {
+			temp_mat[i*total_len + j] = v[i];
+		}
+	}
+	for (j = 0; j < total_lenj; j++) {
+		pd = v;
+		pd = element(0, j, 1, pd);
+		element(1, j, 1, pd + 3);
+		for (i = 0; i < 6; i++) {
+			temp_mat[i*total_len + total_leni + j] = v[i];
+		}
+	}
+	/*for (j = 0; j < total_leni; j++) {
 		for (i = 0; i < 6; i++) {
 			temp_mat[i*total_len + j] = element(i, j, 0);
 		}
@@ -331,7 +375,7 @@ void od_loop::find_redundants() {
 		for (i = 0; i < 6; i++) {
 			temp_mat[i*total_len + total_leni + j] = element(i, j, 1);
 		}
-	}
+	}*/
 	zero_pivot(six, total_len, temp_mat, redundant_cons);
 	DELARY(temp_mat);
 }
@@ -339,6 +383,7 @@ void od_loop::find_redundants() {
 void od_loop::zero_pivot(int dim_i, int dim_j,
 	double* mat, vector<int>& pivots) {
 	int i, j, k;
+	double sign;
 	int row_max, col_max;
 	double temp_d, temp_d_inv;
 	int *permu_row = new int[dim_i];
@@ -347,6 +392,7 @@ void od_loop::zero_pivot(int dim_i, int dim_j,
 	for (i = 0; i < dim_j; i++) permu_col[i] = i;
 	for (i = 0; i < dim_i; i++) {
 		//find the biggest element
+		sign = 1.0;
 		temp_d = 0.0;
 		for (j = i; j < dim_i; j++) {
 			for (k = i; k < dim_j; k++) {
@@ -354,6 +400,12 @@ void od_loop::zero_pivot(int dim_i, int dim_j,
 					temp_d = fabs(mat[permu_row[j] * dim_j + permu_col[k]]);
 					row_max = j;
 					col_max = k;
+					if (mat[permu_row[j] * dim_j + permu_col[k]] > 0.0) {
+						sign = 1.0;
+					}
+					else {
+						sign = -1.0;
+					}
 				}
 			}
 		}
@@ -373,9 +425,10 @@ void od_loop::zero_pivot(int dim_i, int dim_j,
 			k = permu_col[i]; permu_col[i] = permu_col[col_max];
 			permu_col[col_max] = k;
 			//after element switch, zero the ith column
-			temp_d_inv = 1.0 / temp_d;
+			temp_d_inv = 1.0 / temp_d*sign;
 			//temp_d_inv = 1.0 / mat[permu_row[i] * dim_j + permu_col[i]];
-			for (j = i + 1; j < dim_i; j++) {
+			for (j = i+1; j < dim_i; j++) {
+				if (j == i) continue;
 				temp_d = mat[permu_row[j] * dim_j + permu_col[i]];
 				//if (fabs(temp_d) > PIVOT_TOLERANCE) {
 				temp_d *= temp_d_inv;
@@ -431,8 +484,10 @@ void od_loopv::evaluate_orientation(int rhs_only) {
 		temp_d[1] = Vi2 * Vj0;
 		//EQ3(temp_d1, temp_d);
 		ori_rhs = pMj->vec_wrt_ground(temp_d);
+		//if (pMref) pMref->vec_wrt_this(ori_rhs);
 		if (__type == od_object::JAC_DYNAMIC) {
 			pMi->get_omega(omega_rhs, pMj);
+			//if (pMref) pMref->vec_wrt_this(omega_rhs);
 		}
 		//if it is not for init_disp, 
 		//no need to evaluate partial derivatives
@@ -536,8 +591,10 @@ void od_loopr::evaluate_orientation(int rhs_only) {
 		temp_d[1] = Vi2 * Vj0;
 		//EQ3(temp_d1, temp_d);
 		ori_rhs = pMj->vec_wrt_ground(temp_d);
+		//if (pMref) pMref->vec_wrt_this(ori_rhs);
 		if (__type == od_object::JAC_DYNAMIC) {
 			pMi->get_omega(omega_rhs, pMj);
+			//if (pMref) pMref->vec_wrt_this(omega_rhs);
 		}
 		//if it is not for init_disp, 
 		//no need to evaluate partial derivatives
@@ -618,19 +675,23 @@ void od_loop::evaluate_position() {
 		__type == od_object::JAC_STATIC ||
 		__type == od_object::JAC_DYNAMIC) {
 		pos_rhs = pMi->get_position(pd, pMj);
+		//if (pMref) pMref->vec_wrt_this(pos_rhs);
 		if (pSys->get_jac_type() == od_object::JAC_DYNAMIC) {
 			pd1 = temp_d1;
 			pMi->get_velocity(pd1, pMj);
 			vel_rhs = pd1;
+			//if (pMref) pMref->vec_wrt_this(vel_rhs);
 		}
 	} else if (__type == od_object::JAC_VEL) {
 		pd1 = temp_d1;
 		pMi->get_velocity(pd1, pMj);
 		vel_rhs = pd1;
+		//if (pMref) pMref->vec_wrt_this(vel_rhs);
 	} else if (__type == od_object::JAC_ACC) {
 		pd1 = temp_d1;
 		pMi->get_acceleration(pd1, pMj);
 		acc_rhs = pd1;
+		//if (pMref) pMref->vec_wrt_this(acc_rhs);
 	}
 }
 
