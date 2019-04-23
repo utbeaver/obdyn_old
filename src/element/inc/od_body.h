@@ -53,7 +53,9 @@ public:
 	inline Mat33* get_J()  { return &_Ia; }
 	inline double* J_Wdot() { return Jw_dot; }
 	inline double* J_W() { return Jw; }
-	inline void J_v(double* pd, double* v) { mat_doubles(_Ia, v, pd); }
+	inline void J_v(double* pd, double* v) { 
+		mat_doubles(_Ia, v, pd);
+	}
 	void parJparq_v(double *pd, double *e, double *e1, int omega_dot = 0); //for partial
 	void v_x_parJparq_v(double *pd, double *e, double*);
 	void parWxJW_parq(double*, double*);

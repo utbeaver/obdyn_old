@@ -4,37 +4,40 @@ import matplotlib.pyplot as plt
 import time, sys, os
 sys.path.append(os.getcwd())
 d2r=np.pi/180.0
-d45=60*d2r
-c45=np.cos(d45)
-s45=np.sin(d45)
+d60=60*d2r
+c60=np.cos(d60)
+s60=np.sin(d60)
 
 from odsystem import *
 
 b=[]
 c=[]
 fs=[]
-for i in range(3):
+for i in range(4):
     b.append(OdBody(i, "part"+str(i)))
-for i in range(2):
+for i in range(3):
     c.append(OdJoint(i+1, "Js"+str(i)))
 cm0 = OdMarker(1, "cm0")
 b[0].add_cm_marker(cm0)
 gmar1=OdMarker(2, V3(), V3(45*d2r*0, 90*d2r*0, 0), "gndJ")
 b[0].add_marker(gmar1)
-cm1 = OdMarker(3, V3(c45, -s45, 0), V3(d45, 0, 0), "cm1")
+
+cm1 = OdMarker(3, V3(c60, -s60, 0), V3(d60, 0, 0), "cm1")
 b[1].add_cm_marker(cm1)
 #b1mar1=OdMarker(4, V3(0, 0, 0), V3(), "b1I") 
 b1mar1=OdMarker(4, gmar1, V3(0, 0, 0), V3(), "b1I") 
 b[1].add_global_marker(b1mar1)
 b1mar23=OdMarker(4, V3(1, 0, 0), V3(), "b2_3") 
 b[1].add_marker(b1mar23)
+b1mar24=OdMarker(4, V3(1, 0, 0), V3(), "b2_4") 
+b[1].add_marker(b1mar24)
 
 c[0].free()
 #c[0].spherical()
 #c[0].revolute()
 c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
-scale=100
+scale=0
 cscale=0.0
 spdp=OdJointSPDP(10, "spdpt")
 spdp.setJoint(c[0], 0)
@@ -60,7 +63,7 @@ spdp2.set_distance(0)
 spdp2.set_force(0)
 fs.append(spdp2)
 
-cm2 = OdMarker(3, V3(c45*3, -s45*3, 0), V3(d45, 0, 0), "cm2")
+cm2 = OdMarker(3, V3(c60*3, -s60*3, 0), V3(d60, 0, 0), "cm2")
 b[2].add_cm_marker(cm2)
 b2mar1=OdMarker(4, V3(1, 0, 0), V3(), "b2I") 
 b[2].add_marker(b2mar1)
@@ -68,6 +71,16 @@ b[2].add_marker(b2mar1)
 c[1].set_imarker(b2mar1)
 c[1].set_jmarker(b1mar23)
 c[1].txyrz()
+
+cm3 = OdMarker(5, V3(c60*3, -s60*3, 0), V3(d60, 0, 0), "cm3")
+b[3].add_cm_marker(cm3)
+b3mar1=OdMarker(6, V3(1, 0, 0), V3(), "b3I") 
+b[3].add_marker(b3mar1)
+
+c[2].set_imarker(b3mar1)
+c[2].set_jmarker(b1mar24)
+c[2].txyrz()
+
 spdp3=OdJointSPDP(13, "spdpt3")
 spdp3.setJoint(c[1], 0)
 spdp3.set_stiffness(3.14*3.14*scale)
@@ -128,7 +141,6 @@ for i in range(150):
             else:    
                 data.append(P.get(i))
     datas.append(data)        
-sys_.numdif()    
 end=time.time()
 dt= end-start
 datas=np.array(datas)    

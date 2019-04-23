@@ -107,10 +107,8 @@ void od_single_force::init_single_force() {
 	i = i_marker->get_id();
 	if (j_marker) j = j_marker->get_id();
 	else j = 0;
-	//DT = new od_measure(pSys, od_measure::DT, i, j);
-	//DT->init();
+	
 	columns_fdirection_size = DT->get_partial_size();
-	//columns_fdirection.resize(columns_fdirection_size);
 	partialDirection = new od_colVec[columns_fdirection_size];
 	for (i = 0; i < columns_fdirection_size; i++) {
 		col = DT->get_partial_col(0, i);

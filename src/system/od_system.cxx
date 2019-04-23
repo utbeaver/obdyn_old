@@ -3182,6 +3182,7 @@ void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
 	if (type) {
 		QQ_dot = new double[temp_int]; for (i = 0; i < temp_int; i++) QQ_dot[i] = 0.0;
 	}
+	od_joint* pC_;
 	od_joint *pCi = 0;
 	od_joint *pCk = (od_joint*)(C[ith]);// (od_joint*)pCk_;
 	start = pCk->get_index();
@@ -3236,10 +3237,16 @@ void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
 				//ej x (ek x r)
 				if (pCk == pCi) {
 					ZERO3(vecTemp);
-					for (int ii = head; ii <= start; ii++) {
+					prev_id = start;
+					do {
+						pC_ = (od_joint*)C[prev_id]; prev_id = pC_->get_prev_idx();
+						pd = pC_->getQ(type, od_object::ROT_DOF, v1a2); U_ADD3(vecTemp, pd);
+					} while (prev_id >= head);
+					/*for (int ii = head; ii <= start; ii++) {
 						pd = ((od_joint*)C[ii])->getQ(type, od_object::ROT_DOF, v1a2);
 						U_ADD3(vecTemp, pd);
-					}
+					}*/
+
 				}
 				else {
 					pd = pCi->getQ(type, od_object::ROT_DOF, v1a2);
