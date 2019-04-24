@@ -40,6 +40,8 @@ extern "C" void multiplyParMatT_Traq_Vec_I(Vec3* const Input, od_constraint** C,
 extern "C" void multiplyParMatT_Traq_Vec_II(Vec3* const Input, od_constraint** C, int const ith, int const dofs, int);
 extern "C" void multiplyParMatRotVec_q(int const num_rows, od_constraint** C, int ith,
 	int const type, int const v1a2);// , int const keep);
+extern "C" void multiplyParMatRotVec_qdot(int const num_rows, od_constraint** C, int ith,
+	int const type, int const v1a2);// , int const keep);
 extern "C" void multiplyParMatTraVec_q_I(int const num_rows, od_constraint** C, /*od_constraint* const pCj*/int ith,
 	int const type, int const v1a2);// , int const keep);
 extern "C" void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C, /*od_constraint* const pCj*/int ith,

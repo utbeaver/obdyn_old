@@ -33,6 +33,7 @@ b1mar23=OdMarker(4, V3(1, 0, 0), V3(), "b2_3")
 b[1].add_marker(b1mar23)
 
 c[0].free()
+#c[0].spherical()
 c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
 
@@ -90,4 +91,5 @@ name_=os.path.splitext(os.path.basename(__file__))[0]
 
 import postutils
 postutils.ppt(datas, types, dt, hht, name_, sys.argv)
+sys_.numdif()    
 sys.exit(0)

@@ -34,7 +34,7 @@ c[0].free()
 #c[0].revolute()
 c[0].set_imarker(b1mar1)
 c[0].set_jmarker(gmar1)
-scale=100
+scale=0
 cscale=0.0
 spdp=OdJointSPDP(10, "spdpt")
 spdp.setJoint(c[0], 0)

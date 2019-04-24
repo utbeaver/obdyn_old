@@ -192,7 +192,7 @@ template<class T> int compare_Jac(od_jacobian<T>& Jac, od_jacobian<T>& Jac1) {
 			}
 		}
 	}
-	return  diff;
+	return  1;
 }
 
 template<class T, class Vec>

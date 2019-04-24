@@ -1157,6 +1157,7 @@ void od_equation_dynamic::numDif() {
 	int i, j;
 	double delta_ = 1.0e-6;
 	double **_M, **_Md, **_Mv, *lrhs, *rrhs;
+	this->evalRhs();
 	this->evalJac();
 	_M = new double*[tree_ndofs]; _Md = new double*[tree_ndofs]; _Mv = new double*[tree_ndofs];
 	for (i = 0; i < tree_ndofs; i++) {
@@ -1215,11 +1216,11 @@ void od_equation_dynamic::numDif() {
 		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << M_d[i][j]; } f_ << endl;
 	}
 	f_ << "]" << endl;
-	f_ << "Md_diff" << "=[" << endl;
+	/*f_ << "Md_diff" << "=[" << endl;
 	for (i = 0; i < tree_ndofs; i++) {
 		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << M_d[i][j]- _Md[i][j]; } f_ << endl;
 	}
-	f_ << "]" << endl;
+	f_ << "]" << endl;*/
 	f_ << "Mv_num" << "=[" << endl;
 	for (i = 0; i < tree_ndofs; i++) {
 		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << _Mv[i][j]; } f_ << endl;

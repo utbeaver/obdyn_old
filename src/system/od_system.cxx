@@ -313,6 +313,18 @@ void od_systemMechanism::updatePartials(int pos_only) {
 	//parOmega_dot/par_q_dot
 	{
 		//omega_dot = J q_ddot + JR_dot *q_dot
+		/*parOmega_dot_parq_dot.init();
+		for (i = 0; i < nbody; i++) {
+			pC = (od_joint*)(*(constraint_list_ + i));
+			startindex = pC->get_start_index();
+			num_dof = pC->dofs();
+			for (k = 0; k < num_dof; k++) {
+				tgt = parOmega_dot_parq_dot.column(startindex + k, &idx, &_len);
+				pC->setPartialVec3(k, tgt);
+			}
+			//multiplyParMatRotVec_q(nbody, constraint_list_, i, 0, 2);// , 0);
+			multiplyParMatRotVec_q(nbody, constraint_list_, i, 1, 1);// , 1);
+		}*/
 		parOmega_dot_parq_dot = JR_dot;
 		parOmega_dot_parq_dot += parOmega_parq; //QUESTION
 	}
@@ -2164,8 +2176,8 @@ void od_systemMechanism::numDif() {
 	Vec3 tli, tri, fli, fri;
 	Vec3 tlj, trj, flj, frj;
 	set_states();
-	Update(1);
-	updatePartials();
+//	Update(1);
+//	updatePartials();
 	ofstream f_, *pf;
 	f_.open("Jac.txt");
 	pf = &f_;
@@ -2279,7 +2291,9 @@ void od_systemMechanism::numDif() {
 	}
 	DELARY(lOmega); DELARY(lOmegaDot) DELARY(lVel) DELARY(lAcc);// DELARY(wVec);
 	DELARY(rOmega) DELARY(rOmegaDot) DELARY(rVel) DELARY(rAcc);// DELARY(wVec)
-
+	set_states();
+	Update(1);
+	updatePartials();
 	//To files
 	string name_;
 	if (compare_Jac(parOmega_parq_, parOmega_parq)) {
@@ -3163,8 +3177,7 @@ void multiplyParMatTraVec_q_I(int const num_rows, od_constraint** C, /*od_constr
 	}
 }
 void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
-	int ith, int const type,
-	int const v1a2)//, int const keep)
+	int ith, int const type, int const v1a2)//, int const keep)
 {
 	//This function is for ej x par_Ri/par_qk
 	//pCk only affects the joints starting from k
@@ -3301,7 +3314,8 @@ void multiplyParMatTraVec_q_II(int const num_rows, od_constraint** C,
 		}
 	}
 	DELARY(QQ); DELARY(QQ_dot);
-}
+}	
+
 void multiplyParMatRotVec_q(int const num_rows, od_constraint** C,
 	int ith, int const type, int const v1a2)//, int const keep)
 {
@@ -3315,6 +3329,108 @@ void multiplyParMatRotVec_q(int const num_rows, od_constraint** C,
 	double vecTemp1[3];
 	Vec3  *vecRef;
 	pQQ_dot = zk_dot =  pd_dot = pdk_dot= 0;
+	//Vec3* Q=0;//(num_rows); //Q is for Sigma ej
+	//Vec3* Q_dot=0;//(num_rows); //Q_dot is for Sigma dot_ej
+	//od_joint* pCj = (od_joint*)pCj_;
+	od_joint* pCj = (od_joint*)C[ith];
+	num_tra = pCj->num_tra();
+	num_rot = pCj->num_rot();
+	temp_int = 3 * num_rows;
+	double** QQ_dot = 0;
+	double** QQ = new double*[num_rot];
+	for (i = 0; i < num_rot; i++) {
+		QQ[i] = new double[temp_int];
+		fill(QQ[i], QQ[i] + temp_int, 0.0);
+	}
+	if (type) {
+		QQ_dot = new double*[num_rot];
+		for (i = 0; i < num_rot; i++) {
+			QQ_dot[i] = new double[temp_int];
+			fill(QQ_dot[i], QQ_dot[i] + temp_int, 0.0);
+		}
+	}
+	od_joint* pCi = 0;
+	head = pCj->get_index();
+	tail = pCj->get_tail();
+	zk = pCj->get_zi_global();
+	if (type == 1) zk_dot = pCj->get_cross_zi();
+	for (j = 0; j < num_rot; j++) {
+		pdk = zk + (num_tra + j) * 3;
+		if (type == 1) pdk_dot = zk_dot + (num_tra + j) * 3;
+		for (i = 0; i < 3 * num_rows; i++) { QQ[j][i] = 0.0; if (type) QQ_dot[j][i] = 0.0; }
+		for (i = head; i <= tail; i++) {
+			pCi = (od_joint*)C[i];
+			prev_id = pCi->get_prev_idx();
+			if (prev_id < ith && i > ith) continue;
+			pQQ = QQ[j] + 3 * i; if (type) pQQ_dot = QQ_dot[j] + 3 * i;
+			if (pCi == pCj) samejnt = 1;
+			else samejnt = 0;
+			if (prev_id != -1) {
+				pd = QQ[j] + 3 * prev_id;
+				EQ3(pQQ, pd);
+				if (type) {
+					pd = QQ_dot[j] + 3 * prev_id;
+					EQ3(pQQ_dot, pd);
+				}
+			}
+			numRot = pCi->num_rot();
+			numTra = pCi->num_tra();
+			if (numRot) {
+				int start_j = 0;
+				if (samejnt) {
+					start_j = j + 1;
+					ZERO3(vecTemp);
+					ZERO3(vecTemp1);
+					pd = pCi->getQ(0, od_object::ROT_DOF, v1a2, start_j, vecTemp);
+					if (type)
+						pd_dot = pCi->getQ(type, od_object::ROT_DOF, v1a2, start_j, vecTemp1);
+				}
+				else {
+					pd = pCi->getQ(0, od_object::ROT_DOF, v1a2);
+					if (type)
+						pd_dot = pCi->getQ(type, od_object::ROT_DOF, v1a2);
+				}
+				vecRef = pCj->getPartialVec3(i, j + num_tra);
+				pout = vecRef->v;
+				if (type == 0) {
+					U_ADD3(pQQ, pd);
+					CROSS_X(pdk, pQQ, vecTemp1);
+					U_ADD3(pout, vecTemp1);
+				}
+				else {
+					U_ADD3(pQQ, pd);
+					U_ADD3(pQQ_dot, pd_dot);
+					CROSS_X(pdk_dot, pQQ, vecTemp1);
+					U_ADD3(pout, vecTemp1);
+					CROSS_X(pdk, pQQ_dot, vecTemp1);
+					U_ADD3(pout, vecTemp1);
+				}
+			}
+		}
+	}
+
+	if (QQ) {
+		for (i = 0; i < num_rot; i++) DELARY(QQ[i]);
+		DELARY(QQ);
+	}
+	if (QQ_dot) {
+		for (i = 0; i < num_rot; i++) DELARY(QQ_dot[i]);
+		DELARY(QQ_dot);
+	}
+}
+void multiplyParMatRotVec_qdot(int const num_rows, od_constraint** C,
+	int ith, int const type, int const v1a2)//, int const keep)
+{
+	//type: 0 for parJR/parq, 1 for parJR_dot/parq 
+	int i, j, temp_int, prev_id, num_rot, num_tra, head, tail;
+	int numRot, numTra, samejnt = 0;
+	double *zk, *zk_dot;
+	double* pdk, *pQQ, *pQQ_dot, *pd, *pd_dot, *pout;
+	double* pdk_dot;
+	double  vecTemp[3];
+	double vecTemp1[3];
+	Vec3  *vecRef;
+	pQQ_dot = zk_dot = pd_dot = pdk_dot = 0;
 	//Vec3* Q=0;//(num_rows); //Q is for Sigma ej
 	//Vec3* Q_dot=0;//(num_rows); //Q_dot is for Sigma dot_ej
 	//od_joint* pCj = (od_joint*)pCj_;

@@ -370,13 +370,15 @@ int od_joint::update(od_systemGeneric *psys) {
 	double *pcz = cross_zi;
 	for (i = 0; i < num_tra_joints; i++) {
 		tra_joints[i]->update(psys);
-		//pJ = (joint_primitive*)tra_joints[i];
+	}
+	for (i = 0; i < num_tra_joints; i++) {
 		pd = tra_joints[i]->get_zi(); EQ3(pzi, pd); pzi += 3;
 		pd = tra_joints[i]->get_cross_zi(); EQ3(pcz, pd); pcz += 3;
 	}
 	for (i = 0; i < num_rot_joints; i++) {
 		rot_joints[i]->update(psys);
-		//pJ = (joint_primitive*)rot_joints[i];
+	}
+	for (i = 0; i < num_rot_joints; i++) {
 		pd = rot_joints[i]->get_zi(); EQ3(pzi, pd); pzi += 3;
 		pd = rot_joints[i]->get_cross_zi(); EQ3(pcz, pd); pcz += 3;
 	}
