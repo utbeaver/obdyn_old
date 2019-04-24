@@ -359,16 +359,7 @@ public:
 	inline  double get_P(int idx) const { return temp_pos[idx]; }
 	inline double get_V(int idx) const { return temp_vel[idx]; }
 	inline double get_A(int idx) const { return temp_acc[idx]; }
-	/*virtual double get_temp_pva(int idx, od_object::DVA_TYPE state_type = od_object::DISP) {
-		double temp = 0.0;
-		if (state_type == od_object::DISP)
-			temp = temp_pos[idx];
-		else if (state_type == od_object::VEL)
-			temp = temp_vel[idx];
-		else
-			temp = temp_acc[idx];
-		return temp;
-	}*/
+	
 	virtual double* pva(double *value, int p0v1a2 = 0) {
 		int i;
 		int tempInt;

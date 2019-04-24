@@ -7,6 +7,7 @@
 
 #define SMALL_VALUE 1.0e-12
 #define SMALL_VALUE1 1.0e-10
+#define VAL(a) ((fabs(a)>SMALL_VALUE1)?(a):0.0)
 #define EQ3(a,b)  (a)[0]=(b)[0];(a)[1]=(b)[1];(a)[2]=(b)[2];
 #define U_ADD3(a, b) (a)[0]+=(b)[0];(a)[1]+=(b)[1];(a)[2]+=(b)[2]; 
 #define U_SUB3(a, b) (a)[0]-=(b)[0];(a)[1]-=(b)[1];(a)[2]-=(b)[2]; 

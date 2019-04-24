@@ -1202,7 +1202,7 @@ void od_equation_dynamic::numDif() {
 	f_ << "]" << endl;
 	f_ << "M" << "=[" << endl;
 	for (i = 0; i < tree_ndofs; i++) {
-		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << M_a[i][j]; } f_ << endl;
+		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << VAL(M_a[i][j]); } f_ << endl;
 	}
 	f_ << "]" << endl;
 
@@ -1213,7 +1213,7 @@ void od_equation_dynamic::numDif() {
 	f_ << "]" << endl;
 	f_ << "Md" << "=[" << endl;
 	for (i = 0; i < tree_ndofs; i++) {
-		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << M_d[i][j]; } f_ << endl;
+		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << VAL(M_d[i][j]); } f_ << endl;
 	}
 	f_ << "]" << endl;
 	/*f_ << "Md_diff" << "=[" << endl;
@@ -1229,7 +1229,7 @@ void od_equation_dynamic::numDif() {
 
 	f_ << "Mv" << "=[" << endl;
 	for (i = 0; i < tree_ndofs; i++) {
-		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << M_v[i][j]; } f_ << endl;
+		for (j = 0; j < tree_ndofs; j++) { f_ << setw(9) << "   " << VAL(M_v[i][j]); } f_ << endl;
 	}
 	f_ << "]" << endl;
 	f_.close();

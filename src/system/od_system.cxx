@@ -2170,11 +2170,12 @@ void od_system::parSi2_parq(double** pM) {
 }
 
 void od_systemMechanism::numDif() {
-	int i, j, idx, jdx;
+	int i, j, idx, jdx, ii;
 	double delta =  1.0e-2;
 	double invDelta = .5 / delta;
 	Vec3 tli, tri, fli, fri;
 	Vec3 tlj, trj, flj, frj;
+	std::map<int, Vec3*> Fi, Fj, Ti, Tj;
 	set_states();
 //	Update(1);
 //	updatePartials();
@@ -2222,26 +2223,39 @@ void od_systemMechanism::numDif() {
 	for (j = 0; j < tree_ndofs; j++) {
 		states[j] += delta; set_states();
 		Update(1);  getVel(lVel); getVelDot(lAcc); getOmega(lOmega); getOmegaDot(lOmegaDot);
-		if (pF) {
-			for (int ii = 0; ii < num_force(); ii++) 
+        Fi.clear(); Fj.clear(); Ti.clear(); Tj.clear();
+		if (num_force()) {
+			for (ii = 0; ii < num_force(); ii++) 
 				force_list_[ii]->evaluate(0);
-			tli = pF->itorque(); tlj = pF->jtorque(); fli = pF->iforce(); flj = pF->jforce();
-			idx = pF->i_body_index(); jdx = pF->j_body_index();
+                pF=force_list_[ii];
+			    tli = pF->itorque(); tlj = pF->jtorque(); fli = pF->iforce(); flj = pF->jforce();
+                Fi[ii]=&fli;
+                Fj[ii]=&flj;
+                Ti[ii]=&tli;
+                Tj[ii]=&tlj;
 		}
 		states[j] -= 2 * delta; set_states();
 		Update(1);  getVel(rVel); getVelDot(rAcc); getOmega(rOmega); getOmegaDot(rOmegaDot);
-		if (pF) {
-			for (int ii = 0; ii < num_force(); ii++) 
+		if (num_force()) {
+			for (ii = 0; ii < num_force(); ii++) 
 				force_list_[ii]->evaluate(0);
-			tri = pF->itorque(); trj = pF->jtorque(); fri = pF->iforce(); frj = pF->jforce();
-			tli -= tri; tli.multiplied_by(invDelta); tlj -= trj; tlj.multiplied_by(invDelta); 
-			fli -= fri; fli.multiplied_by(invDelta); flj -= frj; flj.multiplied_by(invDelta);
-			if (idx >= 0) {
-				dTdq.fromd(idx, j, tli.v); dFdq.fromd(idx, j, fli.v);
-			}
-			if (jdx >= 0) {
-				dTdq.fromd(jdx, j, tlj.v); dFdq.fromd(jdx, j, flj.v);
-			}
+                pF=force_list_[ii];
+			    tri = pF->itorque(); trj = pF->jtorque(); fri = pF->iforce(); frj = pF->jforce();
+			    //tli -= tri; tli.multiplied_by(invDelta); tlj -= trj; tlj.multiplied_by(invDelta); 
+			    tri -= *Ti[ii]; tri.multiplied_by(-invDelta); 
+               // tlj -= trj; tlj.multiplied_by(invDelta); 
+			    trj -= *Tj[ii]; trj.multiplied_by(-invDelta); 
+			    //fli -= fri; fli.multiplied_by(invDelta); 
+                fri -= *Fi[ii]; fri.multiplied_by(-invDelta); 
+                //flj -= frj; flj.multiplied_by(invDelta);
+                frj -= *Fj[ii]; frj.multiplied_by(-invDelta); 
+			    idx = pF->i_body_index(); jdx = pF->j_body_index();
+			    if (idx >= 0) {
+			    	dTdq.fromd(idx, j, tli.v); dFdq.fromd(idx, j, fli.v);
+			    }
+			    if (jdx >= 0) {
+				    dTdq.fromd(jdx, j, tlj.v); dFdq.fromd(jdx, j, flj.v);
+			    }
 		}
 		states[j] += delta;
 		for (i = 0; i < num_body(); i++) {
@@ -2256,27 +2270,45 @@ void od_systemMechanism::numDif() {
 		}
 		dstates[j] += delta; set_states();
 		Update();  getVel(lVel); getVelDot(lAcc); getOmega(lOmega); getOmegaDot(lOmegaDot);
-		if (pF) {
+        Fi.clear(); Fj.clear(); Ti.clear(); Tj.clear();
+		if (num_force()) {
 			for (int ii = 0; ii < num_force(); ii++)
 				force_list_[ii]->evaluate(0);
-			tli = pF->itorque(); tlj = pF->jtorque(); fli = pF->iforce(); flj = pF->jforce();
-			idx = pF->i_body_index(); jdx = pF->j_body_index();
+			//tli = pF->itorque(); tlj = pF->jtorque(); fli = pF->iforce(); flj = pF->jforce();
+			//idx = pF->i_body_index(); jdx = pF->j_body_index();
+                pF=force_list_[ii];
+			    tli = pF->itorque(); tlj = pF->jtorque(); fli = pF->iforce(); flj = pF->jforce();
+                Fi[ii]=&fli;
+                Fj[ii]=&flj;
+                Ti[ii]=&tli;
+                Tj[ii]=&tlj;
 		}
 		dstates[j] -= 2 * delta; set_states();
 		Update();  getVel(rVel); getVelDot(rAcc); getOmega(rOmega); getOmegaDot(rOmegaDot);
 		dstates[j] += delta;
-		if (pF) {
+		if (num_force()) {
 			for (int ii = 0; ii < num_force(); ii++)
 				force_list_[ii]->evaluate(0);
-			tri = pF->itorque(); trj = pF->jtorque(); fri = pF->iforce(); frj = pF->jforce();
-			tli -= tri; tli.multiplied_by(invDelta); tlj -= trj; tlj.multiplied_by(invDelta);
-			fli -= fri; fli.multiplied_by(invDelta); flj -= frj; flj.multiplied_by(invDelta);
-			if (idx >= 0) {
-				dTdqt.fromd(idx, j, tli.v); dFdqt.fromd(idx, j, fli.v);
-			}
-			if (jdx >= 0) {
-				dTdqt.fromd(jdx, j, tlj.v); dFdqt.fromd(jdx, j, flj.v);
-			}
+                pF=force_list_[ii];
+			    tri = pF->itorque(); trj = pF->jtorque(); fri = pF->iforce(); frj = pF->jforce();
+			    //tli -= tri; tli.multiplied_by(invDelta); tlj -= trj; tlj.multiplied_by(invDelta); 
+			    tri -= *Ti[ii]; tri.multiplied_by(-invDelta); 
+               // tlj -= trj; tlj.multiplied_by(invDelta); 
+			    trj -= *Tj[ii]; trj.multiplied_by(-invDelta); 
+			    //fli -= fri; fli.multiplied_by(invDelta); 
+                fri -= *Fi[ii]; fri.multiplied_by(-invDelta); 
+                //flj -= frj; flj.multiplied_by(invDelta);
+                frj -= *Fj[ii]; frj.multiplied_by(-invDelta); 
+			//tri = pF->itorque(); trj = pF->jtorque(); fri = pF->iforce(); frj = pF->jforce();
+			//tli -= tri; tli.multiplied_by(invDelta); tlj -= trj; tlj.multiplied_by(invDelta);
+			//fli -= fri; fli.multiplied_by(invDelta); flj -= frj; flj.multiplied_by(invDelta);
+			    idx = pF->i_body_index(); jdx = pF->j_body_index();
+			    if (idx >= 0) {
+			    	dTdqt.fromd(idx, j, tli.v); dFdqt.fromd(idx, j, fli.v);
+			    }
+			    if (jdx >= 0) {
+			    	dTdqt.fromd(jdx, j, tlj.v); dFdqt.fromd(jdx, j, flj.v);
+			    }
 		}
 		for (i = 0; i < num_body(); i++) {
 			lVel[i] -= rVel[i]; lVel[i].multiplied_by(invDelta);
