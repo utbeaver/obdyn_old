@@ -33,17 +33,18 @@ os.chdir(wb)
 cwd=os.getcwd()
 #print "You are in %s"%cwd
 
+
 #execfile(os.path.join(testdir, "governor.py"))
 #execfile(os.path.join(testdir, "two_link.py"))
 #execfile(os.path.join(testdir, "parallel4barsphespdp.py"))
 #execfile(os.path.join(testdir, "parallel4barspdp.py"))
 #execfile(os.path.join(testdir, "parallel4bar.py"))
-#execfile(os.path.join(testdir, "sphonly.py"))
-#execfile(os.path.join(testdir, "spht2r1.py"))
-#execfile(os.path.join(testdir, "sph_rot.py"))
-#execfile(os.path.join(testdir, "sph_rot_gmarker.py"))
+#execfile(os.path.join(testdir, "sphonly.py")) 
+#execfile(os.path.join(testdir, "spht2r1.py")) 
+#execfile(os.path.join(testdir, "sph_rot.py")) ##
+execfile(os.path.join(testdir, "sph_rot_gmarker.py"))
 #execfile(os.path.join(testdir, "trat2r1.py"))
 #execfile(os.path.join(testdir, "t2r1.py"))
-execfile(os.path.join(testdir, "free_t2r1_2.py"))
+#execfile(os.path.join(testdir, "free_t2r1_2.py"))
 #execfile(os.path.join(testdir, "freet2r1.py"))
 #execfile(os.path.join(testdir, "freejnt.py"))

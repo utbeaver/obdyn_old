@@ -42,13 +42,13 @@ c[0].set_expr("3*sin(time*20*pi)")
 
 cm2 = OdMarker(20, V3(0, 0.5, 0), V3(0, r90, 0), "cm2")
 b[2].add_cm_marker(cm2)
-
+scale=1
 c[1].set_imarker(cm2)
 c[1].set_jmarker(b1_top)
 c[1].translational()
 jforce=OdJointSPDP(25, "spring")
 jforce.setJoint(c[1])
-jforce.set_stiffness(1000000)
+jforce.set_stiffness(1000000*scale)
 jforce.set_damping(200)
 jforce.set_distance(-0.5)
 fs.append(jforce)
@@ -112,7 +112,7 @@ for i in b:
 for i in c:
     sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)
-hht=0    
+hht=1    
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1

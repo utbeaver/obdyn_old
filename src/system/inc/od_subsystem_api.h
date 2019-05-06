@@ -15,11 +15,11 @@ class OdJointForce;
 class OdMarker;
 
 class od_systemGeneric;
-class od_systemTrack2D;
+class od_systemLocal;
 
 class LINKELEMENTSDLL odSystemTrack2D {
 private:
-  od_systemTrack2D *pS;
+	od_systemLocal *pS;
   char _name[80];
   int Id;
 public:
@@ -29,7 +29,7 @@ public:
   void add_body(OdBody* pB);
   void add_constraint(OdJoint* pJ);// {}
   void add_force(OdForce *pF);// {}
-  od_systemTrack2D* core(){return pS;}
+  od_systemLocal* core(){return pS;}
 };
 
 #endif

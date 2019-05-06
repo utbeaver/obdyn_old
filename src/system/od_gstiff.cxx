@@ -352,10 +352,16 @@ int od_gstiff::correct() {
 			rhsConverged = 0;
 		}
 		double s = pEqu->startRecord();
-		if (!modifiedLU) {
-			errorCode = pEqu->solve(tinu);
-		} else {
-			pEqu->solveBDF(tinu);
+		if (!modifiedLU) 
+			 errorCode = pEqu->solve(tinu);
+		else 
+			errorCode=pEqu->solveBDF(tinu);
+		if (1) {
+				double *x = new double[numVar];
+				for (int i = 0; i < numVar; i++) {
+					x[i] = pRhs[i] - pprhs[i];
+				}
+				delete[] x;
 		}
 		pEqu->stopRecord(s, 2);
 		if (errorCode) {

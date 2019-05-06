@@ -246,18 +246,18 @@ public:
 	void setI(double*);
 };
 
-class  vector_int {
+/*class  vector_int {
 private:
 	int *vals;
 	int size1;
 public:
 	vector_int() { vals = 0; size1 = 0; }
 	~vector_int() {
-		DELARY(vals)
+		DELARY(vals);
 	}
 	inline void resize(int s) {
 		if (s > size1) {
-			DELARY(vals)
+			DELARY(vals);
 				vals = new int[s];
 		}
 		size1 = s;
@@ -268,7 +268,7 @@ public:
 	inline int size() {
 		return size1;
 	}
-};
+};*/
 
 
 #endif

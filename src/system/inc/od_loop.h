@@ -10,6 +10,8 @@ class od_systemMechanism;
 class od_systemGeneric;
 
 class od_loop : public od_object {
+private:
+	double* element(int r0t1, int j, int, double*);
 protected:
 	//int low_bound[2], up_bound[2];
 	vector<int> entries1[2];
@@ -17,12 +19,12 @@ protected:
 
 	vector<Vec3*> JR_disp[2];
 	vector<Vec3*> JT_disp[2];
-
 	vector<Vec3*> JR_vel[2];
 	vector<Vec3*> JT_vel[2];
 
 	vector<Vec3*> JR_veld[2];
 	vector<Vec3*> JT_veld[2];
+
 
 	vector<Vec3*> collector;
 	Vec3 ori_rhs, vel_rhs, acc_rhs;
@@ -41,7 +43,7 @@ protected:
 	void zero_pivot(int dim_i, int dim_j,
 		double* mat, vector<int>& pivots);
 	//the init function is used in INIT_DISP mode.
-	int nz_start_index, nz_end_index;
+	//int nz_start_index, nz_end_index;
 	int num_NZ;
 	int *row_index;
 	int *col_index;
@@ -49,25 +51,24 @@ protected:
 	double *valuesV;
 	int redundant[6], redundantOld[6];
 	void init();
-	virtual void evaluate_orientation(int rhs_only = 1)=0;
+	virtual void evaluate_orientation(int rhs_only = 1);
 	void evaluate_position();
 	Vec3 vecTemp;
 	double temp_rhs[3];
 	double element(int i, int j, int ij = 0, int si2 = 0);
-	double* element(int r0t1, int j, int, double*);
 	void clean();
 	void find_redundants();
-	od_marker *pMref;
+	//od_marker *pMref;
 public:
 	friend class od_systemGeneric;
 	od_loop(od_constraint* pC, od_systemGeneric*);
-	~od_loop();
-	virtual int initialize(int = 0)=0;
+	~od_loop() {}
+	virtual int initialize(int = 0) = 0;
 	inline int num_nonzero() const { return num_NZ; }
 	inline int get_i_index() const { return Fixed->i_body_index(); }
 	inline int get_j_index() const { return Fixed->j_body_index(); }
 	inline int get_num_entries(int i) const { return (int)entries2[i].size(); }
-	virtual int checkRedundancy()=0;
+	virtual int checkRedundancy() = 0;
 	inline int num_of_redundant_constraints() const { return (int)redundant_cons.size(); }
 	inline double jac(int i) const { return values[i]; }
 	inline double jacV(int i) const { return valuesV[i]; }
@@ -78,7 +79,7 @@ public:
 	inline int row(int i) const { return row_index[i]; }
 	inline int col(int i) const { return col_index[i]; }
 	void evaluate(int rhs_only = 0);
-	inline double rhs(int i)  const { 
+	inline double rhs(int i)  const {
 		return (i < 3) ? ori_rhs.v[i] : pos_rhs.v[i - 3];
 	}
 	inline double velRhs(int i) const { return (i < 3) ? omega_rhs.v[i] : vel_rhs.v[i - 3]; }
@@ -97,7 +98,7 @@ public:
 		_moment[1] = _moment[0]; _moment[1].negate();
 		return lamb + 6;
 	}
-	void set_temp_pva(double *p_, double *v=0, double *a = 0) {
+	void set_temp_pva(double *p_, double *v = 0, double *a = 0) {
 		lambda = p_;
 		lambda_si2 = v;
 	}
@@ -118,20 +119,31 @@ public:
 };
 class od_loopr : public od_loop {
 protected:
-public:
-	od_loopr(od_constraint* pC, od_systemGeneric* pS):od_loop(pC, pS) {}
-	virtual int initialize(int = 0);	
-	virtual void evaluate_orientation(int rhs_only = 1);
-	virtual int checkRedundancy();
 
+public:
+	od_loopr(od_constraint* pC, od_systemGeneric* pS) :od_loop(pC, pS) {}
+	~od_loopr() { clean(); }
+	virtual int initialize(int = 0);
+	void evaluate_orientation(int rhs_only = 1) {
+		od_loop::evaluate_orientation(rhs_only);
+	}
+	virtual int checkRedundancy();
 };
 class od_loopv : public od_loop {
 public:
-	od_loopv(od_constraint* pC, od_systemGeneric* pS, od_systemGeneric* pP):od_loop(pC, pS) {
+	od_loopv(od_constraint* pC, od_systemGeneric* pS, od_systemGeneric* pP) :od_loop(pC, pS) {
 		pParent = pP;
 	}
 	virtual int initialize(int = 0);
-	virtual void evaluate_orientation(int rhs_only = 1);
-	virtual int checkRedundancy() { return 0; }
+	void evaluate_orientation(int rhs_only = 1) {
+		od_loop::evaluate_orientation(1);
+	}
+	virtual int checkRedundancy() {
+		redundant_cons.resize(0);
+		fill(redundant, redundant + 6, 0);
+		return 0;
+	}
+	int getParJnum() {return (int)entries2[1].size();}
+	Vec3* getParJ(int i, int r0t1) { return (r0t1 == 0) ? JR_disp[1][i] : JT_disp[1][i]; }
 };
 #endif

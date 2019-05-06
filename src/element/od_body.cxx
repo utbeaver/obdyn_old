@@ -121,6 +121,7 @@ int od_body::update(od_systemGeneric *psys, int ini) {
 		pd = cm->get_acceleration();
 		for (int i = 0; i < 3; i++) mx_dot[i] = _mass * pd[i]; 
 	}
+	evaluated();
 	return 1;
 }
 

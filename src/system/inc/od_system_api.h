@@ -12,7 +12,6 @@ class OdForce;
 class OdJointForce;
 class OdJointSPDP;
 class OdExpression;
-class OdSubSystem;
 class vector_int;
 class V3;
 

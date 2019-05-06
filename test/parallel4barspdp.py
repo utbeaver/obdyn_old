@@ -102,7 +102,7 @@ for i in range(1):
 #sys_.dynamic_analysis_bdf(0.1, 1.0e-3, 10, 0.1, 1.0e-6, 1.0e-3, 0)
 start=time.time()
 datas=[]
-hht=0
+hht=1
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1

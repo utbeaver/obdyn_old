@@ -364,6 +364,7 @@ int od_joint::updateReldistance(od_systemGeneric *pSys) {
 }
 
 int od_joint::update(od_systemGeneric *psys) {
+	if (is_evaluated()) return 1;
 	int i;
 	joint_primitive* pJ = 0;
 	double *pzi = zi, *pd;
@@ -382,6 +383,7 @@ int od_joint::update(od_systemGeneric *psys) {
 		pd = rot_joints[i]->get_zi(); EQ3(pzi, pd); pzi += 3;
 		pd = rot_joints[i]->get_cross_zi(); EQ3(pcz, pd); pcz += 3;
 	}
+	evaluated();
 	return 1;
 }
 

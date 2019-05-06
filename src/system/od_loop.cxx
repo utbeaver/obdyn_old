@@ -16,9 +16,7 @@ od_loop::od_loop(od_constraint *pC, od_systemGeneric *pS) {
 		temp_rhs[i] = 0.0;
 	}
 	row_index = col_index = 0;
-	//delocMem = 0;
 	notFirst = 0;
-	pMref = 0;
 }
 
 int od_loopr::initialize(int keep) {
@@ -28,7 +26,6 @@ int od_loopr::initialize(int keep) {
 	int *ij_idx[2];
 	int entry2ij;
 	int loop_root=-1;
-//	od_joint *pC;
 	Vec3 *pTempV3;
 	b_index[1] = Fixed->j_body_index();
 	b_index[0] = Fixed->i_body_index();
@@ -39,9 +36,7 @@ int od_loopr::initialize(int keep) {
 	for (i = 0; i < 2; i++) {
 		//get the entries of i(j) branches
 		for (j = 0; j < num_dofs; j++) {
-			//if (pSys->relevenceLevel2[b_index[i] * num_dofs + j] != 0) {
 			if (pSys->getL2(b_index[i] * num_dofs + j) != 0) {
-				// entries2[i].push_back(j);
 				ij_idx[i][j] = 1;
 			}
 			else {
@@ -77,9 +72,7 @@ int od_loopr::initialize(int keep) {
 			loop_root = i;
 		}
 	}
-	if (loop_root != -1) {
-		pMref = pSys->get_body_via_index(loop_root)->cm_marker();
-	}
+
 	for (i = 0; i < 2; i++) delete[] ij_idx[i];
 	num_NZ = 0;
 	//calculate the number of non-zeros
@@ -141,18 +134,12 @@ int od_loopr::initialize(int keep) {
 int od_loopv::initialize(int keep) {
 	if (keep) return 0;
 	clean();
-	int b_index[2], i, j, k;
-
-	int entry2ij;
-//	od_joint *pC;
+	int b_index[2], j;
 	Vec3 *pTempV3;
 	b_index[1] = Fixed->j_body_index();
 	b_index[0] = Fixed->i_body_index();
-	//find the lowing bound of I body
 	int num_dofs = pParent->tree_dofs();
 	int njoint = pParent->num_joint();
-
-
 
 	for (j = 0; j < num_dofs; j++) {
 		if (pParent->getL2(b_index[1] * num_dofs + j) != 0) {
@@ -160,90 +147,20 @@ int od_loopv::initialize(int keep) {
 		}
 	}
 
-	for (i = 0; i < 6; i++) {
-		entries2[0].push_back(pSys->startIndex() + 6 + i);
-	}
+	
 
-	for (j = 0; j < njoint; j++) {
-		//if (pParent->relevenceLevel1[b_index[1] * njoint + j] != 0) {
-		if (pParent->getL1(b_index[1] * njoint + j) != 0) {
-			entries1[1].push_back(j);
-		}
-	}
-
-	//for (i = 0; i < 6; i++) {
-	entries1[0].push_back(pSys->startBIndex());
-	//}
-
-	num_NZ = 0;
-	//calculate the number of non-zeros
-	num_NZ += (int)entries2[0].size();
-	num_NZ += (int)entries2[1].size();
-	num_NZ *= 6;
-	row_index = new int[num_NZ];
-	col_index = new int[num_NZ];
-	values = new double[num_NZ];
-	valuesV = new double[num_NZ];
-
-	//	fltTemp = values;
 	int counter = 0;
-	for (i = 1; i < 2; i++) {
-		int temp_int = (int)entries2[i].size();
-		JR_disp[i].resize(temp_int);
-		JR_vel[i].resize(temp_int);
-		JR_veld[i].resize(temp_int);
-		for (j = 0; j < temp_int; j++) {
-			entry2ij = entries2[i][j];
-			JR_disp[i][j] = new Vec3;
-			if (i == 1) {
-				pTempV3 = pParent->getJR(b_index[i], entry2ij); //JR.element(b_index[i], entry2ij);
-			}
-			else {
-				pTempV3 = pSys->getJR(b_index[i] - pSys->startBIndex(), entry2ij);
-			}
-			if (pTempV3 == 0) { pTempV3 = new Vec3; collector.push_back(pTempV3); }
-			JR_vel[i][j] = pTempV3;
-			if (i == 1) {
-				pTempV3 = pParent->getJRdot_dq(b_index[i], entry2ij); //parOmega_parq.element(b_index[i], entry2ij);
-			}
-			else {
-				pTempV3 = pSys->getJRdot_dq(b_index[i] - pSys->startBIndex(), entry2ij);
-			}
-			JR_veld[i][j] = pTempV3;
-
-			for (k = 0; k < 3; k++) {
-				row_index[counter] = k;
-				col_index[counter++] = entry2ij;
-			}
-		}
-		JT_disp[i].resize(temp_int);
-		JT_vel[i].resize(temp_int);
-		JT_veld[i].resize(temp_int);
-		for (j = 0; j < temp_int; j++) {
-			entry2ij = entries2[i][j];
-			if (i == 1) {
-				pTempV3 = pParent->getJT(b_index[i], entry2ij); // JTG.element(b_index[i], entry2ij);
-			}
-			else {
-				pTempV3 = pSys->getJT(b_index[i] - pSys->startBIndex(), entry2ij);
-			}
-			if (pTempV3 == 0) {
-				pTempV3 = new Vec3;
-				collector.push_back(pTempV3);
-			}
-			JT_disp[i][j] = pTempV3;
-			JT_vel[i][j] = pTempV3;
-			if (i == 1) pTempV3 = pParent->getJTdot_dq(b_index[i], entry2ij); //parVel_parqG.element(b_index[i], entry2ij);
-			else pTempV3 = pSys->getJTdot_dq(b_index[i] - pSys->startBIndex(), entry2ij);
-			JT_veld[i][j] = pTempV3;
-
-			for (k = 0; k < 3; k++) {
-				row_index[counter] = k + 3;
-				col_index[counter++] = entry2ij;
-			}
-		}
+	int temp_int = (int)entries2[1].size();
+	int jdx;
+	JR_disp[1].resize(temp_int);
+	JT_disp[1].resize(temp_int);
+	for (j = 0; j < temp_int; j++) {
+		jdx = entries2[1][j];
+		pTempV3 = pParent->getJR(b_index[1], jdx);
+		JR_disp[1][j] = pTempV3;
+		pTempV3 = pParent->getJT(b_index[1], jdx);
+		JT_disp[1][j] = pTempV3;
 	}
-	redundant_cons.clear();
 	return 1;
 }
 void od_loop::clean() {
@@ -258,21 +175,14 @@ void od_loop::clean() {
 		entries2[i].resize(0);
 	}
 	redundant_cons.resize(0);
-	//if (delocMem) {
-	//	delocMem = 0;
 	for (i = 0; i < 2; i++) {
 		temp_int = (int)entries2[i].size();
 		for (j = 0; j < temp_int; j++) {
 			delete JR_disp[i][j];
-			//delete JR_veld[i][j];
-			//delete JT_veld[i][j];
 		}
 	}
-	//}
 }
-od_loop::~od_loop() {
-	clean();
-}
+
 void od_loop::init() {
 	unsigned i, j;
 	for (i = 0; i < 2; i++) {
@@ -281,7 +191,7 @@ void od_loop::init() {
 		}
 	}
 }
-double* od_loop::element(int r0t1, int j, int ij, double v[3]) {
+double* od_loop::element(int r0t1, int j, int ij, double* v) {
 	Vec3 *pV = 0;
 	od_object::JAC_TYPE __type = pSys->get_jac_type();
 		if (
@@ -295,7 +205,6 @@ double* od_loop::element(int r0t1, int j, int ij, double v[3]) {
 			pV = (r0t1 == 0) ? JR_vel[ij][j]: JT_vel[ij][j];
 		}
 		pV->to_double(v);
-		//if (pMref) pMref->vec_wrt_this(v);
 		if (ij == 1){
 			NEG(v);
 		}
@@ -380,6 +289,7 @@ void od_loop::find_redundants() {
 	DELARY(temp_mat);
 }
 
+
 void od_loop::zero_pivot(int dim_i, int dim_j,
 	double* mat, vector<int>& pivots) {
 	int i, j, k;
@@ -445,7 +355,7 @@ void od_loop::zero_pivot(int dim_i, int dim_j,
 	DELARY(permu_col);
 }
 
-void od_loopv::evaluate_orientation(int rhs_only) {
+/*void od_loopv::evaluate_orientation(int rhs_only) {
 	unsigned i, j, k, jdofs;//, ij;
 	//int nbody, njoint;
 	int index[2];//, start_index;
@@ -469,16 +379,16 @@ void od_loopv::evaluate_orientation(int rhs_only) {
 		__type == od_object::JAC_DISP ||
 		__type == od_object::JAC_STATIC ||
 		__type == od_object::JAC_DYNAMIC) {
-		/*angular constraint
-		I_1 \dot J_2 = 0*/
+		//angular constraint
+		//I_1 \dot J_2 = 0
 		Vi0 = pMi->get_axis_global(Vi0, 0);
 		Vj1 = pMj->get_axis_global(Vj1, 1);
 		temp_d[2] = Vi0 * Vj1;
-		/* J_1 \dot K_2 = 0*/
+		// J_1 \dot K_2 = 0
 		Vi1 = pMi->get_axis_global(Vi1, 1);
 		Vj2 = pMj->get_axis_global(Vj2, 2);
 		temp_d[0] = Vi1 * Vj2;
-		/*K_1 \dot I_2 = 0*/
+		//K_1 \dot I_2 = 0
 		Vi2 = pMi->get_axis_global(Vi2, 2);
 		Vj0 = pMj->get_axis_global(Vj0, 0);
 		temp_d[1] = Vi2 * Vj0;
@@ -550,9 +460,9 @@ void od_loopv::evaluate_orientation(int rhs_only) {
 		domega_rhs = temp_d;
 	}
 	return;
-}
+}*/
 
-void od_loopr::evaluate_orientation(int rhs_only) {
+void od_loop::evaluate_orientation(int rhs_only) {
 	unsigned i, j, k, jdofs;//, ij;
 	//int nbody, njoint;
 	int index[2];//, start_index;
@@ -725,8 +635,6 @@ void od_loop::evaluate(int rhs_only) {
 	evaluate_orientation(rhs_only);
 	evaluate_position();
 	if (rhs_only) return;
-
-	//double temp_d[3];
 
 	fltTemp = values;
 	fltTempV = valuesV;

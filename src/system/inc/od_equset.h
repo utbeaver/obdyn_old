@@ -7,13 +7,9 @@
 #include "od_linsolv.h"
 #include "od_element.h"
 
-
-
 class od_system;
 class od_gstiff;
 class od_hhti3;
-
-
 
 class od_equation : public od_object {
 protected:
@@ -22,6 +18,7 @@ protected:
 	int numLoops;
 	int dim_rows, dim_cols, dimJac, effDim;
 	double *pRhs;
+	
 	double *states;
 	double *std;
 	double *dstates;
@@ -34,16 +31,17 @@ protected:
 	double *_Xddot;
 	//od_gstiff* pIntegrator;
 	int pattern[10];
-	od_matrix* SysJac;
+	od_matrix_dense* SysJac;
+	od_matrix_system* SysMat;
 	string info_str;
-	vector<int> removed_entries;
+	//vector<int> removed_entries;
 	ofstream *pMsg;
 	ofstream *pOut;
 	int* Vars;
 	int _debug;
 	int dofs_calculated;
 	//int* permuV;
-	vector<int> dofmap;
+	//vector<int> dofmap;
 	int* _dofmap;
 	od_object::DVA_TYPE _dva_type;
 	od_object::JAC_TYPE _jac_type;
@@ -52,9 +50,10 @@ public:
 	od_equation(od_system *psys) : od_object() {
 		pSys = psys; pRhs = 0; //numMotions=0;
 		ddstates = 0; dstates = 0; states = 0; initialized = 0; pJac = 0; //permuV = 0;
-		error = 0; SysJac = 0; removed_entries.resize(0);
+		error = 0; SysJac = 0; //removed_entries.resize(0);
 		_X = _Xdot = 0;  pMsg = 0; _debug = 0; pOut = 0; Vars = 0; dofs_calculated = 0;
 	}
+	double *pprhs;
 	virtual ~od_equation();
 	inline double* X() const { return _X; }
 	inline double* Xdot() const { return _Xdot; }
@@ -81,14 +80,14 @@ public:
 };
 
 class od_equation_kin_and_static : public od_equation {
-protected:
-	int eval, icInt;
-	//vector<int> dofmap;
-	void process_void_row_and_col(int i, double val);
+//protected:
+	//int eval, icInt;
 public:
 	od_equation_kin_and_static(od_system *psys) : od_equation(psys) {}
 	int initialize();
 	virtual int evaluate(int eval_jac = 0);
+	 int evaluateJac1();
+	 int evaluateJac2();
 };
 
 class od_equation_disp_ic : public od_equation_kin_and_static {
@@ -146,7 +145,7 @@ protected:
 	double _end, _tol;
 	int _steps, _corrNum;
 	double _initStep, hMax, hMin, h;
-	int reEval;
+	//int reEval;
 	double** M_a;
 	double** M_v;
 	double** M_d;
@@ -195,8 +194,6 @@ private:
 	double *Mq;
 	od_matrix_hht *SysJacHHT;
 public:
-	double *pprhs;
-public:
 	od_equation_hhti3(od_system *psys, double end = 1, int steps = 1, double tol = 1.0e-3, double al =  -1.0 / 3.0);
 	~od_equation_hhti3(); 
 	int solve(double = 0.0);
@@ -211,6 +208,6 @@ public:
 	void set_states(int = 0, double scale=1.0);
 	void get_states();
 	virtual void simulate(double, int);
-	void updatepQ(); // { copy(Q, Q + tree_ndofs, pQ); }
+	void updatepQ(); 
 };
 #endif

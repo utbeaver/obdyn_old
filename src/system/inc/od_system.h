@@ -22,7 +22,7 @@
 #define parVel_parq_dotG JTG
 using namespace std;
 class od_loopr;
-class od_loop;
+class od_loopv;
 class od_measure;
 class od_equation_kinematic;
 class od_equation_bdf_I;
@@ -273,7 +273,7 @@ public:
 	od_constraint** constraint_list_;
 	od_element** element_list_;
 	od_jointF** joint_force_list_;
-	vector<od_loop*> loop_list;
+	vector<od_loopr*> loop_list;
 	sparseMat parForceparPVA[3], parTorqueparPVA[3];
 	int initialized;
 	int nsystem;
@@ -321,6 +321,7 @@ public:
 	inline int num_joint() const { return njoint; }
 	inline int num_force() const { return nforce; }
 	inline int num_jforce() const { return njforce; }
+	inline int num_system() const { return nsystem; }
 	inline od_body* get_body_via_index(int index) const { return body_list_[index]; }
 	inline od_constraint* get_constraint_via_index(int index) const { return constraint_list_[index]; }
 	inline od_force* get_force_via_index(int idx) const { return force_list_[idx]; }
@@ -339,6 +340,7 @@ public:
 	virtual void get_states();
 	virtual void set_states();
 	//int checkEulerBryant();
+	void evaluateTreeRhs();
 	inline int tree_dofs() const { return tree_ndofs; }
 	inline int lambda_dofs() const { return lambda_dof; }
 	virtual void calculate_JR(int no_dot = 1) = 0;
@@ -361,14 +363,15 @@ public:
 	virtual void parF_parq_dot(double**) = 0;
 	int init_dynamics();
 	virtual void init_tree(double* = 0, double* = 0, double* = 0, int = 0) = 0;
-	virtual void topology_analysis_level1() = 0;
-	virtual void topology_analysis_level2() = 0;
+	void init_tree_();
 	int get_num_body();
 	int get_num_constraint();
-	//int getNumMotions() const { return motion_list.size(); }
-	virtual int Update(int = 0) = 0;
+	virtual int Update(int = 0);
+	void updateQ();
+
 	virtual double* evaluateRhs(double* rhs) = 0;
 	virtual double** evaluateJac(double** pM, int base = 0) = 0;
+	//virtual void evaluateJac(od_matrix_dense* pM, int base = 0) = 0;
 	virtual void CreateTraM(double **pM, int = 0) = 0;
 	virtual void CreateRotM(double **pM, int = 0) = 0;
 	virtual int initialize(int = 0, int = 0);
@@ -430,19 +433,17 @@ public:
 	virtual void calculate_JRdot();
 	virtual void calculate_JT(int no_dot = 1);
 	virtual void calculate_JTdot();
-	virtual int Update(int = 0);
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
 	virtual double* evaluateRhs(double* rhs);//, double alpha = 1.0);
 	virtual double** evaluateJac(double** pM, int base = 0);
+	virtual void evaluateJac(od_matrix_dense* pM, int base = 0);
 	inline int TreeDofs() const { return Tree_Ndofs; }
-	void updateQ();
 	virtual void updatePartials(int pos_only = 0);
 	int checkEulerBryant();
-	virtual void topology_analysis_level1();
-	virtual void topology_analysis_level2();
+	void topology_analysis_level1();
+	void topology_analysis_level2();
 	void topology_analysis(vector<int>&, vector<int>&, vector<int>&/*, int=0*/);
-	void topology_analysis(vector_int& perm, vector_int& inci, vector_int& rele);
 	int graphW(void);
 	int graphD(void);
 	void print_inci(vector<int>&, int, int);
@@ -459,10 +460,10 @@ public:
 	virtual inline int getL1(int i) const { return relevenceLevel1[i]; }
 	virtual inline int getL2(int i) const { return relevenceLevel2[i]; }
 	virtual inline int getL3(int i) const { return relevenceLevel3[i]; }
-	virtual void numDif();// {};
+	virtual void numDif();
 };
 
-class od_systemTrack2D : public od_systemGeneric {
+class od_systemLocal : public od_systemGeneric {
 protected:
 	od_marker* refM;
 	od_body* base;
@@ -470,7 +471,9 @@ protected:
 	od_fixed_joint* fixed;
 	od_matrix_dense *M00, *M01;
 	od_matrix_denseB *M10;
-	od_blockTriDiagonal* pTriM;
+	od_matrix_blockTriDiagonal * pTriM;
+	int bits[2][9];
+	Vec3 JR0[6], JT0[6];
 	Vec3 **JR, **JR_dot, **JT, **JT_dot;
 	//Partial derivatives: Omega
 	Vec3 **parOmega_parq, **parOmega_dot_parq, **parOmega_dot_parq_dot; // parOmega_parq_dot=JR;
@@ -483,41 +486,42 @@ protected:
 		for (int i = 0; i < num_body(); i++) DELARY(v[i]);
 		delete[] v;  v = 0;
 	}
-	void ParOmegaParq(int dot = 0);
+	void ParOmegaParq();
 	void parOmegaDotParq();
 	void parOmegaDotParqDot();
 	void parVelParq();
 	void parVelDotParq();
 	void parVelDotParqDot();
+	void Project2Q(double *rhs, int i);
+	od_loopv *ploop;
 public:
-	od_systemTrack2D(char* pn, od_marker* ref = 0, int from_py = 0);
-	~od_systemTrack2D();
+	od_systemLocal(char* pn, od_marker* ref = 0, int from_py = 0);
+	~od_systemLocal();
+	void setParent(od_systemGeneric* ps);
 	void setRef(od_marker *ref) { refM = ref; }
 	virtual void CreateTraM(double **pM, int = 0);
 	virtual void CreateRotM(double **pM, int = 0);
 	virtual double* evaluateRhs(double* rhs) { double* x = 0;  return x; }
 	virtual double** evaluateJac(double** pM, int base = 0) { double** x = 0; return x; }
-	void create_incidence(vector<int>&, int = 0) {}
-	void create_relevence(vector<int>&, int = 0) {}
+	virtual void evaluateJac(od_matrix_subsystem* pM, int base) {}
+
 	virtual void calculate_JR(int no_dot = 1);
 	virtual void calculate_JRdot() { calculate_JR(0); }
 	virtual void calculate_JT(int no_dot = 1);
 	virtual void calculate_JTdot() { calculate_JT(0); }
 	virtual void updatePartials(int pos_only = 0);// {}
-	virtual int Update(int = 0);// { return 0; }
-	virtual void topology_analysis_level1() {}
-	virtual void topology_analysis_level2() {}
+
 	virtual void init_tree(double* = 0, double* = 0, double* = 0, int = 0);
-	virtual inline Vec3* getJR(int i, int j) const { return &(JR[i][j]); }
-	virtual inline Vec3* getJT(int i, int j) const { return &(JT[i][j]); }
-	virtual inline Vec3* getJRdot_dq(int i, int j) const { return &(JR_dot[i][j]); }
-	virtual inline Vec3* getJTdot_dq(int i, int j) const { return &(JT_dot[i][j]); }
+	virtual inline Vec3* getJR(int i, int j) const { return JR[i] + j; }
+	virtual inline Vec3* getJT(int i, int j) const { return JT[i] + j; }
+	virtual inline Vec3* getJRdot_dq(int i, int j) const { return JR_dot[i] + j; }
+	virtual inline Vec3* getJTdot_dq(int i, int j) const { return JT_dot[i] + j; }
 	virtual void parF_parq(double**);
 	virtual void parF_parq_dot(double**) {}
 	virtual inline int getL1(int i) const { return 1; }
 	virtual inline int getL2(int i) const { return 1; }
 	virtual inline int getL3(int i) const { return 1; }
-	virtual void numDif() {};
+	virtual void numDif() {}
 };
 
 class  od_system : public od_systemMechanism {
@@ -586,9 +590,9 @@ public:
 		return msg;
 	}
 
-	void update(int = 0);
+	void update();
 	//inline Vec3* tree_rhs_si2(int i) const { return _tree_rhs_si2 + i; }
-	double* evaluate_rhs(double* rhs, double alpha=1.0);
+	double* evaluate_rhs(double* rhs, double alpha = 1.0);
 	double** evaluate_Jac(double**);
 	int displacement_ic();
 	int velocity_ic();
@@ -601,7 +605,7 @@ public:
 
 /*class  od_beams : public od_systemGeneric {
 private:
-	od_blockTriDiagonal * pM, *pK, *pC;
+	od_matrix_blockTriDiagonal  * pM, *pK, *pC;
 	int *dim_info;
 public:
 	od_beams(char* pn, int from_py = 0);

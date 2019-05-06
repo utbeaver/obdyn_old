@@ -5,35 +5,25 @@ od_equation::~od_equation() {
 	//int i;
 	if (info_str.size())
 		cout << info_str << " is done!" << endl;
-	DELARY(pRhs);
+	DELARY(pRhs); DELARY(pprhs);
 	//if (this->permuV) delete[] this->permuV;
 	//this->permuV = 0;
 	if (_dofmap) delete[] _dofmap;
 	delete SysJac;
+	delete SysMat;
 	DELARY(error); DELARY(_X); DELARY(_Xdot); DELARY(_Xddot);
 }
 void
-od_equation::createPermuV(int len_){// vector<int>& dofmap) {
-	vector<int> tempV;
-	//vector<int> tempV_;
-	int i, size_;
-	size_ = (int)dofmap.size();
-	if (len_) size_ = len_;
-	if (!_dofmap) _dofmap = new int[size_];
-	//if (!permuV) permuV = new int[size_];
+od_equation::createPermuV(int len_) {// vector<int>& dofmap) {
+	int i;// , size_;
+	//size_ = (int)dofmap.size();
+
+	//if (!_dofmap) _dofmap = new int[size_];
+	effDim = 0;
 	for (i = 0; i < dim_rows; i++) {
-		_dofmap[i] = dofmap[i];
-		if (dofmap[i] == 1) tempV.push_back(i);
-	//	else tempV_.push_back(i);
+		//_dofmap[i] = dofmap[i];
+		if (_dofmap[i] != 0) effDim++;
 	}
-	effDim = (int)tempV.size();
-	//for (i = 0; i < effDim; i++) {
-	//	permuV[i] = tempV[i];
-	//}
-	//for (i = 0; i < tempV_.size(); i++) {
-	//	permuV[effDim+i] = tempV_[i];
-	//}
-	tempV.clear();// tempV_.clear();
 	return;
 }
 void
@@ -114,42 +104,38 @@ initialize() {
 	//allocate space for pJac
 	//dim_rows = numLoops * 6 + tree_ndofs;//+numMotions;
 	dimJac = dim_cols = dim_rows;
-	dofmap.resize(dim_rows);
-	fill(dofmap.begin(), dofmap.end(), 1);
-	for (i = 0; i < tree_ndofs; i++) this->dofmap[i] = pSys->dofmap_[i];
-	//pJac = new double*[dim_rows];
-	//for (j = 0; j < dim_cols; j++) { pJac[j] = new double[dim_cols]; }
-
-	SysJac = (od_matrix*)(new od_matrix_dense(dim_rows, dim_rows));
+	//dofmap.resize(dim_rows); fill(dofmap.begin(), dofmap.end(), 1);
+	
+	_dofmap = new int[dim_rows]; fill(_dofmap, _dofmap + dim_rows, 1);
+	for (i = 0; i < tree_ndofs; i++) this->_dofmap[i] = ((pSys->dofmap_[i] == 0) ? -1 : 1);
+	SysJac = (new od_matrix_dense(dim_rows, dim_rows));
+	SysMat = new od_matrix_system(tree_ndofs, dim_rows - tree_ndofs);
 	pJac = SysJac->values();
 	pRhs = new double[dim_rows];
-	//for (i = 0; i < dim_rows; i++) { fill(pJac[i], pJac[i] + dim_cols, 0.0); }
+	pprhs = new double[dim_rows];
 	for (i = 0; i < tree_ndofs; i++) { pJac[i][i] = 1.0; }
 	error = new double[dim_rows - tree_ndofs];
 	fill(error, error + dim_rows - tree_ndofs, 5.0e-16);
 	return 0;
 }
 
-void od_equation_kin_and_static::
-process_void_row_and_col(int ii, double val) {
-	for (int i = 0; i < dim_rows; i++) {
-		pJac[i][ii] = pJac[ii][i] = 0.0;
-		pJac[ii][ii] = val;
-	}
-}
-
 int od_equation_kin_and_static::evaluate(int eval_jac) {
-	int i, ii, j, jj, base;
+	int i;
+//	int ii, j, jj;
 	int temp_int = 0;
-	double value, skew;
-	od_loop* pl;
+//	double  skew;
+//	od_loop* pl;
+//	int base;
 	od_object::Analysis_Type _type = pSys->get_analysis_type();
-	skew = 1.0;
-	//if (_type == od_object::Analysis_Type::ACC_FORCE) skew = -1.0;
-	if (_type == ACC_FORCE) skew = -1.0;
-	pSys->update(eval_jac);
+	//skew = 1.0;
+	//if (_type == ACC_FORCE) skew = -1.0;
+	pSys->update();
+	if (eval_jac) pSys->updatePartials();
 	fill(pRhs, pRhs + dim_rows, 0.0);
+	pSys->evaluate_rhs(pRhs);
+	for (i = 0; i < numLoops; i++) { pSys->loop_list[i]->evaluate(!eval_jac); }
 	if (eval_jac) {
+		/*
 		for (i = 0; i < dim_rows; i++) { fill(pJac[i], pJac[i] + dim_rows, 0.0); }
 		fill(dofmap.begin(), dofmap.end(), 1);
 		for (i = 0; i < tree_ndofs; i++) this->dofmap[i] = pSys->dofmap_[i];
@@ -175,41 +161,132 @@ int od_equation_kin_and_static::evaluate(int eval_jac) {
 			}
 		}
 		if (_type == ACC_FORCE) {
-		//if (_type == od_object::Analysis_Type::ACC_FORCE) {
 			for (i = 0; i < tree_ndofs; i++) {
 				if (dofmap[i] == 0) dofmap[i] = -1; // motioned freedom
 			}
 		}
-		createPermuV();// dofmap);
-		//base = tree_ndofs + numLoops * 6;
-
+		createPermuV();
 		pSys->evaluate_rhs(pRhs);
 		pSys->evaluate_Jac(pJac);
-		//for (i = 0; i < dim_rows; i++) pRhs[i] = -pRhs[i];
 		if (_type == ACC_FORCE || _type == STATIC) {
 			for (i = 0; i < tree_ndofs; i++) {
 				if (dofmap[i] == -1) {
-					for (j = 0; j < dim_rows; j++) { pJac[j][i] = 0.0; pJac[i][j] = 0.0;
+					for (j = 0; j < dim_rows; j++) {
+						pJac[j][i] = 0.0; pJac[i][j] = 0.0;
 					}
 					pJac[i][i] = 1.0*skew;
 				}
 			}
+		}*/
+		evaluateJac1();
+	}
+	
+	for (i = 0; i < tree_ndofs; i++) {
+		if (_dofmap[i] != 1) {
+			pRhs[i] = 0.0;
 		}
 	}
-	else {
-		pSys->evaluate_rhs(pRhs);
-		for (i = 0; i < numLoops; i++) { pSys->loop_list[i]->evaluate(1); }
-	}
-	//if (_type != ACC_FORCE && _type != STATIC) {
-		for (i = 0; i < tree_ndofs; i++) {
-			if (dofmap[i] != 1) {
-				pRhs[i] = 0.0;
-			}
-		}
-	//}
 	return 0;
 }
 
+int od_equation_kin_and_static::evaluateJac2() {
+
+	int i, ii, j, jj, base;
+	double value, skew;
+	od_loop* pl;
+	od_object::Analysis_Type _type = pSys->get_analysis_type();
+	skew = 1.0;
+	if (_type == ACC_FORCE) skew = -1.0;
+	for (i = 0; i < dim_rows; i++) { fill(pJac[i], pJac[i] + dim_rows, 0.0); }
+	//fill(dofmap.begin(), dofmap.end(), 1);
+	//for (i = 0; i < tree_ndofs; i++) this->_dofmap[i] = pSys->dofmap_[i];
+	for (i = 0; i < numLoops; i++) {
+		pl = pSys->loop_list[i];
+		pl->evaluate(0);
+		pl->checkRedundancy();
+		base = tree_ndofs + i * 6;
+		for (j = 0; j < pSys->loop_list[i]->num_nonzero(); j++) {
+			value = pl->jac(j);
+			if (fabs(value) > SMALL_VALUE) {
+				ii = pl->row(j) + base;
+				jj = pl->col(j);
+				pJac[ii][jj] += value;
+				pJac[jj][ii] += value * skew;
+			}
+			//ACC_FORCE: the constraining force is the same as applied force on the LHS
+			//
+		}
+		for (ii = 0; ii < 6; ii++) {
+			if (pl->if_redundant(ii)) {
+				_dofmap[base + ii] = 0;
+			}
+		}
+	}
+	/*if (_type == ACC_FORCE) {
+		for (i = 0; i < tree_ndofs; i++) {
+			if (_dofmap[i] == 0) _dofmap[i] = -1; // motioned freedom
+		}
+	}*/
+	createPermuV();
+	pSys->evaluate_Jac(pJac);
+	if (_type == ACC_FORCE || _type == STATIC) {
+		for (i = 0; i < tree_ndofs; i++) {
+			if (_dofmap[i] == -1) {
+				for (j = 0; j < dim_rows; j++) {
+					pJac[j][i] = 0.0; pJac[i][j] = 0.0;
+				}
+				pJac[i][i] = 1.0*skew;
+			}
+		}
+	}
+	SysJac->LUreq();
+	return 0;
+}
+int od_equation_kin_and_static::evaluateJac1() {
+	int i, ii, j, jj, base;
+	//int temp_int = 0;
+	double value, skew;
+	od_loop* pl;
+	od_object::Analysis_Type _type = pSys->get_analysis_type();
+	skew = 1.0;
+	if (_type == ACC_FORCE) skew = -1.0;
+	od_matrix_mechanism *A = SysMat->A();
+	od_matrix_dense3C* pJ = A->J();
+	//fill(dofmap.begin(), dofmap.end(), 1);
+	//for (i = 0; i < tree_ndofs; i++) this->_dofmap[i] = pSys->dofmap_[i];
+	for (i = 0; i < numLoops; i++) {
+		pl = pSys->loop_list[i];
+		pl->evaluate(0);
+		pl->checkRedundancy();
+		base = tree_ndofs + i * 6;
+		for (j = 0; j < pSys->loop_list[i]->num_nonzero(); j++) {
+			value = pl->jac(j);
+			if (fabs(value) > SMALL_VALUE) {
+				ii = pl->row(j) + base;
+				jj = pl->col(j);
+				pJ->add(ii - tree_ndofs, jj, value);
+			}
+			//ACC_FORCE: the constraining force is the same as applied force on the LHS
+			//
+		}
+		for (ii = 0; ii < 6; ii++) {
+			//temp_int = base + ii;
+			if (pl->if_redundant(ii)) {
+				_dofmap[base + ii] = 0;
+			}
+		}
+	}
+	/*if (_type == ACC_FORCE) {
+		for (i = 0; i < tree_ndofs; i++) {
+			if (_dofmap[i] == 0) _dofmap[i] = -1; // motioned freedom
+		}
+	}*/
+	createPermuV();
+	pSys->evaluateJac(A->A());
+	A->update(skew, _dofmap, effDim);
+	SysMat->LUreq();
+	return 0;
+}
 int od_equation_disp_ic::evaluate(int eval_jac) {
 	int i, j, base;
 	od_loop* pl;
@@ -226,6 +303,7 @@ int od_equation_disp_ic::evaluate(int eval_jac) {
 			}
 		}
 	}
+	for (i = 0; i < dim_rows; i++) pprhs[i] = pRhs[i];
 	return 0;
 }
 
@@ -236,24 +314,24 @@ int od_equation_disp_ic::solve(double _temp) {
 	int num_dofs;
 	int error_code = 0;
 	int num_iterations = 0;
-	//int dofs_calculated = 0;
-	int repar = 0;
 	pSys->unset_evaluated();
 	for (;;) {
 		max_rhs = 0.0;
 		max_var = 0.0;
 		pSys->get_states();
-		if (pSys->Ic.disp_pattern[num_iterations % 10] == 1) {
+		if (pSys->Ic.disp_pattern[num_iterations % 3] == 1) {
 			evaluate(1);
-			repar = 1;
 		}
 		else {
 			evaluate(0);
-			repar = 0;
 		}
 		if (!dofs_calculated) {
 			num_dofs = 0;
-			for (i = 0; i < tree_ndofs; i++) { num_dofs += this->dofmap[i]; }
+			for (i = 0; i < tree_ndofs; i++) {
+				 if (this->_dofmap[i] == 1) {
+					 num_dofs++;
+				}
+			}
 			for (i = 0; i < numLoops; i++) {
 				int temp_dof = pSys->loop_list[i]->num_of_redundant_constraints();
 				num_dofs -= (6 - temp_dof);
@@ -283,8 +361,9 @@ int od_equation_disp_ic::solve(double _temp) {
 			pSys->Analysis_Flags.disp_ic = 1;
 			break;
 		}
-		SysJac->print_out();
-		pRhs = SysJac->solve(pRhs, repar, effDim, _dofmap);
+		//SysJac->print_out();
+//		pRhs = SysJac->solve(pRhs, repar, effDim, _dofmap);
+		pRhs = SysMat->solve(pRhs);
 		for (i = 0; i < dim_rows; i++) {
 			if (fabs(pRhs[i]) > fabs(max_var)) {
 				max_var = pRhs[i];
@@ -342,7 +421,8 @@ int od_equation_vel_ic::solve(double _temp) {
 	pSys->set_states();
 	evaluate(1);
 
-	pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	//pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	pRhs = SysMat->solve(pRhs);
 	for (i = 0; i < tree_ndofs; i++) { dstates[i] = -pRhs[i]; }
 	pSys->set_states();
 	pSys->Analysis_Flags.vel_ic = 1;
@@ -365,10 +445,10 @@ solve(double _temp) {
 	pSys->get_states();
 	for (i = 0; i < tree_ndofs; i++) ddstates[i] = 0.0;
 	pSys->set_states();
-	pSys->unset_evaluated();
 	evaluate(1);
-	SysJac->print_out();
-	pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	//SysJac->print_out();
+	//pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	pRhs = SysMat->solve(pRhs);
 	//the sign is taken care by the skew in Jac evalution
 	//for (i = tree_ndofs; i < dim_cols; i++) { pRhs[i] = -pRhs[i]; } 
 	copy(pRhs, pRhs + tree_ndofs, ddstates);
@@ -404,7 +484,7 @@ od_equation_kinematic::od_equation_kinematic(od_system *psys, double end_time, i
 	if (_steps <= 0) _steps = 1;
 	Ana_Type = od_object::KINEMATIC;
 	//pSys->set_analysis_type(od_object::KINEMATIC);
-	eval = 1;
+	//eval = 1;
 	//cout << "Displacement Reconcilation begins..." << endl;
 }
 int
@@ -413,7 +493,7 @@ od_equation_kinematic::initialize() {
 		cout << "This system has " << pSys->get_dofs() << " degrees of freedom." << endl;
 		return 1;
 	}
-	eval = 1;
+	//eval = 1;
 	if (initialized) return 0;
 	od_equation_kin_and_static::initialize();
 	initialized = 1;
@@ -446,7 +526,7 @@ int od_equation_kinematic::solve_for_disp() {
 			evaluate_dva(1, 0);
 			//SysJac->evaluate();
 			repar = 1;
-			eval = 0;
+			//eval = 0;
 		}
 		else {
 			evaluate_dva(0, 0);;
@@ -463,8 +543,9 @@ int od_equation_kinematic::solve_for_disp() {
 		if (fabs(max_rhs) <= pSys->kinematics.disp_tolerance) {
 			break;
 		}
-		pRhs = SysJac->solve(pRhs, repar, effDim, _dofmap);
+		//pRhs = SysJac->solve(pRhs, repar, effDim, _dofmap);
 		//pRhs = SysJac->solve(pRhs, 0); 
+		pRhs = SysMat->solve(pRhs);
 		for (i = 0; i < dim_rows; i++) {
 			if (fabs(pRhs[i]) > fabs(max_var)) {
 				max_var = pRhs[i];
@@ -504,8 +585,8 @@ int od_equation_kinematic::solve_for_vel() {
 	pSys->get_states();
 	evaluate_dva(1, 1);
 
-	pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
-
+	//pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	pRhs = SysMat->solve(pRhs);
 	for (i = 0; i < tree_ndofs; i++) { dstates[i] -= pRhs[i]; }
 	pSys->set_states();
 	pSys->Analysis_Flags.vel_ic = 1;
@@ -522,7 +603,8 @@ int od_equation_kinematic::solve_for_acc_force() {
 	for (i = 0; i < numLoops; i++) { pSys->loop_list[i]->init_lambda(); }
 	pSys->set_states();
 	evaluate_dva(1, 2);
-	pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	//pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+	pRhs = SysMat->solve(pRhs);
 	//for (i = 0; i < dim_cols; i++) pRhs[i] = -pRhs[i];
 	for (i = 0; i < tree_ndofs; i++) { ddstates[i] = pRhs[i]; }
 	for (i = 0; i < numLoops; i++) { pSys->loop_list[i]->set_lambda(pRhs + tree_ndofs + i * 6, 0); }
@@ -601,10 +683,10 @@ od_equation_static::od_equation_static(od_system *psys, int steps, double  err_t
 	_tol = err_tol;
 	_steps = steps;
 	if (_steps <= 0) _steps = 1;
-	eval = 1;
+	//eval = 1;
 }
 int od_equation_static::initialize() {
-	eval = 1;
+	//eval = 1;
 	if (initialized) return 0;
 	od_equation_kin_and_static::initialize();
 	return 0;
@@ -652,7 +734,7 @@ solve(double _temp) {
 		if (!dofs_calculated) {
 			num_dofs = 0;
 			for (i = 0; i < tree_ndofs; i++) {
-				num_dofs += this->dofmap[i];
+				num_dofs += this->_dofmap[i];
 			}
 			for (i = 0; i < numLoops; i++) {
 				int temp_dof = pSys->loop_list[i]->num_of_redundant_constraints();
@@ -673,7 +755,7 @@ solve(double _temp) {
 			}
 		}
 		SysJac->print_out();
-		pRhs = SysJac->solve(pRhs, 1, effDim, _dofmap);
+		pRhs = SysJac->solve(pRhs,  effDim, _dofmap);
 		for (i = 0; i < dim_rows; i++) {
 			pRhs[i] = -pRhs[i];
 			if (fabs(pRhs[i]) > fabs(max_var)) {
@@ -706,7 +788,7 @@ od_equation_dynamic::od_equation_dynamic(od_system *psys, double end, int steps,
 	Ana_Type = od_object::DYNAMIC;
 	_dva_type = od_object::DISP_VEL_ACC;
 	_jac_type = od_object::JAC_DYNAMIC;
-	reEval = 1;
+	//reEval = 1;
 	modifiedLU = 0;
 }
 
@@ -902,11 +984,11 @@ void od_equation_hhti3::simulate(double end_time, int mLU) {
 
 od_equation_bdf_I::od_equation_bdf_I(od_system *psys, double end, int steps, double tol)
 	: od_equation_dynamic(psys, end, steps, tol) {
-	reEval = 1;
+	//reEval = 1;
 	pIntegrator = 0;
 }
 
-od_equation_bdf_I::~od_equation_bdf_I(){
+od_equation_bdf_I::~od_equation_bdf_I() {
 	delete pIntegrator;
 	delete SysJacBDF;
 	delete[] pprhs;
@@ -915,20 +997,20 @@ od_equation_bdf_I::~od_equation_bdf_I(){
 od_equation_hhti3::od_equation_hhti3(od_system *psys, double end, int steps, double tol, double al)
 	: od_equation_dynamic(psys, end, steps, tol) {
 	alpha = al;
-	reEval = 1;
+	//reEval = 1;
 	pIntegrator = 0;
 	pQ = 0;
 	Q = 0;
 }
 
-od_equation_hhti3::~od_equation_hhti3(){
-	   delete pIntegrator; DELARY(pQ); DELARY(Q); pIntegrator = 0;
-	   delete SysJacHHT;
-	   delete[] pprhs; DELARY(Mq);
-   }
+od_equation_hhti3::~od_equation_hhti3() {
+	delete pIntegrator; DELARY(pQ); DELARY(Q); pIntegrator = 0;
+	delete SysJacHHT;
+	DELARY(Mq);
+}
 
 int od_equation_hhti3::initialize() {
-	int  j, base;
+	int  i, j, base;
 	od_equation_dynamic::initialize();
 	//allocate space for pJac
 	dim_cols = dim_rows = 1 * (numLoops * 6 + tree_ndofs);//+numMotions); 
@@ -946,8 +1028,9 @@ int od_equation_hhti3::initialize() {
 		for (k = 0; k < 6; k++) Vars[base + k] = 1;
 	}
 	//hht = 1;
-	dofmap.resize(dim_rows);
-	fill(dofmap.begin(), dofmap.end(), 1);
+	//dofmap.resize(dim_rows); fill(dofmap.begin(), dofmap.end(), 1);
+	_dofmap = new int[dim_rows]; fill(_dofmap, _dofmap + dim_rows, 1);
+	for (i = 0; i < tree_ndofs; i++) this->_dofmap[i] = ((pSys->dofmap_[i]==0)?-1:1);
 	_X = new double[dim_rows];
 	_Xdot = new double[dim_rows];
 	_Xddot = new double[dim_rows];
@@ -960,20 +1043,22 @@ int od_equation_hhti3::initialize() {
 	beta = pIntegrator->getBeta();
 	gamma = pIntegrator->getGamma();
 	dimJac = dim_rows;
-	
+
 
 	pRhs = new double[dim_rows];
 	pprhs = new double[dim_rows];
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	updatepQ();
-	SysJac = (od_matrix*)(new od_matrix_dense(dim_rows, dim_rows));
-	SysJacHHT = (new od_matrix_hht(tree_ndofs, dim_rows- tree_ndofs));
+	SysJac = (new od_matrix_dense(dim_rows, dim_rows));
+	//SysJacHHT = (new od_matrix_hht(tree_ndofs, dim_rows - tree_ndofs));
+	SysMat = new od_matrix_system(tree_ndofs, dim_rows - tree_ndofs);
+	
 	pJac = SysJac->values();
 	return 1;
 }
 
 int od_equation_bdf_I::initialize() {
-	int  j, base;
+	int i, j, base;
 	od_equation_dynamic::initialize();
 	//allocate space for pJac
 	dim_cols = dim_rows = 2 * (numLoops * 6 + tree_ndofs);//+numMotions); 
@@ -988,8 +1073,12 @@ int od_equation_bdf_I::initialize() {
 		for (k = 0; k < 6; k++) Vars[base + k] = 1;
 	}
 
-	dofmap.resize(dim_rows);
-	fill(dofmap.begin(), dofmap.end(), 1);
+	//dofmap.resize(dim_rows); fill(dofmap.begin(), dofmap.end(), 1);
+	_dofmap = new int[dim_rows]; fill(_dofmap, _dofmap + dim_rows, 1);
+	for (i = 0; i < tree_ndofs; i++) {
+		this->_dofmap[i] = ((pSys->dofmap_[i] == 0) ? -1 : 1);
+		this->_dofmap[tree_ndofs+i] = ((pSys->dofmap_[i] == 0) ? -1 : 1);
+	}
 	_X = new double[dim_rows];
 	_Xdot = new double[dim_rows];
 	fill(_X, _X + dim_rows, 0.0);
@@ -1000,8 +1089,8 @@ int od_equation_bdf_I::initialize() {
 	pRhs = new double[dim_rows];
 	pprhs = new double[dim_rows];
 
-	SysJac = (od_matrix*)(new od_matrix_dense(dim_rows, dim_rows));
-	SysJacBDF = new od_matrix_bdf(2*tree_ndofs, dim_rows - 2*tree_ndofs);
+	SysJac = (new od_matrix_dense(dim_rows, dim_rows));
+	SysJacBDF = new od_matrix_bdf(2 * tree_ndofs, dim_rows - 2 * tree_ndofs);
 	pJac = SysJac->values();
 	return 1;
 }
@@ -1011,10 +1100,10 @@ int od_equation_bdf_I::solve(double tinu) {
 	double s = pSys->startRecord();
 	int intTemp = 2 * tree_ndofs;
 	//scaling the diff rhs because the the Jac scaling
-	for (i = 0; i < intTemp; i++) pRhs[i] *=mu;
-	
-	pRhs = SysJac->solve(pRhs, reEval, effDim, _dofmap);
-	reEval = 0;
+	for (i = 0; i < intTemp; i++) pRhs[i] *= mu;
+
+	pRhs = SysJac->solve(pRhs, effDim, _dofmap);
+	//reEval = 0;
 	for (i = intTemp; i < dim_cols; i++) pRhs[i] /= mu;
 	pSys->stopRecord(s, 2);
 	return errorCode;
@@ -1026,14 +1115,10 @@ int od_equation_bdf_I::solveBDF(double tinu) {
 	double s = pSys->startRecord();
 	int intTemp = 2 * tree_ndofs;
 	//scaling the diff rhs because the the Jac scaling
-	for (i = 0; i < tree_ndofs; i++) {
-		temp = pprhs[i]; pprhs[i] = pprhs[i + tree_ndofs]; pprhs[i + tree_ndofs] = temp;
-	}
-
-	for (i = 0; i < intTemp; i++) { pprhs[i] *=mu; }
-	pprhs = SysJacBDF->solve(pprhs, reEval);
-	reEval = 0;
-	for (i = intTemp; i < dim_cols; i++) pprhs[i] /=mu;
+	for (i = 0; i < tree_ndofs; i++) {temp = pprhs[i]; pprhs[i] = pprhs[i + tree_ndofs]; pprhs[i + tree_ndofs] = temp;}
+	for (i = 0; i < intTemp; i++) { pprhs[i] *= mu; }
+	pprhs = SysJacBDF->solve(pprhs);
+	for (i = intTemp; i < dim_cols; i++) pprhs[i] /= mu;
 	for (i = 0; i < dim_rows; i++) pRhs[i] = pprhs[i];
 	pSys->stopRecord(s, 2);
 	return errorCode;
@@ -1051,16 +1136,16 @@ int od_equation_hhti3::solve(double beta_hh) {
 	Phi            0   L    rhs2/beta_hh
 
 	*/
-	for (i = 0; i < tree_ndofs; i++) {
-		if (dofmap[i]!=1) 
+	/*for (i = 0; i < tree_ndofs; i++) {
+		if (_dofmap[i] != 1)
 		{
-			pRhs[i] =0.0;
+			pRhs[i] = 0.0;
 		}
-	}
+	}*/
 	for (i = tree_ndofs; i < dim_cols; i++) pRhs[i] /= beta_hh;
 	//scaling the diff rhs because the the Jac scaling
-	pRhs = SysJac->solve(pRhs, reEval, effDim, _dofmap);
-	reEval = 0;
+	pRhs = SysJac->solve(pRhs, effDim, _dofmap);
+	//reEval = 0;
 	pSys->stopRecord(s, 2);
 	return errorCode;
 }
@@ -1079,8 +1164,9 @@ int od_equation_hhti3::solveHHT(double beta_hh) {
 
 	for (i = tree_ndofs; i < dim_cols; i++) pprhs[i] /= beta_hh;
 	//scaling the diff rhs because the the Jac scaling
-	pprhs = SysJacHHT->solve(pprhs, reEval, effDim);
-	reEval = 0;
+	//pprhs = SysJacHHT->solve(pprhs, reEval, effDim);
+	pprhs = SysMat->solve(pprhs);
+	//reEval = 0;
 	for (i = 0; i < dim_rows; i++) pRhs[i] = pprhs[i];
 	pSys->stopRecord(s, 2);
 	return errorCode;
@@ -1096,7 +1182,6 @@ double* od_equation_bdf_I::evalRhs() {
 
 	for (i = 0; i < numLoops; i++) {
 		base = intTemp + (i + numLoops) * 6;
-		//pSys->loop_list[i]->evaluate(1);
 		for (j = 0; j < 6; j++) {
 			if (pSys->loop_list[i]->if_redundant(j)) { pRhs[base + j] = 0.0; }
 			else { pRhs[base + j] = -pSys->loop_list[i]->rhs(j); }
@@ -1121,20 +1206,15 @@ double* od_equation_hhti3::evalRhs() {
 	ap1 = 1.0 + alpha;
 	//RHS   M\ddot{q}+(1+alpha)*NonLinQ-alpha/(1+alpha)*pQ=0
 	this->calNonLinQ();
-	
+
 	fill(pRhs, pRhs + dim_rows, 0.0);
 	for (i = 0; i < tree_ndofs; i++) {
 		pRhs[i] = Q[i] * ap1 - pQ[i] * alpha;
 	}
 	for (i = 0; i < numLoops; i++) {
 		base = tree_ndofs + (i) * 6;
-//		pSys->loop_list[i]->evaluate(1);
 		for (j = 0; j < 6; j++) {
-		//	if (pSys->loop_list[i]->if_redundant(j)) { 
-		//		pRhs[base + j] = 0.0;
-		//	} else {
-				pRhs[base + j] = -pSys->loop_list[i]->rhs(j);
-		//	}
+			pRhs[base + j] = -pSys->loop_list[i]->rhs(j);
 		}
 	}
 	for (i = 0; i < tree_ndofs; i++) pRhs[i] = -pRhs[i];
@@ -1288,7 +1368,7 @@ void od_equation_hhti3::updatepQ() {
 }*/
 void  od_equation_dynamic::evalJac() {
 	int i;
-	pSys->update();
+	//pSys->update();
 	pSys->updatePartials(0);
 	for (i = 0; i < tree_ndofs; i++) {
 		//if (!hht)fill(M_a[i], M_a[i] + tree_ndofs, 0.0);
@@ -1297,20 +1377,17 @@ void  od_equation_dynamic::evalJac() {
 		fill(M_d[i], M_d[i] + tree_ndofs, 0.0);
 	}
 	//if (!hht) pSys->getM(M_a);
-    pSys->getM(M_a);
+	pSys->getM(M_a);
 	for (i = 0; i < (int)(pSys->loop_list.size()); i++) pSys->loop_list[i]->evaluate(0);
 	this->checkRedundancy();
 	pSys->parF_parq_dot(M_v);
 	pSys->parF_parq(M_d);
-	reEval = 1;
+	//reEval = 1;
 }
 void od_equation_hhti3::evalJac() {
 	int i, j, ii, jj, base;
 	double value, ap1;
-	fill(dofmap.begin(), dofmap.end(), 1);
-	for (i = 0; i < tree_ndofs; i++) {
-		this->dofmap[i] = pSys->dofmap_[i];
-	}
+
 	//RHS   M\ddot{q}+NonLinQ*(1+alpha)-()*alpha=0
 
 	od_equation_dynamic::evalJac();
@@ -1323,32 +1400,32 @@ void od_equation_hhti3::evalJac() {
 	SysJac->addsub(tree_ndofs, tree_ndofs, M_v, -h * gamma*ap1);
 	//value = -h * h* beta*ap1;
 	SysJac->addsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);
-	
+
 	base = tree_ndofs;
 	for (i = 0; i < numLoops; i++) {
 		for (j = 0; j < pSys->loop_list[i]->num_nonzero(); j++) {
 			ii = pSys->loop_list[i]->row(j) + base + i * 6;
 			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
-			pJac[ii][jj] += value; 
-			pJac[jj][ii] -= value; 
+			pJac[ii][jj] += value;
+			pJac[jj][ii] -= value;
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {
-				dofmap[base + i * 6 + ii] = 0;
+				_dofmap[base + i * 6 + ii] = 0;
 			}
 		}
 	}
 	for (i = 0; i < tree_ndofs; i++) {
-		if (this->dofmap[i] == -1) {
+		if (this->_dofmap[i] == -1) {
 			for (j = 0; j < dim_rows; j++) {
 				pJac[j][i] = 0.0; pJac[i][j] = 0.0;
 			}
 			pJac[i][i] = -1.0;
 		}
 	}
-	createPermuV();// dofmap);
-	
+	createPermuV();
+	SysJac->LUreq();
 }
 
 void od_equation_hhti3::evalJacHHT() {
@@ -1356,12 +1433,7 @@ void od_equation_hhti3::evalJacHHT() {
 	double value, ap1;
 	od_matrix_dense *pM, *pMv, *pMd;
 	od_matrix_dense3C *pJ;
-	fill(dofmap.begin(), dofmap.end(), 1);
-	for (i = 0; i < tree_ndofs; i++) {
-		int val = pSys->dofmap_[i];
-		//if (val == 0) val = -1;
-		this->dofmap[i] = val;
-	}
+	SysJacHHT = SysMat->A();
 	//RHS   M\ddot{q}/(1+alpha)+NonLinQ-()*alpha/(1+alpha)=0
 	ap1 = 1.0 + alpha;
 	h = pIntegrator->getH();
@@ -1370,7 +1442,7 @@ void od_equation_hhti3::evalJacHHT() {
 	pMv = SysJacHHT->Mv();
 	pMd = SysJacHHT->Md();
 	pM->equalsub(tree_ndofs, tree_ndofs, M_a);
-	pMv->equalsub(tree_ndofs, tree_ndofs, M_v, - h * gamma*ap1);
+	pMv->equalsub(tree_ndofs, tree_ndofs, M_v, -h * gamma*ap1);
 	pMd->equalsub(tree_ndofs, tree_ndofs, M_d, -h * h* beta*ap1);
 	pJ = SysJacHHT->J();
 	base = tree_ndofs;
@@ -1379,43 +1451,44 @@ void od_equation_hhti3::evalJacHHT() {
 			ii = pSys->loop_list[i]->row(j) + i * 6;
 			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
-			pJ->addr(ii, jj, value);
+			pJ->add(ii, jj, value);
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {
-				dofmap[base + i * 6 + ii] = 0;
+				_dofmap[base + i * 6 + ii] = 0;
 			}
 		}
 	}
 	createPermuV();
-	SysJacHHT->update(h, _dofmap, effDim);
+	//SysJacHHT->update(h, _dofmap , effDim);
+	SysMat->update(h, _dofmap, effDim);
 }
 
 void od_equation_bdf_I::evalJac(double tinu) {
-	int i, j, base, ii, jj, baseV, val, tempint;
+	int i, j, base, ii, jj, baseV, tempint;
 	double value, valueV;
 	double s = pSys->startRecord();
 	double mu = 1.0 / tinu;
-	fill(dofmap.begin(), dofmap.end(), 1);
-	for (i = 0; i < tree_ndofs; i++) {
-		val = pSys->dofmap_[i];
-		if (val == 0) val = -1;
-		this->dofmap[i] = val;
-		this->dofmap[tree_ndofs + i] = val; // pSys->dofmap[i];
-	}
+
 	od_equation_dynamic::evalJac();
 	//clear the Jacobian
-	for (i = 0; i < dim_rows; i++) fill(pJac[i], pJac[i] + dim_cols, 0.0);
-
+	//for (i = 0; i < dim_rows; i++) fill(pJac[i], pJac[i] + dim_cols, 0.0);
+	SysJac->zeros();
 	for (i = 0; i < tree_ndofs; i++) {
 		for (j = 0; j < tree_ndofs; j++) {
-			pJac[i + tree_ndofs][j] = -M_a[i][j]; 
-			pJac[i + tree_ndofs][j] += M_v[i][j] * mu;// / tinu;
-			pJac[i + tree_ndofs][j + tree_ndofs] += M_d[i][j] * mu;// / tinu;
+			//pJac[i + tree_ndofs][j] = -M_a[i][j];
+			SysJac->add(i + tree_ndofs, j, -M_a[i][j]);
+			//pJac[i + tree_ndofs][j] += M_v[i][j] * mu;
+			SysJac->add(i + tree_ndofs, j, M_v[i][j] * mu);
+			//pJac[i + tree_ndofs][j + tree_ndofs] += M_d[i][j] * mu;
+			SysJac->add(i + tree_ndofs, j + tree_ndofs, M_d[i][j] * mu);
 		}
-		pJac[i][i + tree_ndofs] = -1;
-		pJac[i][i] = mu;// 1.0 / tinu;
+		//pJac[i][i + tree_ndofs] = -1;
+		SysJac->add(i, i + tree_ndofs, -1);
+		//pJac[i][i] = mu;
+		SysJac->add(i, i , mu);
 	}
+	
 	base = 2 * tree_ndofs;
 	baseV = base + numLoops * 6;
 	for (i = 0; i < numLoops; i++) {
@@ -1425,62 +1498,64 @@ void od_equation_bdf_I::evalJac(double tinu) {
 			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
 			valueV = pSys->loop_list[i]->jacV(j);
-			pJac[ii][jj] += value; 
-			pJac[jj][ii] += value; 
-			pJac[ii][jj + tree_ndofs] += valueV;
+			//pJac[ii][jj] += value;
+			SysJac->add(ii, jj, value); SysJac->add(jj, ii, value);
+			//pJac[jj][ii] += value;
+			//pJac[ii][jj + tree_ndofs] += valueV;
+			SysJac->add(ii, jj + tree_ndofs, valueV);
 			ii = pSys->loop_list[i]->row(j) + baseV + i * 6;
 			jj = pSys->loop_list[i]->col(j) + tree_ndofs;
-			pJac[ii][jj] += value;
-			pJac[jj][ii] += value;
+			//pJac[ii][jj] += value;
+			//pJac[jj][ii] += value;
+			SysJac->add(ii, jj, value); SysJac->add(jj, ii, value);
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {
-				dofmap[base + i * 6 + ii] = 0;
-				dofmap[baseV + i * 6 + ii] = 0;
+				_dofmap[base + i * 6 + ii] = 0;
+				_dofmap[baseV + i * 6 + ii] = 0;
 			}
 		}
 	}
 	createPermuV();
 	pSys->stopRecord(s, 1);
+	SysJac->LUreq();
 	return;
 }
+	
+	
 void od_equation_bdf_I::evalJacBdf(double tinu) {
-	int i, j, base, ii, jj, baseV, val, tempint;
+	int i, j, base, ii, jj, baseV,  tempint;
 	double value, valueV;
 	od_matrix_dense3C *pJ, *pJv;
-	fill(dofmap.begin(), dofmap.end(), 1);
-	for (i = 0; i < tree_ndofs; i++) {
-		val = pSys->dofmap_[i];
-		//if (val == 0) val = -1;
-		this->dofmap[i] = val;
-		this->dofmap[tree_ndofs + i] = val;
-	}
+
 	od_equation_dynamic::evalJac();
 	SysJacBDF->M()->equalsub(tree_ndofs, tree_ndofs, M_a);
 	SysJacBDF->Mv()->equalsub(tree_ndofs, tree_ndofs, M_v);
 	SysJacBDF->Md()->equalsub(tree_ndofs, tree_ndofs, M_d);
 	pJ = SysJacBDF->J();
 	pJv = SysJacBDF->Jv();
-	base = 2 * tree_ndofs;
+	base = 2 * tree_ndofs; //reduced form of Jacobian requires short form of _dofmap
 	baseV = base + numLoops * 6;
 	for (i = 0; i < numLoops; i++) {
-		tempint=pSys->loop_list[i]->num_nonzero();
+		tempint = pSys->loop_list[i]->num_nonzero();
 		for (j = 0; j < tempint; j++) {
-			ii = pSys->loop_list[i]->row(j) + i * 6;
-			jj = pSys->loop_list[i]->col(j);
 			value = pSys->loop_list[i]->jac(j);
 			valueV = pSys->loop_list[i]->jacV(j);
-			pJ->addr(ii, jj, value);
-			pJv->addr(ii, jj, valueV);
+			if (fabs(value) > SMALL_VALUE || fabs(valueV) > SMALL_VALUE) {
+				ii = pSys->loop_list[i]->row(j) + i * 6;
+				jj = pSys->loop_list[i]->col(j);
+				pJ->add(ii, jj, value);
+				pJv->add(ii, jj, valueV);
+			}
 		}
 		for (ii = 0; ii < 6; ii++) {
 			if (pSys->loop_list[i]->if_redundant(ii)) {
-				dofmap[base + i * 6 + ii] = 0;
-				dofmap[baseV + i * 6 + ii] = 0;
+				_dofmap[base + i * 6 + ii] = 0;
+				_dofmap[baseV + i * 6 + ii] = 0;
 			}
 		}
 	}
 	createPermuV();// dofmap);
-	SysJacBDF->update(tinu,  _dofmap, effDim);
-	
+	SysJacBDF->update(tinu, _dofmap, effDim);
+	SysJacBDF->LUreq();
 }

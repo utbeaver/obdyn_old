@@ -69,7 +69,7 @@ sys_ = OdSystem("revJT2R1")
 for i in b: sys_.add_body(i)
 for i in c: sys_.add_constraint(i)
 for i in fs: sys_.add_joint_spdp(i)    
-hht=0
+hht=1
 if len(sys.argv)>1:
     if sys.argv[1]=="-h":
         hht=1
@@ -82,9 +82,9 @@ for i in range(450):
     data=[t_]
     types=["time"]
     if hht==1:
-        sys_.dynamic_analysis_hht(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 0)
+        sys_.dynamic_analysis_hht(t_, 1.0e-5, 10, 0.01, 1.0e-6, 1.0e-3, 1)
     else:    
-        sys_.dynamic_analysis_bdf(t_, 1.0e-3, 10, 0.01, 1.0e-6, 1.0e-3, 0)
+        sys_.dynamic_analysis_bdf(t_, 1.0e-3, 10, 0.01, 1.0e-6, 1.0e-3, 1)
     for c_ in c:
         P=c_.disp()
         for i in range(c_.dofs()):
