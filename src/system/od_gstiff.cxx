@@ -45,7 +45,7 @@ void od_integrator::allocate(void)
 	fill(yyMax, yyMax + numVar, 1.0);
 }
 
-od_gstiff::od_gstiff(od_equation_bdf_I* pequ, double _initStep) : od_integrator(_initStep){
+od_gstiff::od_gstiff(od_equation_bdf_I* pequ, double _initStep) : od_integrator(_initStep) {
 	int i;
 	pEqu = pequ;
 	numVar = pEqu->num_rows();
@@ -72,7 +72,7 @@ od_gstiff::od_gstiff(od_equation_bdf_I* pequ, double _initStep) : od_integrator(
 }
 
 od_gstiff::~od_gstiff() {
-	
+
 }
 
 void od_gstiff::restartIntegrator() {
@@ -92,7 +92,6 @@ void od_gstiff::init(double startTime, double _initStep)
 	for (int i = 0; i < numVar; i++) {
 		yy[i][0] = _X[i];
 		if (pEqu->Var(i)) yy[i][1] = 0.0;
-		//if (pEqu->Var(i))  yy[i][1] = 0.0;
 		else	yy[i][1] = _Xdot[i] * h;
 		yyMax[i] = fabs(_X[i]);
 		if (yyMax[i] < 1.0) yyMax[i] = 1.0;
@@ -110,10 +109,10 @@ void od_hhti3::init(double startTime, double _initStep)
 	for (int i = 0; i < numVar; i++) {
 		yy[i][0] = _Xddot[i];
 		yy[i][1] = 0.0;
-/*		if (pEqu->Var(i)) yy[i][1] = 0.0;
-		else	yy[i][1] = _Xdot[i] * h;
-		yyMax[i] = fabs(_X[i]);
-		if (yyMax[i] < 1.0) yyMax[i] = 1.0;*/
+		/*		if (pEqu->Var(i)) yy[i][1] = 0.0;
+				else	yy[i][1] = _Xdot[i] * h;
+				yyMax[i] = fabs(_X[i]);
+				if (yyMax[i] < 1.0) yyMax[i] = 1.0;*/
 	}
 }
 
@@ -135,7 +134,7 @@ void od_gstiff::setOrder(int newOrder) {
 
 	EDOWN = PERTST[integratorOrder][2] * PEPSH;
 	EDOWN *= EDOWN;
-	deltaTol = (PEPSH/1000.0 < PEPSH*ENQ3/numVar) ?PEPSH/1000.0 :PEPSH*ENQ3/numVar ;
+	deltaTol = (PEPSH / 1000.0 < PEPSH*ENQ3 / numVar) ? PEPSH / 1000.0 : PEPSH * ENQ3 / numVar;
 	//deltaTol = PEPSH * ENQ3 / numVar;
 }
 
@@ -145,7 +144,7 @@ void od_gstiff::predict() {
 		if (pEqu->Var(i))  continue;
 		for (j = 0; j < integratorOrder; j++) {
 			for (k = integratorOrder; k > j; k--) {
-					yy[i][k - 1] += yy[i][k];
+				yy[i][k - 1] += yy[i][k];
 			}
 		}
 	}
@@ -218,7 +217,7 @@ void od_gstiff::interpolate(double _end) {
 	r = ratio;
 	for (j = 1; j <= integratorOrder; j++) {
 		for (i = 0; i < numVar; i++) {
-			if (pEqu->Var(i)==0) _X[i] += yy[i][j] * r;
+			if (pEqu->Var(i) == 0) _X[i] += yy[i][j] * r;
 		}
 		r *= ratio;
 	}
@@ -244,7 +243,7 @@ int od_hhti3::correct() {
 	double c = 0.001;
 	double scale = 1.0;
 	double *pprhs;
-	
+
 	ofstream* pmsg = pEqu->msgFile();
 	int debug = pEqu->debug();
 	pEqu->time(time);
@@ -259,12 +258,12 @@ int od_hhti3::correct() {
 	for (numCorrect = 0; numCorrect < maxCorrectNum; numCorrect++) {
 		Dx = Dx1;
 		this->fromYYtoX();
-		pRhs= pEqu->evalRhs(); numFuncEvals++;
+		pRhs = pEqu->evalRhs(); numFuncEvals++;
 		pprhs = pEqu->pprhs;
 		if (numCorrect % 3 == 0) evalJac = 1;
 		if (evalJac) {
 			numJacEvals++;
-			if(!modifiedLU) pEqu->evalJac();
+			if (!modifiedLU) pEqu->evalJac();
 			else pEqu->evalJacHHT();
 			evalJac = 0;
 		}
@@ -281,12 +280,12 @@ int od_hhti3::correct() {
 		if (fabs(maxRhs) > rhsTol) {
 			rhsConverged = 0;
 		}
-	
-		if(!modifiedLU) pEqu->solve(bhh);
+
+		if (!modifiedLU) pEqu->solve(bhh);
 		else pEqu->solveHHT(bhh);
 		Dx1 = getNorm(pRhs, _Xddot, treedofs);
 		for (i = 0; i < numVar; i++) {
-			_Xddot[i] += pRhs[i]*scale;
+			_Xddot[i] += pRhs[i] * scale;
 		}
 		scale *= 0.99;
 		ratio = Dx1 / Dx;
@@ -296,11 +295,7 @@ int od_hhti3::correct() {
 		deltaConverged = 1;
 		if (left >= right) deltaConverged = 0;
 		for (i = 0; i < numVar; i++) {
-			for (j = integratorOrder-1; j >= 1; j--) {
-				yy[i][j] = yy[i][j-1];
-			}
-			yy[i][0] = _Xddot[i];
-			yyErr[i] += pRhs[i];
+			if(pEqu->Var(i)==0)  yyErr[i] += pRhs[i];
 		}
 		if (deltaConverged /*&& numCorrect >=1 && rhsConverged*/) {
 			pEqu->set_states();
@@ -336,12 +331,12 @@ int od_gstiff::correct() {
 		fromYYtoX(invH);
 		pRhs = pEqu->evalRhs(); numFuncEvals++;
 		pprhs = pEqu->pprhs;
-		if (numCorrect%3 ==0) evalJac = 1;
-		if (evalJac ) {
+		if (numCorrect % 3 == 0) evalJac = 1;
+		if (evalJac) {
 			numJacEvals++;
-			if(!modifiedLU)
+			if (!modifiedLU)
 				pEqu->evalJac(tinu);
-			else 
+			else
 				pEqu->evalJacBdf(tinu);
 			evalJac = 0;
 		}
@@ -352,16 +347,16 @@ int od_gstiff::correct() {
 			rhsConverged = 0;
 		}
 		double s = pEqu->startRecord();
-		if (!modifiedLU) 
-			 errorCode = pEqu->solve(tinu);
-		else 
-			errorCode=pEqu->solveBDF(tinu);
+		if (!modifiedLU)
+			errorCode = pEqu->solve(tinu);
+		else
+			errorCode = pEqu->solveBDF(tinu);
 		if (1) {
-				double *x = new double[numVar];
-				for (int i = 0; i < numVar; i++) {
-					x[i] = pRhs[i] - pprhs[i];
-				}
-				delete[] x;
+			double *x = new double[numVar];
+			for (int i = 0; i < numVar; i++) {
+				x[i] = pRhs[i] - pprhs[i];
+			}
+			delete[] x;
 		}
 		pEqu->stopRecord(s, 2);
 		if (errorCode) {
@@ -480,7 +475,7 @@ void od_gstiff::getNewStepAndOrder(int fail) {
 		if (newIntegratorOrder > integratorOrder) {
 			double minusNewIntOrdInv = -1.0 / newIntegratorOrder;
 			for (i = 0; i < numVar; i++) {
-				if (pEqu->Var(i)==0)
+				if (pEqu->Var(i) == 0)
 					yy[i][newIntegratorOrder] = yyErr[i] * A_values[newIntegratorOrder - 1][newIntegratorOrder] * minusNewIntOrdInv;
 			}
 		}
@@ -621,7 +616,7 @@ int od_hhti3::toTime(double timeEnd, int mLU)
 	int i;// , success = 0;
 	if (pmsg && debug) *pmsg << "#Attemp to simulate from " << time << endl;
 	evalJac = 1;
-	phiN = phi*treedofs;
+	phiN = phi * treedofs;
 	//pEqu->get_states();
 	while (time < timeEnd) {
 		correctFail = 1;
@@ -633,40 +628,46 @@ int od_hhti3::toTime(double timeEnd, int mLU)
 		if (errorCode) { //does not converge, reduce h
 			restoreOld();
 			h = max(hMin, h*0.67);
-			integratorOrder = 1;
-			//getNewStepAndOrder(errorCode);
+			integratorOrder = 0;
 			success = 0;
 		}
 		else {
 			deltaX = getNorm(yyErr, _Xddot, treedofs);
 			PHI = deltaX * deltaX*h*h*h*h / phiN;
-			if (deltaX < 1.0e-18) { //SMALL_VALUE
+			if (deltaX < SMALL_VALUE) { //SMALL_VALUE
 				h = hMax;
 				success = 0;
+				integratorOrder = 0;
 				correctFail = 0;
-			} else if (PHI > 1.0) { //reduce h
+			}
+			else if (PHI > 1.0) { //reduce h
 				restoreOld();
 				h = max(0.9*h / pow(PHI, 1.0 / 6.0), hMin);
-				integratorOrder = 1;
 				success = 0;
-			} else {
+			}
+			else {
 				correctFail = 0;
 				success++;
-				if (integratorOrder < integratorOrderMax) integratorOrder++;
 				if (success > 10) {
 					h = 0.9*h / pow(PHI, 1.0 / 6.0);
 					h = (h > hMax) ? hMax : h;
-					integratorOrder = 1;
+					integratorOrder = 0;
 					success = 0;
 				}
 			}
 		}
 		if (correctFail == 0) {
+			if (integratorOrder < integratorOrderMax) integratorOrder++;
 			for (i = 0; i < numVar; i++) {
+				if (pEqu->Var(i)) continue;
+				for (int j = integratorOrder; j >= 1; j--) {
+					yy[i][j] = yy[i][j - 1];
+				}
 				yyErrSave[i] = yyErr[i];
 				pX[i] = _X[i];
 				pXd[i] = _Xdot[i];
 				pXdd[i] = _Xddot[i];
+				yy[i][0] = _Xddot[i];
 			}
 			pEqu->updatepQ();
 		}
@@ -736,23 +737,29 @@ od_hhti3::od_hhti3(od_equation_hhti3* pequ, double _initStep, double _alpha) : o
 		yy[i][0] = _Xddot[i];
 	}
 	Dx = Dx1 = 0.0;
-	integratorOrder = 1;
-	integratorOrderMax = 3;
+	integratorOrder = 0;
+	integratorOrderMax = 2;
 
 }
 
 void od_hhti3::fromYYtoX(double factor) {
 	for (int i = 0; i < numVar; i++) {
-		_X[i] = pX[i] +h * pXd[i] + 0.5*h*h*((1.0 - 2.0*beta)*pXdd[i] + 2.0*beta*_Xddot[i]);
-		_Xdot[i] = pXd[i] +h * ((1.0 - gamma)*pXdd[i] + gamma * _Xddot[i]);
+		if (pEqu->Var(i) == 1) continue;
+		_X[i] = pX[i] + h * pXd[i] + 0.5*h*h*((1.0 - 2.0*beta)*pXdd[i] + 2.0*beta*_Xddot[i]);
+		_Xdot[i] = pXd[i] + h * ((1.0 - gamma)*pXdd[i] + gamma * _Xddot[i]);
 	}
 }
-
-
 void od_hhti3::predict()
 {
-	for (int i = 0; i < numVar; i++) _Xddot[i] = pXdd[i];
-	//this->fromYYtoX();
+	int i;
+		for (i = 0; i < numVar; i++) _Xddot[i] = pXdd[i];
+		for (i = 0; i < numVar; i++) {
+			if (pEqu->Var(i)) continue; //do not extrapolate Lagrangian Multipiers
+			if (integratorOrder == 1) { _Xddot[i] += pXdd[i] - yy[i][1]; }
+			else if (integratorOrder == 2) {
+				_Xddot[i] += pXdd[i] - yy[i][1] + 0.5*(yy[i][0] - 2.0*yy[i][1] + yy[i][2]);
+			}
+		}
 }
 
 

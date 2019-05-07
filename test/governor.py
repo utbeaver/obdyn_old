@@ -35,20 +35,20 @@ b[1].setI(V6(25, 50, 25,0, 0,0))
 
 c[0].set_imarker(b1_2gnd)
 c[0].set_jmarker(cm0)
-c[0].set_expr("3*sin(time*20*pi)")
+c[0].set_expr("3*sin(time*15*pi)")
 #c[0].set_expr("2.23*time*time*time*(10-5*time+0.6*time*time)")
 #c[0].set_expr("2.23*time^3*(10-5*time+0.6*time^2)")
 #c[0].set_expr("50*time")
 
 cm2 = OdMarker(20, V3(0, 0.5, 0), V3(0, r90, 0), "cm2")
 b[2].add_cm_marker(cm2)
-scale=1
+scale=0.1
 c[1].set_imarker(cm2)
 c[1].set_jmarker(b1_top)
 c[1].translational()
 jforce=OdJointSPDP(25, "spring")
 jforce.setJoint(c[1])
-jforce.set_stiffness(1000000*scale)
+jforce.set_stiffness(100000*scale)
 jforce.set_damping(200)
 jforce.set_distance(-0.5)
 fs.append(jforce)
